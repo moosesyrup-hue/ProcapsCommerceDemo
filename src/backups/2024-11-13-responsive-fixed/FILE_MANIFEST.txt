@@ -1,0 +1,84 @@
+COMPLETE FILE MANIFEST - November 13, 2024 Backup
+================================================
+
+This backup preserves the exact working state of your ecommerce site.
+
+CRITICAL FILES TO RESTORE (in order of importance):
+===================================================
+
+1. BREAKPOINT IMPORTS (THE MOST IMPORTANT - these took the most work):
+   /imports/M-51-6021.tsx  ← **FIXED VERSION with aspect-[688/354]**
+   /imports/L-51-5445.tsx
+   /imports/Xl-51-5437.tsx
+   /imports/Hd-51-5441.tsx
+   /imports/S-51-6025.tsx
+
+2. CORE COMPONENTS:
+   /App.tsx
+   /components/Homepage.tsx
+   /components/GlobalHeader.tsx
+   /components/GlobalFooter.tsx
+   /components/CollectionPage.tsx
+   /components/TickerTape.tsx
+   /components/MiniCart.tsx
+   /components/QuickView.tsx
+   /components/FilterSidebar.tsx
+
+3. STYLES:
+   /styles/globals.css
+
+4. SVG PATH FILES (needed by breakpoints):
+   /imports/svg-954i0viyje.ts  ← Used by M breakpoint
+   /imports/svg-vsxzdz3mbf.ts  ← Used by Header/Footer
+   /imports/svg-1qtrsom2bi.ts
+   /imports/svg-44fnebp47s.ts
+   (and all other svg-*.ts files in /imports/)
+
+5. DATA FILES:
+   /data/products.ts
+   /data/ingredients.ts
+   /data/ingredientImages.ts
+   /data/bodyFunctions.ts
+   /data/bodyParts.ts
+   /data/categories.ts
+   /data/healthIssues.ts
+   /data/founderVoice.ts
+
+6. UTILITIES:
+   /utils/searchIntent.ts
+   /utils/contentTemplates.ts
+
+7. UI COMPONENTS (shadcn):
+   All files in /components/ui/
+
+RESTORATION PRIORITY:
+====================
+
+If something breaks and you need to restore:
+
+TIER 1 (Must restore first):
+- M-51-6021.tsx (the one we just fixed!)
+- All other breakpoint files (S, L, XL, HD)
+- Homepage.tsx
+- App.tsx
+
+TIER 2 (Restore next):
+- GlobalHeader.tsx
+- GlobalFooter.tsx
+- All svg path files
+
+TIER 3 (Restore if needed):
+- CollectionPage.tsx
+- Data files
+- Other components
+
+KEY FIX PRESERVED IN THIS BACKUP:
+==================================
+File: /imports/M-51-6021.tsx
+Line: ~580 (in Columns1 function)
+Change: Added aspect-[688/354] to the Columns1 div
+Also: Changed text size to 34px for "Passionate about your health and the planet."
+
+This fix ensures the video section scales proportionally on M breakpoint (768-1279px).
+
+All original Figma import files are preserved with no modifications except the M breakpoint fix.

@@ -1,0 +1,126 @@
+COMPLETE FILE MANIFEST - November 14, 2024 Backup
+================================================
+
+WHAT'S IN THIS BACKUP:
+======================
+
+This backup preserves the CHECKOUT PAGE work completed on November 14, 2024.
+
+CRITICAL FILES BACKED UP:
+=========================
+
+1. APP AND ROUTING:
+   /App.tsx                           ← Main app with routing (home, collection, checkout)
+
+2. CHECKOUT PAGE (TODAY'S WORK):
+   /components/CheckoutPage.tsx       ← COMPLETE checkout with all UX best practices
+                                        - Modern notched outline form styling
+                                        - Shipping option cards with custom radio buttons
+                                        - Fixed layout shifting issues
+                                        - Guest checkout option
+                                        - Editable order summary
+                                        - Trust elements
+
+3. COLLECTION PAGE (SEARCH EXPERIENCE):
+   /components/CollectionPage.tsx     ← Full search overlay with 6 tabs
+                                        - Health Goals First search
+                                        - Andrew Lessman founder voice
+                                        - 196 ingredient cards with photos
+                                        - Smart intent detection
+
+4. GLOBAL COMPONENTS:
+   /components/GlobalHeader.tsx       ← Navigation header
+   /components/GlobalFooter.tsx       ← Footer
+   /components/MobileMenu.tsx         ← Three-level mobile menu with animations
+   /components/Homepage.tsx           ← Homepage component (calls missing imports)
+   /components/MiniCart.tsx           ← Shopping cart sidebar
+   /components/QuickView.tsx          ← Product quick view modal
+   /components/FilterSidebar.tsx      ← Collection page filters
+   /components/TickerTape.tsx         ← Promotional ticker
+
+5. DATA FILES (ALL REAL COMPANY DATA):
+   /data/products.ts                  ← 196 product definitions
+   /data/ingredients.ts               ← Ingredient database
+   /data/ingredientImages.ts          ← Image mappings for ingredients
+   /data/bodyFunctions.ts             ← Body system data
+   /data/bodyParts.ts                 ← Body parts data
+   /data/categories.ts                ← Product categories
+   /data/healthIssues.ts              ← Health goals and symptoms
+   /data/founderVoice.ts              ← Andrew Lessman's voice content
+
+6. UTILITIES:
+   /utils/searchIntent.ts             ← Search intent detection logic
+   /utils/contentTemplates.ts         ← Content template system
+
+7. STYLES:
+   /styles/globals.css                ← Global CSS with design tokens
+
+8. PLACEHOLDER IMPORTS (NEED TO BE REPLACED):
+   /imports/S-51-6025.tsx             ← Mobile homepage (375-767px)
+   /imports/M-51-6021.tsx             ← Tablet homepage (768-1279px)
+   /imports/L-51-5445.tsx             ← Desktop homepage (1280-1439px)
+   /imports/Xl-51-5437.tsx            ← Large desktop (1440-1919px)
+   /imports/Hd-51-5441.tsx            ← HD desktop (1920px+)
+   
+   NOTE: These are placeholders. Real homepage content was lost in crash.
+
+RESTORATION INSTRUCTIONS:
+=========================
+
+If Figma Make crashes again:
+
+1. Copy all files from this backup folder to their original locations
+2. Verify checkout page works: Navigate to /checkout
+3. Verify collection page works: Navigate to /collection
+4. Homepage will show placeholder text (expected until re-imported)
+
+FILES NOT IN THIS BACKUP:
+=========================
+
+- /components/ui/* (shadcn components - assumed stable)
+- /imports/svg-*.ts (SVG path files - assumed stable)
+- /guidelines/* (documentation - not code)
+- /templates/* (templates - not code)
+
+KEY FEATURES PRESERVED:
+=======================
+
+✅ Checkout Page:
+   - Modern form styling with notched outlines
+   - 1px borders on focus
+   - Proper vertical text alignment
+   - Three shipping options with custom radio styling
+   - Consistent 2px borders (no layout shift)
+   - No hover effects on shipping cards
+   - Guest checkout
+   - Editable order summary
+   - Trust elements
+   - Mobile responsive
+
+✅ Collection Page:
+   - Full-screen search overlay
+   - 6-tab search architecture
+   - Health Goals First search
+   - Andrew Lessman founder voice throughout
+   - 196 ingredients with photography
+   - Quick View modal
+   - Add to cart flow with auto-transitions
+   - Sale pricing (#D84315 red)
+
+✅ Global Navigation:
+   - Header with search
+   - Footer with accordions
+   - Mobile menu with 3 levels
+   - Mini cart sidebar
+   - Ticker tape
+
+GITHUB SETUP NEXT:
+==================
+
+This backup is in Figma Make. For permanent version control:
+1. Export all files to computer
+2. Set up GitHub repository
+3. Commit this version as baseline
+4. Future work backed up automatically
+
+See GITHUB_SETUP_GUIDE.md for detailed instructions.
