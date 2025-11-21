@@ -15,6 +15,7 @@ interface CartItem {
   originalPrice?: number;
   quantity: number;
   image: string;
+  frequency?: string;
 }
 
 interface MiniCartProps {
@@ -58,7 +59,7 @@ function ProductImage({ src, alt }: { src: string; alt: string }) {
   );
 }
 
-function ProductTitleCount({ name, count }: { name: string; count: string }) {
+function ProductTitleCount({ name, count, frequency }: { name: string; count: string; frequency?: string }) {
   return (
     <div className="content-stretch flex flex-col gap-[10px] items-start leading-[1.4] relative shrink-0 w-full">
       <p className="font-['Inter',sans-serif] font-medium relative shrink-0 text-[#003b3c] text-[16px] w-full">
@@ -67,6 +68,18 @@ function ProductTitleCount({ name, count }: { name: string; count: string }) {
       <p className="font-['Inter',sans-serif] font-normal relative shrink-0 text-[#406c6d] text-[14px] w-full">
         {count}
       </p>
+      {frequency && (
+        <div className="flex items-center gap-[6px]">
+          <div className="bg-[#009296] text-white px-[8px] py-[2px] rounded-[4px]">
+            <p className="font-['Inter',sans-serif] text-[11px] uppercase tracking-[0.5px]">
+              Autoship
+            </p>
+          </div>
+          <p className="font-['Inter',sans-serif] text-[12px] text-[#009296]">
+            {frequency}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
@@ -153,7 +166,7 @@ function ProductItem({ item, onUpdateQuantity }: { item: CartItem; onUpdateQuant
     <div className="content-stretch flex gap-[20px] items-start relative shrink-0 w-full">
       <ProductImage src={item.image} alt={item.name} />
       <div className="basis-0 content-stretch flex flex-col grow items-start justify-between min-h-px min-w-px relative self-stretch shrink-0">
-        <ProductTitleCount name={item.name} count={item.count} />
+        <ProductTitleCount name={item.name} count={item.count} frequency={item.frequency} />
         <QuantitySelector
           quantity={item.quantity}
           onIncrease={() => onUpdateQuantity(item.id, item.quantity + 1)}

@@ -33,6 +33,7 @@ export default function QuickView({ product, onClose, onAddToCart, onViewDetails
   const [purchaseType, setPurchaseType] = useState<'one-time' | 'subscribe'>('one-time');
   const [frequency, setFrequency] = useState(30);
   const [quantity, setQuantity] = useState(1);
+  const [isAdding, setIsAdding] = useState(false);
 
   // Get the current count's pricing
   const selectedCountData = product.counts.find(c => c.value === selectedCount) || product.counts[0];
@@ -43,13 +44,21 @@ export default function QuickView({ product, onClose, onAddToCart, onViewDetails
   const basePrice = selectedCountData.basePrice;
 
   const handleAddToCart = () => {
-    onAddToCart({
-      productId: product.id,
-      count: selectedCount,
-      purchaseType,
-      frequency: purchaseType === 'subscribe' ? frequency : undefined,
-      quantity
-    });
+    // Show success animation
+    setIsAdding(true);
+    
+    // After animation, trigger cart addition and opening
+    setTimeout(() => {
+      onAddToCart({
+        productId: product.id,
+        count: selectedCount,
+        purchaseType,
+        frequency: purchaseType === 'subscribe' ? frequency : undefined,
+        quantity
+      });
+      // Reset state after cart opens
+      setTimeout(() => setIsAdding(false), 300);
+    }, 1200); // Show success state for 1.2 seconds
   };
 
   const decreaseQuantity = () => {
@@ -396,10 +405,22 @@ export default function QuickView({ product, onClose, onAddToCart, onViewDetails
           {/* Add to Cart Button */}
           <button
             onClick={handleAddToCart}
-            className="bg-[#009296] hover:bg-[#007d81] transition-colors h-[50px] rounded-[999px] flex-1 flex items-center justify-center"
+            disabled={isAdding}
+            className={`
+              h-[50px] rounded-[999px] flex-1 flex items-center justify-center gap-[10px]
+              transition-all duration-300 ease-in-out
+              ${isAdding 
+                ? 'bg-[#4CAF50]' 
+                : 'bg-[#009296] hover:bg-[#007d81]'
+              }
+              disabled:cursor-not-allowed
+            `}
           >
+            {isAdding && (
+              <Check className="w-[20px] h-[20px] text-white" strokeWidth={3} />
+            )}
             <span className="font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase">
-              ADD TO CART
+              {isAdding ? 'ITEM ADDED' : 'ADD TO CART'}
             </span>
           </button>
         </div>

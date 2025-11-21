@@ -10,12 +10,14 @@ export default function FilterSidebar({ onClose, filters, setFilters }: {
     priceRanges: string[];
     ratings: string[];
     benefits: string[];
+    alphabet?: string;
   };
   setFilters: React.Dispatch<React.SetStateAction<{
     categories: string[];
     priceRanges: string[];
     ratings: string[];
     benefits: string[];
+    alphabet?: string;
   }>>;
 }) {
   const [showAllCategories, setShowAllCategories] = useState(false);
@@ -98,10 +100,17 @@ export default function FilterSidebar({ onClose, filters, setFilters }: {
   };
 
   const removeFilter = (category: keyof typeof filters, value: string) => {
-    setFilters(prev => ({
-      ...prev,
-      [category]: prev[category].filter(v => v !== value)
-    }));
+    if (category === 'alphabet') {
+      setFilters(prev => ({
+        ...prev,
+        alphabet: undefined
+      }));
+    } else {
+      setFilters(prev => ({
+        ...prev,
+        [category]: prev[category].filter(v => v !== value)
+      }));
+    }
   };
 
   const clearAllFilters = () => {
@@ -110,16 +119,34 @@ export default function FilterSidebar({ onClose, filters, setFilters }: {
       priceRanges: [],
       ratings: [],
       benefits: [],
+      alphabet: undefined,
     });
   };
 
-  const activeFilterCount = Object.values(filters).flat().length;
+  const activeFilterCount = 
+    filters.categories.length + 
+    filters.priceRanges.length + 
+    filters.ratings.length + 
+    filters.benefits.length +
+    (filters.alphabet ? 1 : 0);
 
   // Get all active filters with their labels
   const getActiveFilters = () => {
     const active: Array<{ category: keyof typeof filters; id: string; label: string }> = [];
     
+    // Add alphabet filter if active
+    if (filters.alphabet) {
+      active.push({ 
+        category: 'alphabet' as keyof typeof filters, 
+        id: filters.alphabet, 
+        label: `Letter: ${filters.alphabet}` 
+      });
+    }
+    
     (Object.keys(filters) as Array<keyof typeof filters>).forEach(category => {
+      // Skip alphabet filter as it's already handled above
+      if (category === 'alphabet') return;
+      
       const categoryKey = category === 'priceRanges' ? 'priceRanges' : category;
       filters[category].forEach(id => {
         const option = filterOptions[categoryKey as keyof typeof filterOptions]?.find((opt: any) => opt.id === id);
@@ -176,6 +203,53 @@ export default function FilterSidebar({ onClose, filters, setFilters }: {
                 <div className="h-0 w-full border-t border-[#D9E2E2] mb-[30px]" />
               </div>
             )}
+
+            {/* A-Z Product Name Filter */}
+            <div className="w-full mb-[30px]">
+              <p className="font-['Inter',sans-serif] font-medium text-[20px] text-[#003b3c] mb-[16px]">
+                Browse A-Z
+              </p>
+              
+              {/* Alphabet Grid - 2 rows with even distribution */}
+              <div className="grid grid-cols-7 gap-[6px]">
+                {/* All letters A-Z */}
+                {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'].map((letter) => {
+                  const isActive = filters.alphabet === letter;
+                  const hasProducts = true; // TODO: Calculate based on actual products
+                  
+                  return (
+                    <button
+                      key={letter}
+                      onClick={() => {
+                        setFilters(prev => ({
+                          ...prev,
+                          alphabet: isActive ? undefined : letter
+                        }));
+                      }}
+                      disabled={!hasProducts}
+                      className={`
+                        h-[36px] rounded-[6px] flex items-center justify-center
+                        font-['Inter',sans-serif] font-medium text-[14px]
+                        transition-all duration-200
+                        ${isActive 
+                          ? 'bg-[#009296] text-white shadow-sm' 
+                          : hasProducts
+                            ? 'bg-[#EBF6F4] text-[#003b3c] hover:bg-[#009296] hover:text-white'
+                            : 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                        }
+                      `}
+                    >
+                      {letter}
+                    </button>
+                  );
+                })}
+                {/* Empty placeholders to fill the last row */}
+                <div className="h-[36px]"></div>
+                <div className="h-[36px]"></div>
+              </div>
+              
+              <div className="h-0 w-full border-t border-[#D9E2E2] mt-[30px]" />
+            </div>
 
             {/* Categories Section */}
             <div className="w-full">

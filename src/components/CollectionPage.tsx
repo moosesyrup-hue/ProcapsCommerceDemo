@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { X, Plus, Minus } from 'lucide-react';
 import svgPaths from "../imports/svg-vsxzdz3mbf";
-import imgImage from "figma:asset/902e9baf4329e9eccec5f8fbe2da4128f222cb1b.png";
+import imgImage from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png";
 import { Checkbox } from "./ui/checkbox";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "./ui/sheet";
 import QuickView from "./QuickView";
 import FilterSidebar from "./FilterSidebar";
+import CollectionBanner from "./CollectionBanner";
+import { getCategoryBanner } from "../config/categoryData";
 
 // Icon Components
 function FilterIcon() {
@@ -28,69 +30,6 @@ function ArrowDownIcon() {
           <path d={svgPaths.p2bc3cb80} fill="#003B3C" />
         </g>
       </svg>
-    </div>
-  );
-}
-
-// Banner Component
-function Banner() {
-  return (
-    <div className="bg-white xl:bg-[#efe8de] relative shrink-0 w-full">
-      {/* Desktop Layout - Side by side */}
-      <div className="hidden xl:block xl:aspect-[1678/413]">
-        <div className="flex flex-row items-center size-full">
-          <div className="box-border flex items-center justify-between pl-[40px] pr-0 py-0 relative size-full">
-            {/* Copy */}
-            <div className="basis-0 grow relative">
-              <div className="flex flex-col justify-center size-full">
-                <div className="box-border flex flex-col gap-[20px] items-start justify-center pr-[40px] text-[#003b3c]">
-                  <p className="font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] text-[38px] xxl:text-[54px] hd:text-[72px] tracking-[-0.76px] xxl:tracking-[-1.08px] hd:tracking-[-1.44px]">
-                    Digestive health
-                  </p>
-                  <p className="font-['Inter',sans-serif] leading-[1.6] text-[16px] xxl:text-[20px]">
-                    Maintaining a healthy digestion system is crucial for your overall health.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Image */}
-            <div className="bg-[#e5ddd3] h-full aspect-[840/413.492] relative flex items-center justify-center">
-              <div className="size-[66px]">
-                <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 66 66">
-                  <path d={svgPaths.pdc9e330} fill="#B9B1A8" />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile/Tablet Layout - Image first, then copy */}
-      <div className="xl:hidden">
-        {/* Image */}
-        <div className="aspect-[840/413.492] bg-[#e5ddd3] relative w-full flex items-center justify-center">
-          <div className="size-[66px]">
-            <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 66 66">
-              <path d={svgPaths.pdc9e330} fill="#B9B1A8" />
-            </svg>
-          </div>
-        </div>
-
-        {/* Copy */}
-        <div className="relative w-full">
-          <div className="flex flex-col justify-center size-full">
-            <div className="box-border flex flex-col gap-[20px] items-start justify-center px-[20px] md:px-[40px] pt-[30px] md:pt-[40px] pb-0 text-[#003b3c]">
-              <p className="font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] text-[28px] md:text-[38px] tracking-[-0.56px] md:tracking-[-0.76px]">
-                Digestive health
-              </p>
-              <p className="font-['Inter',sans-serif] leading-[1.6] text-[16px]">
-                Maintaining a healthy digestion system is crucial for your overall health.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
@@ -126,7 +65,7 @@ function Filters({ filtersVisible, onToggleFilters, activeFilterCount }: { filte
           </button>
 
           {/* Right Elements - Desktop Only */}
-          <div className="hidden xl:flex gap-[30px] items-center">
+          <div className="hidden lg:flex gap-[30px] items-center">
             {/* Compare Toggle */}
             <div className="flex gap-[20px] items-center">
               <p className="font-['Inter',sans-serif] text-[#003b3c] text-[16px]">Compare</p>
@@ -166,7 +105,7 @@ function Filters({ filtersVisible, onToggleFilters, activeFilterCount }: { filte
 // Product Card Component
 function ProductCard({ hasImage = true, onQuickView }: { hasImage?: boolean; onQuickView?: () => void }) {
   return (
-    <div className="basis-0 bg-[#efe8de] grow h-full rounded-[10px] flex flex-col">
+    <div className="basis-0 bg-[#F6F2EC] grow h-full rounded-[10px] flex flex-col">
       <div className="box-border flex flex-col items-center justify-between pb-[10px] md:pb-[20px] pt-[30px] md:pt-[40px] px-[10px] md:px-[20px] hd:px-[20px] h-full">
         {/* Stars + Headline */}
         <div className="w-full shrink-0">
@@ -257,11 +196,11 @@ function ProductGrid({ filtersVisible, onQuickView }: { filtersVisible: boolean;
 
   return (
     <div className="relative shrink-0 w-full">
-      <div className={`box-border flex flex-col gap-[20px] items-start p-[20px] md:p-[40px] ${
+      <div className={`box-border flex flex-col gap-[20px] items-start p-[20px] md:px-[40px] md:pt-[40px] md:pb-0 ${
         filtersVisible ? 'xl:pl-[40px]' : ''
       }`}>
         {/* Mobile S & Tablet M: 2 columns */}
-        <div className="grid grid-cols-2 gap-x-[10px] gap-y-[20px] md:gap-[20px] w-full xl:hidden">
+        <div className="grid grid-cols-2 gap-x-[10px] gap-y-[20px] md:gap-[20px] w-full lg:hidden">
           {products.map((product, i) => (
             <div key={i} className="flex flex-col gap-[20px]">
               <ProductCard hasImage={product.hasImage} onQuickView={onQuickView} />
@@ -281,9 +220,9 @@ function ProductGrid({ filtersVisible, onQuickView }: { filtersVisible: boolean;
         </div>
 
         {/* Desktop Layout - Original */}
-        <div className="hidden xl:block w-full">
+        <div className="hidden lg:block w-full">
           {/* First Row */}
-          <div className="flex gap-[20px] items-center min-h-[425px] xxl:min-h-[500px] w-full mb-[20px]">
+          <div className="flex gap-[20px] items-center min-h-[425px] xl:min-h-[500px] w-full mb-[20px]">
             {products.slice(0, desktopColumns).map((product, i) => (
               <div key={i} className="basis-0 grow self-stretch">
                 <ProductCard hasImage={product.hasImage} onQuickView={onQuickView} />
@@ -310,7 +249,7 @@ function ProductGrid({ filtersVisible, onQuickView }: { filtersVisible: boolean;
           </div>
 
           {/* Second Row */}
-          <div className="flex gap-[20px] items-center min-h-[425px] xxl:min-h-[500px] w-full mb-[20px]">
+          <div className="flex gap-[20px] items-center min-h-[425px] xl:min-h-[500px] w-full mb-[20px]">
             {products.slice(desktopColumns, desktopColumns * 2).map((product, i) => (
               <div key={i} className="basis-0 grow self-stretch">
                 <ProductCard hasImage={product.hasImage} onQuickView={onQuickView} />
@@ -345,11 +284,13 @@ function ProductGrid({ filtersVisible, onQuickView }: { filtersVisible: boolean;
 export default function CollectionPage({ 
   cartItems, 
   setCartItems,
-  onOpenCart 
+  onOpenCart,
+  category = 'digestive-health'
 }: { 
   cartItems: any[];
   setCartItems: React.Dispatch<React.SetStateAction<any[]>>;
   onOpenCart: () => void;
+  category?: string;
 }) {
   const [filtersVisible, setFiltersVisible] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -359,6 +300,7 @@ export default function CollectionPage({
     priceRanges: [] as string[],
     ratings: [] as string[],
     benefits: [] as string[],
+    alphabet: undefined as string | undefined,
   });
 
   // Sample product data for QuickView
@@ -405,9 +347,12 @@ export default function CollectionPage({
       name: 'Fibermucil',
       count: `Count: ${config.count} capsules`,
       price: config.purchaseType === 'subscribe' ? 17.95 : 19.95,
-      originalPrice: 24.90,
+      originalPrice: config.purchaseType === 'subscribe' ? 19.95 : undefined,
       quantity: config.quantity,
-      image: imgImage
+      image: imgImage,
+      frequency: config.purchaseType === 'subscribe' && config.frequency 
+        ? `Every ${config.frequency} days` 
+        : undefined
     };
     
     setCartItems(items => [...items, newItem]);
@@ -420,7 +365,12 @@ export default function CollectionPage({
   };
 
   // Calculate active filter count
-  const activeFilterCount = Object.values(filters).flat().length;
+  const activeFilterCount = 
+    filters.categories.length + 
+    filters.priceRanges.length + 
+    filters.ratings.length + 
+    filters.benefits.length +
+    (filters.alphabet ? 1 : 0);
 
   return (
     <>
@@ -438,7 +388,10 @@ export default function CollectionPage({
         </SheetContent>
       </Sheet>
       
-      <Banner />
+      <CollectionBanner 
+        {...getCategoryBanner(category)}
+      />
+      
       <Filters 
         filtersVisible={filtersVisible}
         onToggleFilters={handleToggleFilters}
@@ -457,15 +410,13 @@ export default function CollectionPage({
       {/* Content Area with Sidebar */}
       <div className="flex w-full">
         {/* Desktop Filter Sidebar - slides in from left */}
-        <div 
-          className={`hidden xl:block transition-all duration-300 ease-in-out ${
-            filtersVisible ? 'w-[280px] xxl:w-[300px] hd:w-[320px] ml-[20px]' : 'w-0'
-          } overflow-hidden`}
-        >
-          <div className={`transition-opacity duration-300 ${filtersVisible ? 'opacity-100' : 'opacity-0'}`}>
+        {filtersVisible && (
+          <div 
+            className="hidden lg:block w-[280px] xl:w-[300px] hd:w-[320px] ml-[20px] transition-all duration-300 ease-in-out"
+          >
             <FilterSidebar filters={filters} setFilters={setFilters} />
           </div>
-        </div>
+        )}
         
         {/* Product Grid - adjusts width */}
         <div className="flex-1 transition-all duration-300">

@@ -1,0 +1,109 @@
+BACKUP FILE MANIFEST
+====================
+Backup Date: November 18, 2025
+Backup Name: megamenu-spacing-update
+
+This backup contains the following key files:
+
+ROOT FILES
+----------
+✓ App.tsx
+
+COMPONENTS
+----------
+✓ components/ShopMegaMenu.tsx - [BACKED UP] Latest with 5px spacing
+  components/GlobalHeader.tsx
+  components/GlobalFooter.tsx
+  components/MobileMenu.tsx
+  components/Homepage.tsx
+  components/CollectionPage.tsx
+  components/CollectionBanner.tsx
+  components/FilterSidebar.tsx
+  components/CheckoutPage.tsx
+  components/MiniCart.tsx
+  components/QuickView.tsx
+  components/PopularBadge.tsx
+  components/TickerTape.tsx
+  
+FIND MY SUPPLEMENTS
+-------------------
+  components/FindMySupplementsPage.tsx
+  components/FindMySupplementsPageOptimized.tsx
+  components/FindMySupplementsPagePremium.tsx
+  components/FindMySupplements/ConversationInterface.tsx
+  components/FindMySupplements/ConversationInterfaceOptimized.tsx
+  components/FindMySupplements/ConversationInterfacePremium.tsx
+  components/FindMySupplements/MessageBubble.tsx
+  components/FindMySupplements/QuickReplyButtons.tsx
+  components/FindMySupplements/RecommendationDisplay.tsx
+
+ANDREW AI CHAT
+--------------
+  components/AndrewAIChatPage.tsx
+  components/AndrewAIChat/ChatConversation.tsx
+  components/AndrewAIChat/ChatInput.tsx
+  components/AndrewAIChat/ChatSidebar.tsx
+  components/AndrewAIChat/MessageBubble.tsx
+  components/AndrewAIChat/ProductCard.tsx
+
+CONFIG
+------
+  config/categoryData.ts
+
+DATA FILES
+----------
+  data/products.ts
+  data/categories.ts
+  data/ingredients.ts
+  data/ingredientImages.ts
+  data/bodyParts.ts
+  data/bodyFunctions.ts
+  data/healthIssues.ts
+  data/founderVoice.ts
+  data/conversational-questions.ts
+  data/conversation-flow.ts
+
+STYLES
+------
+  styles/globals.css
+
+UI COMPONENTS (SHADCN)
+---------------------
+  components/ui/button.tsx
+  components/ui/card.tsx
+  components/ui/sheet.tsx
+  components/ui/dialog.tsx
+  components/ui/select.tsx
+  components/ui/checkbox.tsx
+  components/ui/badge.tsx
+  components/ui/input.tsx
+  components/ui/label.tsx
+  components/ui/separator.tsx
+  components/ui/tabs.tsx
+  components/ui/accordion.tsx
+  components/ui/tooltip.tsx
+  [... and other ui components]
+
+UTILITIES
+---------
+  lib/chat-processor.ts
+  lib/nlp-matcher.ts
+  lib/recommendation-engine.ts
+  utils/contentTemplates.ts
+  utils/searchIntent.ts
+
+TYPES
+-----
+  types/chat.ts
+
+NOTES
+-----
+- Only ShopMegaMenu.tsx and App.tsx are physically backed up in this folder
+- All other files remain in their original locations
+- This is a reference backup documenting the state at this point in time
+- The ShopMegaMenu component has 5px spacing between titles and subtitles
+- The megamenu removed left icons from the 4 main navigation items
+- "Health Issues" changed to "Health Issue" (singular)
+
+To do a full backup, copy all listed files to this backup directory.
+For now, this serves as a checkpoint and reference for the current working state.

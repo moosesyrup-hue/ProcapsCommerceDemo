@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Menu } from 'lucide-react';
 import svgPaths from "../imports/svg-vsxzdz3mbf";
+import ShopMegaMenu from "./ShopMegaMenu";
 
 // Icon Components
 function GiftIcon() {
@@ -111,14 +112,82 @@ export default function GlobalHeader({
   onMenuClick, 
   onCartClick,
   onLogoClick,
-  onSpecialsClick 
+  onSpecialsClick,
+  onNavigateToCollection,
+  onAccountClick,
+  isLoggedIn,
+  userFirstName
 }: { 
   onMenuClick: () => void; 
   onCartClick: () => void;
   onLogoClick: () => void;
   onSpecialsClick: () => void;
+  onNavigateToCollection?: (category: string) => void;
+  onAccountClick: () => void;
+  isLoggedIn?: boolean;
+  userFirstName?: string;
 }) {
   const [breakpoint, setBreakpoint] = useState<'S' | 'M' | 'L' | 'XL' | 'HD'>('M');
+  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
+  const openTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const closeTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clear all timers
+  const clearTimers = () => {
+    if (openTimerRef.current) {
+      clearTimeout(openTimerRef.current);
+      openTimerRef.current = null;
+    }
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  };
+
+  // Open megamenu with delay
+  const handleShopHover = () => {
+    clearTimers();
+    openTimerRef.current = setTimeout(() => {
+      setIsMegaMenuOpen(true);
+    }, 200); // 200ms delay before opening
+  };
+
+  // Close megamenu with delay
+  const handleMegaMenuLeave = () => {
+    clearTimers();
+    closeTimerRef.current = setTimeout(() => {
+      setIsMegaMenuOpen(false);
+    }, 400); // 400ms delay before closing
+  };
+
+  // Cancel close timer when re-entering
+  const handleMegaMenuEnter = () => {
+    clearTimers();
+    setIsMegaMenuOpen(true);
+  };
+
+  // Close megamenu immediately when hovering other nav items
+  const handleOtherNavHover = () => {
+    clearTimers();
+    setIsMegaMenuOpen(false);
+  };
+
+  // Close megamenu on Escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isMegaMenuOpen) {
+        setIsMegaMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isMegaMenuOpen]);
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => clearTimers();
+  }, []);
 
   useEffect(() => {
     const updateBreakpoint = () => {
@@ -172,52 +241,119 @@ export default function GlobalHeader({
             <div className="h-0 relative shrink-0 w-full border-t border-[#0CA9AD]" />
           </div>
 
-          {/* Navigation */}
-          <div className="h-[62px] relative shrink-0 w-full">
-            {/* Mobile/Tablet Menu Button */}
-            {isMobileTablet && (
-              <button 
-                onClick={onMenuClick}
-                className="absolute left-0 top-1/2 -translate-y-1/2 text-white"
-              >
-                <Menu className="w-[26px] h-[26px]" />
-              </button>
-            )}
+          {/* Navigation - wrapped with megamenu for hover detection */}
+          <div 
+            className="relative w-full"
+            onMouseLeave={handleMegaMenuLeave}
+          >
+            <div className="h-[62px] relative shrink-0 w-full">
+              {/* Mobile/Tablet Menu Button */}
+              {isMobileTablet && (
+                <button 
+                  onClick={onMenuClick}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 text-white"
+                >
+                  <Menu className="w-[26px] h-[26px]" />
+                </button>
+              )}
 
-            {/* Desktop Categories */}
-            {isDesktop && (
-              <div className="flex absolute left-0 top-1/2 -translate-y-1/2 gap-[40px] items-center font-['Inter',sans-serif] font-medium text-[16px] text-white uppercase tracking-[1.6px]">
-                <p className="cursor-pointer hover:opacity-80 transition-opacity">SHOP</p>
-                <p className="cursor-pointer hover:opacity-80 transition-opacity">LEARN</p>
-                <p className="cursor-pointer hover:opacity-80 transition-opacity">ABOUT</p>
-                <p className="cursor-pointer hover:opacity-80 transition-opacity">HELP</p>
-                <button onClick={onSpecialsClick} className="hover:opacity-80 transition-opacity">
-                  <p>SPECIALS</p>
+              {/* Desktop Categories */}
+              {isDesktop && (
+                <div className="flex absolute left-0 top-1/2 -translate-y-1/2 gap-[40px] items-center font-['Inter',sans-serif] font-medium text-[16px] text-white uppercase tracking-[1.6px]">
+                  <p 
+                    className={`cursor-pointer hover:opacity-80 transition-all relative ${
+                      isMegaMenuOpen ? 'after:absolute after:bottom-[-4px] after:left-0 after:right-0 after:h-[2px] after:bg-white' : ''
+                    }`}
+                    onMouseEnter={handleShopHover}
+                  >
+                    SHOP
+                  </p>
+                  <p 
+                    className="cursor-pointer hover:opacity-80 transition-opacity"
+                    onMouseEnter={handleOtherNavHover}
+                  >
+                    LEARN
+                  </p>
+                  <p 
+                    className="cursor-pointer hover:opacity-80 transition-opacity"
+                    onMouseEnter={handleOtherNavHover}
+                  >
+                    ABOUT
+                  </p>
+                  <p 
+                    className="cursor-pointer hover:opacity-80 transition-opacity"
+                    onMouseEnter={handleOtherNavHover}
+                  >
+                    HELP
+                  </p>
+                  <button 
+                    onClick={onSpecialsClick} 
+                    className="hover:opacity-80 transition-opacity"
+                    onMouseEnter={handleOtherNavHover}
+                  >
+                    <p>SPECIALS</p>
+                  </button>
+                </div>
+              )}
+
+              {/* Logo */}
+              <Logo onClick={onLogoClick} />
+
+              {/* Icons */}
+              <div className={`absolute right-0 top-1/2 -translate-y-1/2 flex items-center ${isDesktop ? 'gap-[30px]' : 'gap-[20px]'}`}>
+                <SearchIcon />
+                {/* Heart icon: hidden on S (mobile), shown on M/L/XL/HD (768px+) */}
+                {!isMobileTablet && <HeartIcon />}
+                {breakpoint === 'M' && <HeartIcon />}
+                
+                {/* User/Account icon with Hi, Name text */}
+                {!isMobileTablet && (
+                  <button 
+                    onClick={onAccountClick} 
+                    className="hover:opacity-80 transition-opacity"
+                  >
+                    <UserIcon />
+                  </button>
+                )}
+                {breakpoint === 'M' && (
+                  <button 
+                    onClick={onAccountClick} 
+                    className="hover:opacity-80 transition-opacity"
+                  >
+                    <UserIcon />
+                  </button>
+                )}
+                
+                <button onClick={onCartClick} className="hover:opacity-80 transition-opacity">
+                  <CartIcon />
                 </button>
               </div>
-            )}
-
-            {/* Logo */}
-            <Logo onClick={onLogoClick} />
-
-            {/* Icons */}
-            <div className={`absolute right-0 top-1/2 -translate-y-1/2 flex items-center ${isDesktop ? 'gap-[30px]' : 'gap-[20px]'}`}>
-              <SearchIcon />
-              {/* Heart and User icons: hidden on S (mobile), shown on M/L/XL/HD (768px+) */}
-              {!isMobileTablet && <HeartIcon />}
-              {!isMobileTablet && <UserIcon />}
-              {breakpoint === 'M' && (
-                <>
-                  <HeartIcon />
-                  <UserIcon />
-                </>
-              )}
-              <button onClick={onCartClick} className="hover:opacity-80 transition-opacity">
-                <CartIcon />
-              </button>
             </div>
           </div>
         </div>
+      </div>
+      
+      {/* Mega Menu */}
+      <div onMouseEnter={handleMegaMenuEnter}>
+        <ShopMegaMenu 
+          isOpen={isMegaMenuOpen && isDesktop}
+          onNavigate={(pathOrCategory) => {
+            console.log('Navigate to:', pathOrCategory);
+            clearTimers();
+            setIsMegaMenuOpen(false);
+            // Handle navigation to collection page with category
+            if (pathOrCategory === 'specials') {
+              onSpecialsClick();
+            } else {
+              // All other paths are category slugs that go to collection page
+              onNavigateToCollection?.(pathOrCategory);
+            }
+          }}
+          onClose={() => {
+            clearTimers();
+            setIsMegaMenuOpen(false);
+          }}
+        />
       </div>
     </div>
   );
