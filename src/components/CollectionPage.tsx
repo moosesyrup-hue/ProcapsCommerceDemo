@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetTitle, SheetDescription } from "./ui/sheet";
 import QuickView from "./QuickView";
 import FilterSidebar from "./FilterSidebar";
 import CollectionBanner from "./CollectionBanner";
+import CategoryCarousel from "./CategoryCarousel";
 import { getCategoryBanner } from "../config/categoryData";
 
 // Icon Components
@@ -304,12 +305,14 @@ export default function CollectionPage({
   cartItems, 
   setCartItems,
   onOpenCart,
-  category = 'digestive-health'
+  category = 'digestive-health',
+  onNavigateToCategory
 }: { 
   cartItems: any[];
   setCartItems: React.Dispatch<React.SetStateAction<any[]>>;
   onOpenCart: () => void;
   category?: string;
+  onNavigateToCategory?: (category: string) => void;
 }) {
   const [filtersVisible, setFiltersVisible] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -410,6 +413,11 @@ export default function CollectionPage({
       <CollectionBanner 
         {...getCategoryBanner(category)}
       />
+      
+      {/* Category Carousel - Only show on "all-products" page */}
+      {category === 'all-products' && onNavigateToCategory && (
+        <CategoryCarousel onNavigateToCategory={onNavigateToCategory} />
+      )}
       
       <Filters 
         filtersVisible={filtersVisible}

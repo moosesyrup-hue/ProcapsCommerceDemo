@@ -210,6 +210,11 @@ export default function App() {
       <MobileMenu 
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
+        onNavigate={(category) => {
+          setSelectedCategory(category);
+          setCurrentPage('collection');
+          setMobileMenuOpen(false);
+        }}
       />
 
       {/* Account Tray */}
@@ -232,6 +237,10 @@ export default function App() {
           setCartItems={setCartItems}
           onOpenCart={() => setCartOpen(true)}
           category={selectedCategory}
+          onNavigateToCategory={(category) => {
+            setSelectedCategory(category);
+            window.scrollTo(0, 0);
+          }}
         />
       ) : currentPage === 'find-supplements' ? (
         <FindMySupplementsPage onClose={handleLogoClick} />

@@ -24,6 +24,16 @@ export interface CategoryBannerConfig {
 }
 
 export const categoryData: Record<string, CategoryBannerConfig> = {
+  // ALL PRODUCTS
+  'all-products': {
+    title: 'All Products',
+    description: 'Explore our complete collection of premium supplements designed to support your health and wellness goals.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
   // PLACEHOLDER: Default fallback for any category not yet configured
   default: {
     title: 'Our Products',

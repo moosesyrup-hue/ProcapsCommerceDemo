@@ -292,7 +292,11 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
                     return (
                       <button
                         key={item.id}
-                        onClick={() => onNavigate?.(item.id)}
+                        onClick={() => {
+                          const path = item.id === 'shop-all' ? 'all-products' : item.id;
+                          onNavigate?.(path);
+                          onClose?.();
+                        }}
                         className="flex items-center gap-[12px] w-full px-[12px] py-[10px] text-left rounded-[8px] hover:bg-[#EBF6F4] transition-all duration-200 group"
                       >
                         <IconComponent className="w-[16px] h-[16px] text-[#003b3c] group-hover:text-[#009296] transition-colors" />

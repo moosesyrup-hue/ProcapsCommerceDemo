@@ -7,6 +7,7 @@ import svgPathsL3 from "../imports/svg-cjnntmumc9";
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
+  onNavigate?: (category: string) => void;
 }
 
 type MenuLevel = 'main' | 'shop';
@@ -198,7 +199,7 @@ const itemVariants = {
   })
 };
 
-export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+export default function MobileMenu({ isOpen, onClose, onNavigate }: MobileMenuProps) {
   const [menuLevel, setMenuLevel] = useState<MenuLevel>('main');
   const [expandedSection, setExpandedSection] = useState<ExpandedSection>(null);
 
@@ -400,7 +401,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                             <div className="box-border content-stretch flex flex-col gap-[10px] items-center justify-center pb-[30px] pt-[10px] px-0 relative shrink-0 w-full">
                               <div className="font-['Inter:Regular',sans-serif] font-normal leading-[2] not-italic relative shrink-0 text-[#003b3c] text-[16px] w-full">
                                 {categories.map((category, index) => (
-                                  <p key={index} className="mb-0 cursor-pointer hover:opacity-70 transition-opacity">{category}</p>
+                                  <p key={index} className="mb-0 cursor-pointer hover:opacity-70 transition-opacity" onClick={() => onNavigate?.(category)}>{category}</p>
                                 ))}
                               </div>
                             </div>
@@ -538,6 +539,10 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                       animate="visible"
                       variants={itemVariants}
                       className="content-stretch flex items-center justify-between w-full cursor-pointer"
+                      onClick={() => {
+                        onNavigate?.('all-products');
+                        handleClose();
+                      }}
                     >
                       <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.4] not-italic text-[#003b3c] text-[24px] text-nowrap tracking-[-0.48px] whitespace-pre">Shop All Products</p>
                     </motion.div>
