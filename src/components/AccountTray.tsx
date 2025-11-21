@@ -50,18 +50,8 @@ export default function AccountTray({
   const DEMO_REGISTERED_EMAIL = 'demo@andrewlessman.com';
   const DEMO_PASSWORD = 'password123';
 
-  // Reset form when tray closes
+  // Handle close - just calls onClose, form reset happens in useEffect
   const handleClose = () => {
-    setEmail('');
-    setEmailSubmitted(false);
-    setIsRegisteredEmail(false);
-    setPassword('');
-    setLoginError('');
-    setSignupPassword('');
-    setConfirmPassword('');
-    setSignupError('');
-    setMarketingOptIn(false);
-    setShowCelebration(false);
     onClose();
   };
 
@@ -160,7 +150,42 @@ export default function AccountTray({
     }
   }, [showCelebration]);
 
-  if (!isOpen) return null;
+  // Handle Escape key to close tray
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscapeKey);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [isOpen, onClose]);
+
+  // Reset form when tray closes (after animation completes)
+  useEffect(() => {
+    if (!isOpen) {
+      // Small delay to let the exit animation complete
+      const timer = setTimeout(() => {
+        setEmail('');
+        setEmailSubmitted(false);
+        setIsRegisteredEmail(false);
+        setPassword('');
+        setLoginError('');
+        setSignupPassword('');
+        setConfirmPassword('');
+        setSignupError('');
+        setMarketingOptIn(false);
+        setShowCelebration(false);
+      }, 300); // Matches the exit animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
 
   return (
     <AnimatePresence>

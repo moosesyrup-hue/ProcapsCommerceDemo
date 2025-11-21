@@ -103,7 +103,16 @@ function Filters({ filtersVisible, onToggleFilters, activeFilterCount }: { filte
 }
 
 // Product Card Component
-function ProductCard({ hasImage = true, onQuickView }: { hasImage?: boolean; onQuickView?: () => void }) {
+function ProductCard({ hasImage = true, onQuickView, headline }: { hasImage?: boolean; onQuickView?: () => void; headline?: React.ReactNode }) {
+  // Default headline
+  const defaultHeadline = (
+    <>
+      <span>An </span>
+      <span className="font-['STIX_Two_Text:Italic',sans-serif] italic text-[#009296]">Unparalleled </span>
+      Natural Source of Fiber
+    </>
+  );
+
   return (
     <div className="basis-0 bg-[#F6F2EC] grow h-full rounded-[10px] flex flex-col">
       <div className="box-border flex flex-col items-center justify-between pb-[10px] md:pb-[20px] pt-[30px] md:pt-[40px] px-[10px] md:px-[20px] hd:px-[20px] h-full">
@@ -125,9 +134,7 @@ function ProductCard({ hasImage = true, onQuickView }: { hasImage?: boolean; onQ
             
             {/* Headline */}
             <p className="product-headline font-['STIX_Two_Text:Regular',sans-serif] leading-[1.2] text-[#003b3c] text-center tracking-[-0.4px] xxl:tracking-[-0.44px] hd:tracking-[-0.56px]">
-              <span>An </span>
-              <span className="font-['STIX_Two_Text:Italic',sans-serif] italic text-[#009296]">Unparalleled </span>
-              Natural Source of Fiber
+              {headline ? headline : defaultHeadline}
             </p>
           </div>
         </div>
@@ -194,6 +201,18 @@ function ProductGrid({ filtersVisible, onQuickView }: { filtersVisible: boolean;
   // Desktop: Show 3 columns when filters visible, 4 when hidden
   const desktopColumns = filtersVisible ? 3 : 4;
 
+  // Custom headline for 2nd card (index 1)
+  const getHeadline = (index: number) => {
+    if (index === 1) {
+      return (
+        <>
+          Here is an Example of a Long Headline (Flexbox automatically adjust the height of all cards in row to match tallest card)
+        </>
+      );
+    }
+    return undefined; // Use default headline
+  };
+
   return (
     <div className="relative shrink-0 w-full">
       <div className={`box-border flex flex-col gap-[20px] items-start p-[20px] md:px-[40px] md:pt-[40px] md:pb-0 ${
@@ -203,7 +222,7 @@ function ProductGrid({ filtersVisible, onQuickView }: { filtersVisible: boolean;
         <div className="grid grid-cols-2 gap-x-[10px] gap-y-[20px] md:gap-[20px] w-full lg:hidden">
           {products.map((product, i) => (
             <div key={i} className="flex flex-col gap-[20px]">
-              <ProductCard hasImage={product.hasImage} onQuickView={onQuickView} />
+              <ProductCard hasImage={product.hasImage} onQuickView={onQuickView} headline={getHeadline(i)} />
               {/* Product Info */}
               <div className="box-border flex flex-col gap-[20px] items-start pr-[20px] text-[#003b3c]">
                 <div className="flex flex-col gap-[10px] items-start leading-[1.4] text-[16px] w-full">
@@ -225,7 +244,7 @@ function ProductGrid({ filtersVisible, onQuickView }: { filtersVisible: boolean;
           <div className="flex gap-[20px] items-center min-h-[425px] xl:min-h-[500px] w-full mb-[20px]">
             {products.slice(0, desktopColumns).map((product, i) => (
               <div key={i} className="basis-0 grow self-stretch">
-                <ProductCard hasImage={product.hasImage} onQuickView={onQuickView} />
+                <ProductCard hasImage={product.hasImage} onQuickView={onQuickView} headline={getHeadline(i)} />
               </div>
             ))}
           </div>
@@ -252,7 +271,7 @@ function ProductGrid({ filtersVisible, onQuickView }: { filtersVisible: boolean;
           <div className="flex gap-[20px] items-center min-h-[425px] xl:min-h-[500px] w-full mb-[20px]">
             {products.slice(desktopColumns, desktopColumns * 2).map((product, i) => (
               <div key={i} className="basis-0 grow self-stretch">
-                <ProductCard hasImage={product.hasImage} onQuickView={onQuickView} />
+                <ProductCard hasImage={product.hasImage} onQuickView={onQuickView} headline={getHeadline(i + desktopColumns)} />
               </div>
             ))}
           </div>
