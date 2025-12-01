@@ -252,12 +252,15 @@ html {
 
 .filter-sidebar-scroll::-webkit-scrollbar-track {
   background: transparent;
-  margin: 10px 0;
 }
 
 .filter-sidebar-scroll::-webkit-scrollbar-thumb {
-  background: transparent;
-  border-radius: 999px;
+  background: #D9E2E2;
+  border-radius: 3px;
+}
+
+.filter-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #C2CFCF;
 }
 
 /* Custom checkbox styling for checkout page */
@@ -332,7 +335,7 @@ html {
   outline: none;
 }
 
-/* Hide scrollbar for category carousel */
+/* Hide scrollbar utility */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }

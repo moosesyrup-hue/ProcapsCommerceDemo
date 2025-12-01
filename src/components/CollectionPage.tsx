@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { X, Plus, Minus } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import svgPaths from "../imports/svg-vsxzdz3mbf";
 import imgImage from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png";
 import { Checkbox } from "./ui/checkbox";
@@ -325,6 +326,9 @@ export default function CollectionPage({
     alphabet: undefined as string | undefined,
   });
 
+  // Special type for specials page
+  const [activeSpecialType, setActiveSpecialType] = useState<'all' | 'todays-specials' | 'monthly-specials' | 'winter-specials'>('all');
+
   // Sample product data for QuickView
   const fibermucilProduct = {
     id: 'fibermucil-001',
@@ -394,6 +398,11 @@ export default function CollectionPage({
     filters.benefits.length +
     (filters.alphabet ? 1 : 0);
 
+  // Determine the banner category based on active special type
+  const bannerCategory = category === 'specials' 
+    ? (activeSpecialType === 'all' ? 'specials' : activeSpecialType)
+    : category;
+
   return (
     <>
       {/* Quick View Sheet */}
@@ -410,9 +419,77 @@ export default function CollectionPage({
         </SheetContent>
       </Sheet>
       
+      {/* Collection Banner - Shows for all categories including specials */}
       <CollectionBanner 
-        {...getCategoryBanner(category)}
+        {...getCategoryBanner(bannerCategory)}
       />
+      
+      {/* Specials Tabs - Only show on specials page */}
+      {category === 'specials' && (
+        <div className="relative shrink-0 w-full border-b border-[#D9E2E2]">
+          <div className="box-border flex gap-[10px] md:gap-[20px] items-center px-[20px] md:px-[40px] pt-[20px] pb-0 overflow-x-auto">
+            <button
+              onClick={() => setActiveSpecialType('all')}
+              className={`px-[20px] py-[12px] rounded-t-[8px] transition-all whitespace-nowrap ${
+                activeSpecialType === 'all'
+                  ? 'bg-white border-t-2 border-x-2 border-[#009296] font-medium'
+                  : 'bg-transparent hover:bg-[#F6F2EC]'
+              }`}
+            >
+              <span className={`font-['Inter',sans-serif] text-[14px] md:text-[16px] ${
+                activeSpecialType === 'all' ? 'text-[#009296]' : 'text-[#003b3c]'
+              }`}>
+                All Specials
+              </span>
+            </button>
+            
+            <button
+              onClick={() => setActiveSpecialType('todays-specials')}
+              className={`px-[20px] py-[12px] rounded-t-[8px] transition-all whitespace-nowrap ${
+                activeSpecialType === 'todays-specials'
+                  ? 'bg-white border-t-2 border-x-2 border-[#009296] font-medium'
+                  : 'bg-transparent hover:bg-[#F6F2EC]'
+              }`}
+            >
+              <span className={`font-['Inter',sans-serif] text-[14px] md:text-[16px] ${
+                activeSpecialType === 'todays-specials' ? 'text-[#009296]' : 'text-[#003b3c]'
+              }`}>
+                Today's Specials
+              </span>
+            </button>
+            
+            <button
+              onClick={() => setActiveSpecialType('monthly-specials')}
+              className={`px-[20px] py-[12px] rounded-t-[8px] transition-all whitespace-nowrap ${
+                activeSpecialType === 'monthly-specials'
+                  ? 'bg-white border-t-2 border-x-2 border-[#009296] font-medium'
+                  : 'bg-transparent hover:bg-[#F6F2EC]'
+              }`}
+            >
+              <span className={`font-['Inter',sans-serif] text-[14px] md:text-[16px] ${
+                activeSpecialType === 'monthly-specials' ? 'text-[#009296]' : 'text-[#003b3c]'
+              }`}>
+                Monthly Specials
+              </span>
+            </button>
+            
+            <button
+              onClick={() => setActiveSpecialType('winter-specials')}
+              className={`px-[20px] py-[12px] rounded-t-[8px] transition-all whitespace-nowrap ${
+                activeSpecialType === 'winter-specials'
+                  ? 'bg-white border-t-2 border-x-2 border-[#009296] font-medium'
+                  : 'bg-transparent hover:bg-[#F6F2EC]'
+              }`}
+            >
+              <span className={`font-['Inter',sans-serif] text-[14px] md:text-[16px] ${
+                activeSpecialType === 'winter-specials' ? 'text-[#009296]' : 'text-[#003b3c]'
+              }`}>
+                Winter Specials
+              </span>
+            </button>
+          </div>
+        </div>
+      )}
       
       {/* Category Carousel - Only show on "all-products" page */}
       {category === 'all-products' && onNavigateToCategory && (

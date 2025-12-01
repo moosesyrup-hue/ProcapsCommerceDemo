@@ -1902,6 +1902,11 @@
     border-radius: var(--radius-xs);
   }
 
+  .rounded-t-\[8px\] {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
   .rounded-tl-sm {
     border-top-left-radius: calc(var(--radius)  - 4px);
   }
@@ -1926,9 +1931,19 @@
     border-width: 3px;
   }
 
+  .border-x-2 {
+    border-inline-style: var(--tw-border-style);
+    border-inline-width: 2px;
+  }
+
   .border-t {
     border-top-style: var(--tw-border-style);
     border-top-width: 1px;
+  }
+
+  .border-t-2 {
+    border-top-style: var(--tw-border-style);
+    border-top-width: 2px;
   }
 
   .border-r {
@@ -4505,6 +4520,12 @@
   }
 
   @media (width >= 48rem) {
+    .md\:text-\[16px\] {
+      font-size: 16px;
+    }
+  }
+
+  @media (width >= 48rem) {
     .md\:text-\[38px\] {
       font-size: 38px;
     }
@@ -4997,12 +5018,15 @@ html {
 
 .filter-sidebar-scroll::-webkit-scrollbar-track {
   background: none;
-  margin: 10px 0;
 }
 
 .filter-sidebar-scroll::-webkit-scrollbar-thumb {
-  background: none;
-  border-radius: 999px;
+  background: #d9e2e2;
+  border-radius: 3px;
+}
+
+.filter-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #c2cfcf;
 }
 
 .custom-checkout-checkbox {

@@ -54,6 +54,36 @@ export const categoryData: Record<string, CategoryBannerConfig> = {
     svgFillColor: '#B9B1A8',
   },
 
+  // Today's Specials
+  'todays-specials': {
+    title: "Today's Specials",
+    description: 'Limited time offers available today only. Don\'t miss out on these incredible deals!',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  // Monthly Specials
+  'monthly-specials': {
+    title: 'Monthly Specials',
+    description: 'Exceptional values on our most popular supplements, available all month long.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  // Winter Specials
+  'winter-specials': {
+    title: 'Winter Specials',
+    description: 'Seasonal favorites to support your health through the winter months.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
   // DIGESTIVE HEALTH - Currently configured
   'digestive-health': {
     title: 'Digestive health',
