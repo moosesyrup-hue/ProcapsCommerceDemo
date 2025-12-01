@@ -32,7 +32,8 @@ export default function App() {
   
   // Demo registered user credentials
   const DEMO_REGISTERED_EMAIL = 'demo@andrewlessman.com';
-  const DEMO_PASSWORD = 'password123';
+  const DEMO_PASSWORD = 'password123'; // Legacy - kept for backward compatibility
+  const DEMO_VERIFICATION_CODE = '123456'; // Passwordless verification code
   
   // Order confirmation data (set when order is placed)
   const [orderData, setOrderData] = useState<{
@@ -158,8 +159,9 @@ export default function App() {
 
   // Account handlers
   const handleLogin = (email: string, password: string): boolean => {
-    // Check credentials
-    if (email.toLowerCase() === DEMO_REGISTERED_EMAIL.toLowerCase() && password === DEMO_PASSWORD) {
+    // Check credentials - support both legacy password and verification code
+    if (email.toLowerCase() === DEMO_REGISTERED_EMAIL.toLowerCase() && 
+        (password === DEMO_PASSWORD || password === DEMO_VERIFICATION_CODE || password === 'verified')) {
       setIsLoggedIn(true);
       setUserData({
         firstName: 'Andrew',

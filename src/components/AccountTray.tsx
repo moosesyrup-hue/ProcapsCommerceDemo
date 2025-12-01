@@ -30,25 +30,19 @@ export default function AccountTray({
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [isRegisteredEmail, setIsRegisteredEmail] = useState(false);
   
-  // Login state
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  // Verification code state
+  const [verificationCode, setVerificationCode] = useState('');
+  const [codeSent, setCodeSent] = useState(false);
+  const [isSendingCode, setIsSendingCode] = useState(false);
+  const [isVerifyingCode, setIsVerifyingCode] = useState(false);
   const [loginError, setLoginError] = useState('');
-  
-  // Signup state
-  const [signupPassword, setSignupPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showSignupPassword, setShowSignupPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [signupError, setSignupError] = useState('');
-  const [marketingOptIn, setMarketingOptIn] = useState(false);
   
   // Celebration state
   const [showCelebration, setShowCelebration] = useState(false);
 
   // Demo registered user
   const DEMO_REGISTERED_EMAIL = 'demo@andrewlessman.com';
-  const DEMO_PASSWORD = 'password123';
+  const DEMO_VERIFICATION_CODE = '123456';
 
   // Handle close - just calls onClose, form reset happens in useEffect
   const handleClose = () => {
@@ -69,75 +63,113 @@ export default function AccountTray({
     // Check if email is registered
     if (trimmedEmail === DEMO_REGISTERED_EMAIL.toLowerCase()) {
       setIsRegisteredEmail(true);
+      setEmailSubmitted(true);
+      setLoginError('');
+      
+      // Automatically send verification code for registered users
+      setIsSendingCode(true);
+      setTimeout(() => {
+        setCodeSent(true);
+        setIsSendingCode(false);
+      }, 800);
     } else {
       setIsRegisteredEmail(false);
+      setEmailSubmitted(true);
+      setLoginError('');
+      
+      // Automatically send verification code for new users too
+      setIsSendingCode(true);
+      setTimeout(() => {
+        setCodeSent(true);
+        setIsSendingCode(false);
+      }, 800);
     }
-    
-    setEmailSubmitted(true);
-    setLoginError('');
   };
 
-  // Handle login
-  const handleLogin = (e: React.FormEvent) => {
+  // Handle sending verification code (for resending)
+  const handleSendCode = () => {
+    setIsSendingCode(true);
+    setLoginError('');
+    
+    setTimeout(() => {
+      setCodeSent(true);
+      setIsSendingCode(false);
+    }, 800);
+  };
+
+  // Handle verifying login code
+  const handleVerifyCode = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const success = onLogin(email, password);
-    
-    if (!success) {
-      setLoginError('Incorrect password. Please try again.');
-    } else {
-      // Reset form state but keep tray open to show logged-in menu
-      setEmail('');
-      setEmailSubmitted(false);
-      setIsRegisteredEmail(false);
-      setPassword('');
-      setLoginError('');
+    if (verificationCode !== DEMO_VERIFICATION_CODE) {
+      setLoginError('Invalid verification code. Try 123456 for demo.');
+      return;
     }
+    
+    setIsVerifyingCode(true);
+    
+    // Simulate verification
+    setTimeout(() => {
+      setIsVerifyingCode(false);
+      
+      // Call the onLogin function with email (password param is legacy, not used)
+      const loginSuccess = onLogin(email, 'verified');
+      
+      if (loginSuccess) {
+        // Only reset form state if login was successful
+        setEmail('');
+        setEmailSubmitted(false);
+        setIsRegisteredEmail(false);
+        setVerificationCode('');
+        setCodeSent(false);
+        setLoginError('');
+      } else {
+        setLoginError('Login failed. Please try again.');
+      }
+    }, 800);
   };
 
   // Handle signup
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
-    setSignupError('');
+    setLoginError('');
 
-    // Validation
-    if (!signupPassword || !confirmPassword) {
-      setSignupError('Please fill in all fields');
+    // Validate verification code
+    if (verificationCode !== DEMO_VERIFICATION_CODE) {
+      setLoginError('Invalid verification code. Try 123456 for demo.');
       return;
     }
 
-    if (signupPassword !== confirmPassword) {
-      setSignupError('Passwords do not match');
-      return;
-    }
+    setIsVerifyingCode(true);
 
-    onSignup({
-      firstName: '',
-      lastName: '',
-      email: email.trim(),
-      password: signupPassword,
-      marketingOptIn: marketingOptIn
-    });
+    // Simulate verification
+    setTimeout(() => {
+      setIsVerifyingCode(false);
+      
+      onSignup({
+        firstName: '',
+        lastName: '',
+        email: email.trim(),
+        password: verificationCode,
+        marketingOptIn: false
+      });
 
-    // Reset form state but keep tray open to show logged-in menu
-    setEmail('');
-    setEmailSubmitted(false);
-    setIsRegisteredEmail(false);
-    setSignupPassword('');
-    setConfirmPassword('');
-    setSignupError('');
-    setMarketingOptIn(false);
-    setShowCelebration(true);
+      // Reset form state but keep tray open to show celebration
+      setEmail('');
+      setEmailSubmitted(false);
+      setIsRegisteredEmail(false);
+      setVerificationCode('');
+      setLoginError('');
+      setShowCelebration(true);
+    }, 800);
   };
 
   // Handle back to email entry
   const handleBack = () => {
     setEmailSubmitted(false);
-    setPassword('');
+    setVerificationCode('');
+    setCodeSent(false);
     setLoginError('');
-    setSignupPassword('');
-    setConfirmPassword('');
-    setSignupError('');
   };
 
   // Auto-transition from celebration to logged-in state
@@ -175,12 +207,8 @@ export default function AccountTray({
         setEmail('');
         setEmailSubmitted(false);
         setIsRegisteredEmail(false);
-        setPassword('');
+        setVerificationCode('');
         setLoginError('');
-        setSignupPassword('');
-        setConfirmPassword('');
-        setSignupError('');
-        setMarketingOptIn(false);
         setShowCelebration(false);
       }, 300); // Matches the exit animation duration
       return () => clearTimeout(timer);
@@ -590,258 +618,181 @@ export default function AccountTray({
                   </button>
                 </div>
               ) : isRegisteredEmail ? (
-                /* Login Form - Registered Email */
+                /* Login Form - Registered Email with Verification Code */
                 <div>
                   {/* Headline */}
                   <h2 className="font-['STIX_Two_Text',sans-serif] text-[28px] text-[#003b3c] mb-[8px]" style={{ fontWeight: 500 }}>
-                    Enter password
+                    {codeSent ? 'Enter verification code' : 'Sending code...'}
                   </h2>
                   
                   {/* Instruction text */}
                   <p className="font-['Inter',sans-serif] text-[16px] text-[#406c6d] mb-[32px]">
-                    Welcome back! Enter your password to log in.
+                    {codeSent ? (
+                      <>
+                        We've sent a 6-digit code to <span className="font-medium text-[#003b3c]">{email}</span>. 
+                        Check your email and enter the code below.
+                      </>
+                    ) : (
+                      'Sending verification code to your email...'
+                    )}
                   </p>
 
-                  <form onSubmit={handleLogin}>
-                    {/* Email (read-only) */}
-                    <div className="mb-[16px]">
-                      <div className="relative">
-                        <input
-                          type="email"
-                          value={email}
-                          disabled
-                          className="w-full py-[18px] px-[16px] border rounded-[8px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#003b3c] focus:outline-none transition-colors bg-[#F5F9F9] border-[#D9E2E2]"
-                        />
-                        <label className="absolute left-[12px] top-[-8px] px-[4px] bg-white font-['Inter',sans-serif] text-[12px] text-[#406c6d] pointer-events-none">
-                          Email
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Password */}
-                    <div className="mb-[8px]">
-                      <div className="relative">
-                        <input
-                          type={showPassword ? 'text' : 'password'}
-                          value={password}
-                          onChange={(e) => {
-                            setPassword(e.target.value);
-                            setLoginError('');
-                          }}
-                          className={`w-full py-[18px] px-[16px] pr-[48px] border rounded-[8px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#003b3c] focus:outline-none transition-colors placeholder:text-transparent ${
-                            loginError
-                              ? 'border-[#D84315] hover:border-[#D84315] focus:border-[#D84315]'
-                              : 'border-[#D9E2E2] hover:border-[#003b3c] focus:border-[#003b3c]'
-                          }`}
-                          placeholder="Password"
-                          autoFocus
-                        />
-                        {/* Floating label */}
-                        {password.length > 0 && (
-                          <label className={`absolute left-[12px] top-[-8px] px-[4px] bg-white font-['Inter',sans-serif] text-[12px] pointer-events-none ${
-                            loginError ? 'text-[#D84315]' : 'text-[#406c6d]'
-                          }`}>
-                            Password
-                          </label>
-                        )}
-                        {/* Placeholder label */}
-                        {password.length === 0 && (
-                          <label className="absolute left-[16px] top-[18px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#406c6d] pointer-events-none">
-                            Password
-                          </label>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-[16px] top-1/2 -translate-y-1/2 text-[#406c6d] hover:text-[#003b3c] transition-colors"
-                        >
-                          {showPassword ? (
-                            <EyeOff className="w-[20px] h-[20px]" />
-                          ) : (
-                            <Eye className="w-[20px] h-[20px]" />
-                          )}
-                        </button>
-                      </div>
-                      {loginError && (
-                        <p className="font-['Inter',sans-serif] text-[12px] text-[#D84315] mt-[8px]">
-                          {loginError}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Forgot Password */}
-                    <button
-                      type="button"
-                      className="font-['Inter',sans-serif] text-[14px] text-[#009296] hover:text-[#007d81] transition-colors mb-[24px]"
-                    >
-                      Forgot Password?
-                    </button>
-
-                    <button
-                      type="submit"
-                      className="bg-[#009296] hover:bg-[#007d81] transition-colors h-[50px] rounded-[999px] w-full"
-                    >
-                      <span className="font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase">
-                        Log In
-                      </span>
-                    </button>
-                  </form>
-                </div>
-              ) : (
-                /* Signup Form - New Email */
-                <div>
-                  {/* Headline */}
-                  <h2 className="font-['STIX_Two_Text',sans-serif] text-[28px] text-[#003b3c] mb-[8px]" style={{ fontWeight: 500 }}>
-                    Enter password
-                  </h2>
-                  
-                  {/* Instruction text */}
-                  <p className="font-['Inter',sans-serif] text-[16px] text-[#406c6d] mb-[32px]">
-                    Create a password for your account.
-                  </p>
-
-                  <form onSubmit={handleSignup}>
-                    {/* Email (read-only) */}
-                    <div className="mb-[16px]">
-                      <div className="relative">
-                        <input
-                          type="email"
-                          value={email}
-                          disabled
-                          className="w-full py-[18px] px-[16px] border rounded-[8px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#003b3c] focus:outline-none transition-colors bg-[#F5F9F9] border-[#D9E2E2]"
-                        />
-                        <label className="absolute left-[12px] top-[-8px] px-[4px] bg-white font-['Inter',sans-serif] text-[12px] text-[#406c6d] pointer-events-none">
-                          Email
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Password */}
-                    <div className="mb-[16px]">
-                      <div className="relative">
-                        <input
-                          type={showSignupPassword ? 'text' : 'password'}
-                          value={signupPassword}
-                          onChange={(e) => {
-                            setSignupPassword(e.target.value);
-                            setSignupError('');
-                          }}
-                          className="w-full py-[18px] px-[16px] pr-[48px] border rounded-[8px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#003b3c] focus:outline-none transition-colors placeholder:text-transparent border-[#D9E2E2] hover:border-[#003b3c] focus:border-[#003b3c]"
-                          placeholder="Password"
-                          autoFocus
-                        />
-                        {/* Floating label */}
-                        {signupPassword.length > 0 && (
-                          <label className="absolute left-[12px] top-[-8px] px-[4px] bg-white font-['Inter',sans-serif] text-[12px] text-[#406c6d] pointer-events-none">
-                            Password
-                          </label>
-                        )}
-                        {/* Placeholder label */}
-                        {signupPassword.length === 0 && (
-                          <label className="absolute left-[16px] top-[18px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#406c6d] pointer-events-none">
-                            Password
-                          </label>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => setShowSignupPassword(!showSignupPassword)}
-                          className="absolute right-[16px] top-1/2 -translate-y-1/2 text-[#406c6d] hover:text-[#003b3c] transition-colors"
-                        >
-                          {showSignupPassword ? (
-                            <EyeOff className="w-[20px] h-[20px]" />
-                          ) : (
-                            <Eye className="w-[20px] h-[20px]" />
-                          )}
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Confirm Password */}
-                    <div className="mb-[24px]">
-                      <div className="relative">
-                        <input
-                          type={showConfirmPassword ? 'text' : 'password'}
-                          value={confirmPassword}
-                          onChange={(e) => {
-                            setConfirmPassword(e.target.value);
-                            setSignupError('');
-                          }}
-                          className="w-full py-[18px] px-[16px] pr-[48px] border rounded-[8px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#003b3c] focus:outline-none transition-colors placeholder:text-transparent border-[#D9E2E2] hover:border-[#003b3c] focus:border-[#003b3c]"
-                          placeholder="Confirm Password"
-                        />
-                        {/* Floating label */}
-                        {confirmPassword.length > 0 && (
-                          <label className="absolute left-[12px] top-[-8px] px-[4px] bg-white font-['Inter',sans-serif] text-[12px] text-[#406c6d] pointer-events-none">
-                            Confirm Password
-                          </label>
-                        )}
-                        {/* Placeholder label */}
-                        {confirmPassword.length === 0 && (
-                          <label className="absolute left-[16px] top-[18px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#406c6d] pointer-events-none">
-                            Confirm Password
-                          </label>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          className="absolute right-[16px] top-1/2 -translate-y-1/2 text-[#406c6d] hover:text-[#003b3c] transition-colors"
-                        >
-                          {showConfirmPassword ? (
-                            <EyeOff className="w-[20px] h-[20px]" />
-                          ) : (
-                            <Eye className="w-[20px] h-[20px]" />
-                          )}
-                        </button>
-                      </div>
-                      {signupError && (
-                        <p className="font-['Inter',sans-serif] text-[12px] text-[#D84315] mt-[8px]">
-                          {signupError}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Marketing Opt-In */}
-                    <div className="mb-[24px]">
-                      <label className="flex items-start gap-[12px] cursor-pointer">
-                        <div className="relative mt-[2px] w-[18px] h-[18px]">
+                  {codeSent && (
+                    <form onSubmit={handleVerifyCode}>
+                      {/* Verification Code */}
+                      <div className="mb-[8px]">
+                        <div className="relative">
                           <input
-                            type="checkbox"
-                            checked={marketingOptIn}
-                            onChange={(e) => setMarketingOptIn(e.target.checked)}
-                            className="w-full h-full bg-white border border-[#003b3c] cursor-pointer appearance-none checked:bg-[#009296] checked:border-[#009296]"
+                            type="text"
+                            value={verificationCode}
+                            onChange={(e) => {
+                              // Only allow numbers, max 6 digits
+                              const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+                              setVerificationCode(value);
+                              setLoginError('');
+                            }}
+                            className={`w-full py-[18px] px-[16px] border rounded-[8px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#003b3c] focus:outline-none transition-colors placeholder:text-transparent ${
+                              loginError
+                                ? 'border-[#D84315] hover:border-[#D84315] focus:border-[#D84315]'
+                                : 'border-[#D9E2E2] hover:border-[#003b3c] focus:border-[#003b3c]'
+                            }`}
+                            placeholder="Verification code"
+                            maxLength={6}
+                            autoComplete="one-time-code"
+                            autoFocus
                           />
-                          {marketingOptIn && (
-                            <svg
-                              className="absolute top-0 left-0 w-full h-full pointer-events-none"
-                              viewBox="0 0 18 18"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M4 9L7.5 12.5L14 6"
-                                stroke="white"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
+                          {/* Floating label */}
+                          {verificationCode.length > 0 && (
+                            <label className={`absolute left-[12px] top-[-8px] px-[4px] bg-white font-['Inter',sans-serif] text-[12px] pointer-events-none ${
+                              loginError ? 'text-[#D84315]' : 'text-[#406c6d]'
+                            }`}>
+                              Verification code
+                            </label>
+                          )}
+                          {/* Placeholder label */}
+                          {verificationCode.length === 0 && (
+                            <label className="absolute left-[16px] top-[18px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#406c6d] pointer-events-none">
+                              Verification code
+                            </label>
                           )}
                         </div>
-                        <span className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] leading-[1.5]">
-                          Stay in the loop, with exclusive offers and product previews.
-                        </span>
-                      </label>
-                    </div>
+                        {loginError && (
+                          <p className="font-['Inter',sans-serif] text-[12px] text-[#D84315] mt-[8px]">
+                            {loginError}
+                          </p>
+                        )}
+                      </div>
 
-                    <button
-                      type="submit"
-                      className="bg-[#009296] hover:bg-[#007d81] transition-colors h-[50px] rounded-[999px] w-full"
-                    >
-                      <span className="font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase">
-                        Create Account
-                      </span>
-                    </button>
-                  </form>
+                      {/* Resend Code Link */}
+                      <button
+                        type="button"
+                        onClick={handleSendCode}
+                        disabled={isSendingCode}
+                        className="font-['Inter',sans-serif] text-[14px] text-[#009296] hover:text-[#007d81] transition-colors mb-[24px] disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isSendingCode ? 'Sending...' : 'Resend Code'}
+                      </button>
+
+                      <button
+                        type="submit"
+                        disabled={isVerifyingCode || verificationCode.length !== 6}
+                        className="bg-[#009296] hover:bg-[#007d81] transition-colors h-[50px] rounded-[999px] w-full disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#009296]"
+                      >
+                        <span className="font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase">
+                          {isVerifyingCode ? 'Verifying...' : 'Verify Code'}
+                        </span>
+                      </button>
+                    </form>
+                  )}
+                </div>
+              ) : (
+                /* New Email - Not Registered - Create Account */
+                <div>
+                  {/* Headline */}
+                  <h2 className="font-['STIX_Two_Text',sans-serif] text-[28px] text-[#003b3c] mb-[8px]" style={{ fontWeight: 500 }}>
+                    {codeSent ? 'Enter verification code' : 'Sending code...'}
+                  </h2>
+                  
+                  {/* Instruction text */}
+                  <p className="font-['Inter',sans-serif] text-[16px] text-[#406c6d] mb-[32px]">
+                    {codeSent ? (
+                      <>
+                        We've sent a 6-digit code to <span className="font-medium text-[#003b3c]">{email}</span>. 
+                        Enter the code below to create your account.
+                      </>
+                    ) : (
+                      'Sending verification code to your email...'
+                    )}
+                  </p>
+
+                  {codeSent && (
+                    /* Show verification code form */
+                    <form onSubmit={handleSignup}>
+                      {/* Verification Code */}
+                      <div className="mb-[8px]">
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={verificationCode}
+                            onChange={(e) => {
+                              // Only allow numbers, max 6 digits
+                              const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+                              setVerificationCode(value);
+                              setLoginError('');
+                            }}
+                            className={`w-full py-[18px] px-[16px] border rounded-[8px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#003b3c] focus:outline-none transition-colors placeholder:text-transparent ${
+                              loginError
+                                ? 'border-[#D84315] hover:border-[#D84315] focus:border-[#D84315]'
+                                : 'border-[#D9E2E2] hover:border-[#003b3c] focus:border-[#003b3c]'
+                            }`}
+                            placeholder="Verification code"
+                            maxLength={6}
+                            autoComplete="one-time-code"
+                            autoFocus
+                          />
+                          {/* Floating label */}
+                          {verificationCode.length > 0 && (
+                            <label className={`absolute left-[12px] top-[-8px] px-[4px] bg-white font-['Inter',sans-serif] text-[12px] pointer-events-none ${
+                              loginError ? 'text-[#D84315]' : 'text-[#406c6d]'
+                            }`}>
+                              Verification code
+                            </label>
+                          )}
+                          {/* Placeholder label */}
+                          {verificationCode.length === 0 && (
+                            <label className="absolute left-[16px] top-[18px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#406c6d] pointer-events-none">
+                              Verification code
+                            </label>
+                          )}
+                        </div>
+                        {loginError && (
+                          <p className="font-['Inter',sans-serif] text-[12px] text-[#D84315] mt-[8px]">
+                            {loginError}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Resend Code Link */}
+                      <button
+                        type="button"
+                        onClick={handleSendCode}
+                        disabled={isSendingCode}
+                        className="font-['Inter',sans-serif] text-[14px] text-[#009296] hover:text-[#007d81] transition-colors mb-[24px] disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isSendingCode ? 'Sending...' : 'Resend Code'}
+                      </button>
+
+                      <button
+                        type="submit"
+                        disabled={isVerifyingCode || verificationCode.length !== 6}
+                        className="bg-[#009296] hover:bg-[#007d81] transition-colors h-[50px] rounded-[999px] w-full disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#009296]"
+                      >
+                        <span className="font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase">
+                          {isVerifyingCode ? 'Creating...' : 'Create Account'}
+                        </span>
+                      </button>
+                    </form>
+                  )}
                 </div>
               )}
             </div>

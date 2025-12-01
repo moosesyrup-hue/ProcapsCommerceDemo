@@ -1,20 +1,23 @@
 /**
  * Checkout Page Component
- * Best-in-class checkout experience with required account creation
+ * Best-in-class checkout experience with automatic account creation
  * Features:
- * - Returning customers: Clean login flow
- * - New customers: Soft-gate account creation after payment info
- * - Auto-fills shipping/payment for logged-in users
- * - Email recognition: Detects registered emails during checkout
+ * - Code-based authentication (no passwords)
+ * - Upfront login option for existing customers (faster checkout)
+ * - Full form visible immediately for transparency and lower friction
+ * - Frictionless checkout: Order placed immediately on "Place Order" click
+ * - Returning customers: Auto-fill after login
+ * - New customers: Account created automatically after order completion
+ * - Email verification sent AFTER order (for account access, not order placement)
  * 
- * Demo Credentials:
- * - Registered email: demo@andrewlessman.com (password: password123)
- * - New customer: Any other email proceeds normally
- * - Login modal: Any email with password "password123"
+ * Demo Flow:
+ * - Existing customers: Click "Log In" button, enter demo@andrewlessman.com (code: 123456)
+ * - New customer: Any email - order places immediately, verification email sent after
+ * - Code expires in 10 minutes
  */
 
-import { useState } from 'react';
-import { ChevronLeft, Lock, Truck, Shield, Phone, MessageCircle, Check, Eye, EyeOff, Loader2, Headset, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ChevronLeft, Lock, Truck, Shield, Phone, MessageCircle, Check, Loader2, Headset, X, Mail } from 'lucide-react';
 import svgPaths from "../imports/svg-vsxzdz3mbf";
 
 interface CartItem {
@@ -831,6 +834,422 @@ function EditPaymentModal({ payment, onClose, onSave }: EditPaymentModalProps) {
   );
 }
 
+// Email Verification Modal Component
+// Login Modal for Existing Customers
+interface LoginModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onLogin: (email: string) => void;
+}
+
+function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginCode, setLoginCode] = useState('');
+  const [codeSent, setCodeSent] = useState(false);
+  const [codeError, setCodeError] = useState('');
+  const [isSendingCode, setIsSendingCode] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isEmailFocused, setIsEmailFocused] = useState(false);
+  
+  const DEMO_REGISTERED_EMAIL = 'demo@andrewlessman.com';
+  const DEMO_VERIFICATION_CODE = '123456';
+  
+  const handleSendCode = () => {
+    if (!loginEmail) {
+      setCodeError('Please enter your email address');
+      return;
+    }
+    
+    setIsSendingCode(true);
+    setCodeError('');
+    
+    // Simulate sending verification code
+    setTimeout(() => {
+      setCodeSent(true);
+      setIsSendingCode(false);
+    }, 800);
+  };
+  
+  const handleVerifyCode = () => {
+    if (loginCode !== DEMO_VERIFICATION_CODE) {
+      setCodeError('Invalid verification code. Try 123456 for demo.');
+      return;
+    }
+    
+    setIsVerifying(true);
+    
+    // Simulate verification
+    setTimeout(() => {
+      setIsVerifying(false);
+      onLogin(loginEmail);
+      onClose();
+    }, 600);
+  };
+  
+  if (!isOpen) return null;
+  
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-[16px]">
+      <div className="bg-white rounded-[16px] max-w-[480px] w-full p-[32px] relative">
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-[16px] right-[16px] text-[#406c6d] hover:text-[#003b3c] transition-colors"
+          aria-label="Close"
+        >
+          <X className="w-[24px] h-[24px]" />
+        </button>
+
+        {/* Header */}
+        <div className="mb-[24px]">
+          <h2 className="font-['Inter',sans-serif] text-[24px] font-medium text-[#003b3c] mb-[8px]">
+            Welcome Back
+          </h2>
+          <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d]">
+            Log in for a faster checkout with saved addresses and payment methods.
+          </p>
+        </div>
+
+        {isSendingCode ? (
+          <div className="flex flex-col items-center justify-center py-[40px]">
+            <Loader2 className="w-[40px] h-[40px] text-[#009296] animate-spin mb-[16px]" />
+            <p className="font-['Inter',sans-serif] text-[16px] text-[#003b3c]">
+              Sending verification code...
+            </p>
+          </div>
+        ) : !codeSent ? (
+          <div>
+            <div className="mb-[24px]">
+              <label className="font-['Inter',sans-serif] text-[14px] text-[#003b3c] font-medium mb-[8px] block">
+                Email Address
+              </label>
+              <input
+                type="email"
+                value={loginEmail}
+                onChange={(e) => {
+                  setLoginEmail(e.target.value);
+                  setCodeError('');
+                }}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSendCode();
+                  }
+                }}
+                placeholder="you@example.com"
+                className="w-full py-[12px] px-[16px] border border-[#D9E2E2] rounded-[8px] font-['Inter',sans-serif] text-[16px] text-[#003b3c] focus:outline-none focus:border-[#009296]"
+              />
+              {codeError && (
+                <p className="font-['Inter',sans-serif] text-[12px] text-[#D84315] mt-[6px]">
+                  {codeError}
+                </p>
+              )}
+            </div>
+
+            <div className="bg-[#F5F9F9] rounded-[8px] p-[16px] mb-[24px]">
+              <p className="font-['Inter',sans-serif] text-[12px] text-[#406c6d] leading-[1.5]">
+                <strong className="text-[#003b3c]">Demo:</strong> Use <span className="font-mono bg-white px-[4px] py-[1px] rounded">demo@andrewlessman.com</span> to see the logged-in experience with saved addresses and payment methods.
+              </p>
+            </div>
+
+            <button
+              onClick={handleSendCode}
+              className="w-full h-[48px] rounded-[8px] bg-[#009296] hover:bg-[#007d81] transition-colors font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase"
+            >
+              Continue
+            </button>
+
+            <p className="font-['Inter',sans-serif] text-[12px] text-[#406c6d] text-center mt-[16px]">
+              We'll send you a verification code to confirm your email.
+            </p>
+          </div>
+        ) : (
+          <div>
+            <div className="bg-[#E8F5F5] border border-[#009296] rounded-[8px] px-[16px] py-[16px] mb-[24px]">
+              <div className="flex items-start gap-[12px] mb-[16px]">
+                <div className="w-[20px] h-[20px] rounded-full bg-[#009296] flex items-center justify-center flex-shrink-0 mt-[2px]">
+                  <Mail className="w-[12px] h-[12px] text-white" />
+                </div>
+                <div>
+                  <p className="font-['Inter',sans-serif] text-[14px] text-[#003b3c] font-medium mb-[4px]">
+                    Verification code sent
+                  </p>
+                  <p className="font-['Inter',sans-serif] text-[12px] text-[#406c6d]">
+                    We sent a 6-digit code to <strong>{loginEmail}</strong>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mb-[24px]">
+              <label className="font-['Inter',sans-serif] text-[14px] text-[#003b3c] font-medium mb-[8px] block">
+                Verification Code
+              </label>
+              <input
+                type="text"
+                value={loginCode}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, '');
+                  if (value.length <= 6) {
+                    setLoginCode(value);
+                    setCodeError('');
+                  }
+                }}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && loginCode.length === 6) {
+                    handleVerifyCode();
+                  }
+                }}
+                placeholder="123456"
+                maxLength={6}
+                className="w-full py-[12px] px-[16px] border border-[#D9E2E2] rounded-[8px] font-['Inter',sans-serif] text-[24px] tracking-[8px] text-center text-[#003b3c] focus:outline-none focus:border-[#009296]"
+              />
+              {codeError && (
+                <p className="font-['Inter',sans-serif] text-[12px] text-[#D84315] mt-[6px]">
+                  {codeError}
+                </p>
+              )}
+            </div>
+
+            <div className="bg-[#FFF9E6] border border-[#FFD54F] rounded-[8px] px-[16px] py-[12px] mb-[24px]">
+              <p className="font-['Inter',sans-serif] text-[12px] text-[#003b3c]">
+                <strong>Demo:</strong> Use code <span className="font-mono">123456</span>
+              </p>
+            </div>
+
+            <button
+              onClick={handleVerifyCode}
+              disabled={loginCode.length !== 6 || isVerifying}
+              className={`w-full h-[48px] rounded-[8px] transition-colors font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase flex items-center justify-center gap-[8px] ${
+                loginCode.length === 6 && !isVerifying
+                  ? 'bg-[#009296] hover:bg-[#007d81] cursor-pointer'
+                  : 'bg-[#C2CFCF] cursor-not-allowed'
+              }`}
+            >
+              {isVerifying && <Loader2 className="w-[20px] h-[20px] animate-spin" />}
+              {isVerifying ? 'Verifying...' : 'Verify & Login'}
+            </button>
+
+            <button
+              onClick={() => {
+                setCodeSent(false);
+                setLoginCode('');
+                setCodeError('');
+              }}
+              className="w-full mt-[12px] font-['Inter',sans-serif] text-[14px] text-[#009296] underline hover:no-underline"
+            >
+              Use a different email
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+interface EmailVerificationModalProps {
+  isOpen: boolean;
+  email: string;
+  onClose: () => void;
+  onVerified: (isReturningCustomer: boolean) => void;
+}
+
+function EmailVerificationModal({ isOpen, email, onClose, onVerified }: EmailVerificationModalProps) {
+  const [codeSent, setCodeSent] = useState(false);
+  const [verificationCode, setVerificationCode] = useState('');
+  const [codeError, setCodeError] = useState('');
+  const [codeExpiry, setCodeExpiry] = useState<number | null>(null);
+  const [isSendingCode, setIsSendingCode] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState<number>(0);
+  
+  const DEMO_REGISTERED_EMAIL = 'demo@andrewlessman.com';
+  const DEMO_VERIFICATION_CODE = '123456';
+  const CODE_EXPIRY_MINUTES = 10;
+  
+  // Timer countdown
+  useEffect(() => {
+    if (codeExpiry) {
+      const timer = setInterval(() => {
+        const remaining = Math.max(0, Math.floor((codeExpiry - Date.now()) / 1000));
+        setTimeRemaining(remaining);
+        
+        if (remaining === 0) {
+          clearInterval(timer);
+        }
+      }, 1000);
+      
+      return () => clearInterval(timer);
+    }
+  }, [codeExpiry]);
+  
+  // Auto-send code when modal opens
+  useEffect(() => {
+    if (isOpen && !codeSent) {
+      handleSendCode();
+    }
+  }, [isOpen]);
+  
+  const handleSendCode = async () => {
+    setCodeError('');
+    setIsSendingCode(true);
+    
+    // Simulate API call to send code
+    setTimeout(() => {
+      setCodeSent(true);
+      setIsSendingCode(false);
+      setCodeExpiry(Date.now() + (CODE_EXPIRY_MINUTES * 60 * 1000));
+      setTimeRemaining(CODE_EXPIRY_MINUTES * 60);
+      
+      console.log(`Verification code sent to ${email}: ${DEMO_VERIFICATION_CODE}`);
+    }, 1000);
+  };
+  
+  const handleResendCode = () => {
+    setVerificationCode('');
+    setCodeError('');
+    setCodeSent(false);
+    handleSendCode();
+  };
+  
+  const handleVerifyCode = async () => {
+    if (verificationCode.length !== 6) {
+      setCodeError('Please enter the 6-digit code');
+      return;
+    }
+    
+    if (codeExpiry && Date.now() > codeExpiry) {
+      setCodeError('Code expired. Please request a new one.');
+      return;
+    }
+    
+    setIsVerifying(true);
+    setCodeError('');
+    
+    // Simulate API call to verify code
+    setTimeout(() => {
+      if (verificationCode === DEMO_VERIFICATION_CODE) {
+        // Check if returning customer
+        const isReturningCustomer = email.toLowerCase().trim() === DEMO_REGISTERED_EMAIL.toLowerCase();
+        onVerified(isReturningCustomer);
+      } else {
+        setCodeError('Invalid code. Please try again.');
+        setIsVerifying(false);
+      }
+    }, 800);
+  };
+  
+  if (!isOpen) return null;
+  
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-[16px]">
+      <div className="bg-white rounded-[16px] max-w-[480px] w-full p-[32px] relative">
+        {/* Header */}
+        <div className="mb-[24px]">
+          <h2 className="font-['Inter',sans-serif] text-[24px] font-medium text-[#003b3c] mb-[8px]">
+            Verify Your Email
+          </h2>
+          <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d]">
+            To complete your order, please verify your email address.
+          </p>
+        </div>
+
+        {isSendingCode ? (
+          <div className="flex flex-col items-center justify-center py-[40px]">
+            <Loader2 className="w-[40px] h-[40px] text-[#009296] animate-spin mb-[16px]" />
+            <p className="font-['Inter',sans-serif] text-[16px] text-[#003b3c]">
+              Sending verification code...
+            </p>
+          </div>
+        ) : codeSent ? (
+          <div>
+            <div className="bg-[#E8F5F5] border border-[#009296] rounded-[8px] px-[16px] py-[16px] mb-[24px]">
+              <div className="flex items-start gap-[12px] mb-[16px]">
+                <div className="w-[20px] h-[20px] rounded-full bg-[#009296] flex items-center justify-center flex-shrink-0 mt-[2px]">
+                  <Mail className="w-[12px] h-[12px] text-white" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-['Inter',sans-serif] text-[14px] text-[#003b3c] font-medium mb-[4px]">
+                    Check your email
+                  </p>
+                  <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d]">
+                    We sent a 6-digit code to {email}
+                  </p>
+                  {timeRemaining > 0 && (
+                    <p className="font-['Inter',sans-serif] text-[12px] text-[#009296] mt-[4px]">
+                      Code expires in {Math.floor(timeRemaining / 60)}:{String(timeRemaining % 60).padStart(2, '0')}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            <div className="relative mb-[16px]">
+              <input
+                type="text"
+                value={verificationCode}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+                  setVerificationCode(value);
+                  setCodeError('');
+                }}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && verificationCode.length === 6) {
+                    handleVerifyCode();
+                  }
+                }}
+                placeholder="Enter 6-digit code"
+                className="w-full py-[16px] px-[16px] border-2 border-[#D9E2E2] rounded-[8px] font-['Inter',sans-serif] text-[24px] text-[#003b3c] text-center tracking-[8px] focus:outline-none focus:border-[#009296]"
+                maxLength={6}
+                autoFocus
+              />
+            </div>
+            
+            {codeError && (
+              <p className="font-['Inter',sans-serif] text-[12px] text-[#D84315] mb-[16px]">
+                {codeError}
+              </p>
+            )}
+            
+            <button
+              type="button"
+              onClick={handleVerifyCode}
+              disabled={isVerifying || verificationCode.length !== 6}
+              className="w-full h-[56px] rounded-[8px] bg-[#009296] hover:bg-[#007d81] disabled:bg-[#D9E2E2] disabled:cursor-not-allowed transition-colors flex items-center justify-center mb-[16px]"
+            >
+              {isVerifying ? (
+                <>
+                  <Loader2 className="w-[20px] h-[20px] text-white animate-spin mr-[8px]" />
+                  <span className="font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase">
+                    Verifying...
+                  </span>
+                </>
+              ) : (
+                <span className="font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase">
+                  Verify & Complete Order
+                </span>
+              )}
+            </button>
+            
+            {timeRemaining === 0 ? (
+              <button
+                type="button"
+                onClick={handleResendCode}
+                className="w-full font-['Inter',sans-serif] text-[14px] text-[#009296] underline hover:no-underline"
+              >
+                Resend Code
+              </button>
+            ) : (
+              <p className="font-['Inter',sans-serif] text-[12px] text-[#406c6d] text-center">
+                <strong>Demo:</strong> Use code "123456"
+              </p>
+            )}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 export default function CheckoutPage({ items, onUpdateQuantity, onContinueShopping, onPlaceOrder }: CheckoutPageProps) {
   // Form state
   const [email, setEmail] = useState('');
@@ -869,17 +1288,11 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
   const [showOrderSummary, setShowOrderSummary] = useState(false);
   const [billingMatchesShipping, setBillingMatchesShipping] = useState(true);
   
-  // Account creation state
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [passwordStrength, setPasswordStrength] = useState<'weak' | 'medium' | 'strong' | ''>('');
+  // Email verification modal state
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
   
-  // Login state
-  const [isLoginMode, setIsLoginMode] = useState(false);
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
-  const [showLoginPassword, setShowLoginPassword] = useState(false);
-  const [loginError, setLoginError] = useState('');
+  // Auth state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   
   // Place Order loading state
@@ -888,21 +1301,17 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
   // Help dropdown state
   const [showHelpDropdown, setShowHelpDropdown] = useState(false);
   
-  // Email recognition state - for detecting registered emails during checkout
-  const [emailRecognized, setEmailRecognized] = useState(false);
-  const [recognizedEmailPassword, setRecognizedEmailPassword] = useState('');
-  const [showRecognizedPassword, setShowRecognizedPassword] = useState(false);
-  const [recognizedEmailError, setRecognizedEmailError] = useState('');
-  
-  // Forgot password state
-  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
-  const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
-  const [forgotPasswordSubmitted, setForgotPasswordSubmitted] = useState(false);
-  const [forgotPasswordError, setForgotPasswordError] = useState('');
+  // Login inline state for existing customers
+  const [showLoginMode, setShowLoginMode] = useState(false);
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginCode, setLoginCode] = useState('');
+  const [codeSent, setCodeSent] = useState(false);
+  const [loginCodeError, setLoginCodeError] = useState('');
+  const [isSendingCode, setIsSendingCode] = useState(false);
+  const [isVerifyingCode, setIsVerifyingCode] = useState(false);
+  const [isEmailFocused, setIsEmailFocused] = useState(false);
   
   // Demo registered user data
-  const DEMO_REGISTERED_EMAIL = 'demo@andrewlessman.com';
-  const DEMO_PASSWORD = 'password123';
   const DEMO_USER_DATA = {
     firstName: 'Andrew',
     lastName: 'Lessman',
@@ -1008,125 +1417,66 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
     }
   };
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoginError('');
-    
-    // Validate login credentials
-    if (!loginEmail || !loginPassword) {
-      setLoginError('Please enter your email and password');
+  // Handle sending verification code for login
+  const handleSendLoginCode = () => {
+    if (!loginEmail) {
+      setLoginCodeError('Please enter your email address');
       return;
     }
     
-    // Mock login - in production this would call your auth API
-    // For demo purposes, accept any email with password "password123"
-    if (loginPassword === 'password123') {
-      setIsLoggedIn(true);
-      setIsLoginMode(false);
-      
-      // Reset form state to ensure clean slate
-      setShowNewAddressForm(false);
-      setShowNewPaymentForm(false);
-      setBillingMatchesShipping(true);
-      setErrors({});
-      
-      // Pre-fill user data (mock data - would come from API)
-      setEmail(loginEmail);
-      setFirstName('Andrew');
-      setLastName('Lessman');
-      setAddress('123 Main Street');
-      setCity('Los Angeles');
-      setState('CA');
-      setZipCode('90001');
-      setPhone('(555) 123-4567');
-      
-      // Select default saved address and payment method
-      setSelectedAddressId('addr-1');
-      setSelectedPaymentId('card-1');
-      
-      // Mark fields as touched and valid
-      setTouched({
-        ...touched,
-        email: true,
-        firstName: true,
-        lastName: true,
-        address: true,
-        city: true,
-        state: true,
-        zipCode: true,
-        phone: true,
-        savedCardCvv: false, // Will be marked true when user enters it
-      });
-    } else {
-      setLoginError('Incorrect email or password. Please try again.');
-    }
-  };
-
-  const handleSwitchToLogin = () => {
-    setIsLoginMode(true);
-    setLoginEmail(email); // Pre-fill with email they may have entered
-    setLoginError('');
-  };
-
-  const handleSwitchToSignup = () => {
-    setIsLoginMode(false);
-    setLoginError('');
-    setEmail(loginEmail); // Transfer email back
-  };
-
-  // Forgot password handlers
-  const handleForgotPasswordClick = () => {
-    setShowForgotPasswordModal(true);
-    setForgotPasswordEmail(loginEmail); // Pre-fill with login email if available
-    setForgotPasswordSubmitted(false);
-    setForgotPasswordError('');
-  };
-
-  const handleForgotPasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setForgotPasswordError('');
-    
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!forgotPasswordEmail || !emailRegex.test(forgotPasswordEmail)) {
-      setForgotPasswordError('Please enter a valid email address');
+    // Check if email is registered
+    const DEMO_REGISTERED_EMAIL = 'demo@andrewlessman.com';
+    if (loginEmail.toLowerCase() !== DEMO_REGISTERED_EMAIL.toLowerCase()) {
+      setLoginCodeError("We don't have an account with this email address. Continue as a new customer instead.");
       return;
     }
     
-    // Simulate sending reset email
-    setForgotPasswordSubmitted(true);
-  };
-
-  const handleCloseForgotPassword = () => {
-    setShowForgotPasswordModal(false);
-    setForgotPasswordEmail('');
-    setForgotPasswordSubmitted(false);
-    setForgotPasswordError('');
-  };
-
-  // Email recognition handler - checks if email is registered
-  const handleEmailBlur = () => {
-    const trimmedEmail = email.trim().toLowerCase();
+    setIsSendingCode(true);
+    setLoginCodeError('');
     
-    // Check if this is a registered demo email
-    if (trimmedEmail === DEMO_REGISTERED_EMAIL.toLowerCase()) {
-      setEmailRecognized(true);
-      setRecognizedEmailError('');
-    } else {
-      setEmailRecognized(false);
-      setRecognizedEmailPassword('');
-      setRecognizedEmailError('');
+    // Simulate sending verification code
+    setTimeout(() => {
+      setCodeSent(true);
+      setIsSendingCode(false);
+    }, 800);
+  };
+  
+  // Handle verifying login code
+  const handleVerifyLoginCode = () => {
+    const DEMO_VERIFICATION_CODE = '123456';
+    
+    if (loginCode !== DEMO_VERIFICATION_CODE) {
+      setLoginCodeError('Invalid verification code. Try 123456 for demo.');
+      return;
     }
+    
+    setIsVerifyingCode(true);
+    
+    // Simulate verification
+    setTimeout(() => {
+      setIsVerifyingCode(false);
+      handleLogin(loginEmail);
+      // Reset login state
+      setShowLoginMode(false);
+      setLoginEmail('');
+      setLoginCode('');
+      setCodeSent(false);
+      setLoginCodeError('');
+    }, 600);
   };
 
-  // Handle password submission for recognized email
-  const handleRecognizedEmailLogin = () => {
-    if (recognizedEmailPassword === DEMO_PASSWORD) {
-      // Successful login - populate saved data
+  // Handle login completion
+  const handleLogin = (email: string) => {
+    const DEMO_REGISTERED_EMAIL = 'demo@andrewlessman.com';
+    
+    // Check if this is a registered email
+    if (email.toLowerCase() === DEMO_REGISTERED_EMAIL.toLowerCase()) {
+      // Set email and mark as logged in
+      setEmail(email);
       setIsLoggedIn(true);
-      setEmailRecognized(false);
+      setIsVerified(true);
       
-      // Reset form state to ensure clean slate
+      // Reset form state
       setShowNewAddressForm(false);
       setShowNewPaymentForm(false);
       setBillingMatchesShipping(true);
@@ -1148,7 +1498,50 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
       
       // Mark fields as touched and valid
       setTouched({
-        ...touched,
+        email: true,
+        firstName: true,
+        lastName: true,
+        address: true,
+        city: true,
+        state: true,
+        zipCode: true,
+        phone: true,
+        savedCardCvv: false, // Will be marked true when user enters it
+      });
+    }
+  };
+
+  // Handle email verification callback from modal
+  const handleEmailVerified = (isReturningCustomer: boolean) => {
+    setIsVerified(true);
+    setShowVerificationModal(false);
+    
+    if (isReturningCustomer) {
+      // Returning customer - auto-fill saved data
+      setIsLoggedIn(true);
+      
+      // Reset form state
+      setShowNewAddressForm(false);
+      setShowNewPaymentForm(false);
+      setBillingMatchesShipping(true);
+      setErrors({});
+      
+      // Pre-fill saved shipping data
+      setFirstName(DEMO_USER_DATA.firstName);
+      setLastName(DEMO_USER_DATA.lastName);
+      setAddress(DEMO_USER_DATA.address);
+      setApartment(DEMO_USER_DATA.apartment);
+      setCity(DEMO_USER_DATA.city);
+      setState(DEMO_USER_DATA.state);
+      setZipCode(DEMO_USER_DATA.zipCode);
+      setPhone(DEMO_USER_DATA.phone);
+      
+      // Select default saved address and payment method
+      setSelectedAddressId('addr-1');
+      setSelectedPaymentId('card-1');
+      
+      // Mark fields as touched and valid
+      setTouched({
         email: true,
         firstName: true,
         lastName: true,
@@ -1160,10 +1553,17 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
         savedCardCvv: false, // Will be marked true when user enters it
       });
       
-      setRecognizedEmailPassword('');
-      setRecognizedEmailError('');
+      // Now proceed to complete the order
+      setTimeout(() => {
+        handleFinalizeOrder();
+      }, 100);
     } else {
-      setRecognizedEmailError('Incorrect password. Please try again.');
+      // New customer - just proceed to complete order
+      setIsLoggedIn(false);
+      
+      setTimeout(() => {
+        handleFinalizeOrder();
+      }, 100);
     }
   };
 
@@ -1265,26 +1665,9 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
     return '';
   };
 
-  const validatePassword = (password: string): string => {
-    if (!password) return 'Please create a password';
-    if (password.length < 8) return 'Password must be at least 8 characters';
-    return '';
-  };
 
-  const calculatePasswordStrength = (password: string): 'weak' | 'medium' | 'strong' | '' => {
-    if (password.length === 0) return '';
-    if (password.length < 8) return 'weak';
-    
-    let strength = 0;
-    if (password.length >= 10) strength++;
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
-    if (/\d/.test(password)) strength++;
-    if (/[^a-zA-Z\d]/.test(password)) strength++;
-    
-    if (strength >= 3) return 'strong';
-    if (strength >= 1) return 'medium';
-    return 'weak';
-  };
+
+
 
   const handleBlur = (field: string, value: string) => {
     setTouched({ ...touched, [field]: true });
@@ -1345,9 +1728,6 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
       case 'billingZipCode':
         error = validateZipCode(value);
         break;
-      case 'password':
-        error = validatePassword(value);
-        break;
     }
     
     setErrors({ ...errors, [field]: error });
@@ -1359,6 +1739,8 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
     // Validate all fields
     const newErrors: Record<string, string> = {};
     newErrors.email = validateEmail(email);
+    
+    // Continue with normal validation
     newErrors.firstName = validateRequired(firstName, 'your first name');
     newErrors.lastName = validateRequired(lastName, 'your last name');
     newErrors.address = validateRequired(address, 'your address');
@@ -1377,11 +1759,6 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
       newErrors.expiry = validateExpiry(expiry);
       newErrors.securityCode = validateSecurityCode(securityCode);
       newErrors.nameOnCard = validateRequired(nameOnCard, 'name on card');
-    }
-    
-    // Only validate password if user is not logged in
-    if (!isLoggedIn) {
-      newErrors.password = validatePassword(password);
     }
 
     // Validate billing address if it doesn't match shipping
@@ -1406,6 +1783,11 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
     setTouched(allTouched);
 
     if (Object.keys(filteredErrors).length === 0) {
+      handleFinalizeOrder();
+    }
+  };
+
+  const handleFinalizeOrder = () => {
       // Show loading state
       setIsPlacingOrder(true);
       
@@ -1476,7 +1858,6 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
         }
         // Note: loading state will reset when component unmounts on navigation
       }, 1500);
-    }
   };
 
   // Helper to check if field is valid
@@ -1509,11 +1890,6 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
       requiredFields.nameOnCard = nameOnCard;
     }
     
-    // Only require password if user is not logged in
-    if (!isLoggedIn) {
-      requiredFields.password = password;
-    }
-
     // Add billing fields if billing doesn't match shipping
     if (!billingMatchesShipping) {
       requiredFields.billingFirstName = billingFirstName;
@@ -1565,9 +1941,6 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
         case 'securityCode':
         case 'savedCardCvv':
           error = validateSecurityCode(value);
-          break;
-        case 'password':
-          error = validatePassword(value);
           break;
       }
       
@@ -1792,150 +2165,201 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
       <div className="py-[40px] lg:py-[60px]">
         <div className="w-full px-[20px] md:px-[40px] lg:w-[1200px] lg:px-0 lg:mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-[40px] lg:gap-[80px]">
-          {/* Left Column - Checkout Form */}
+          {/* Left Column - Checkout Form or Login */}
           <div className="order-2 lg:order-1">
-            {/* Login Form - Shows when user clicks "Log in" */}
-            {isLoginMode && !isLoggedIn ? (
-              <div>
-                <div className="mb-[32px]">
-                  <h2 className="font-['STIX_Two_Text',sans-serif] text-[32px] text-[#003b3c] mb-[8px]" style={{ fontWeight: 500 }}>
+            {showLoginMode && !isLoggedIn ? (
+              /* Inline Login Experience */
+              <div className="space-y-[32px]">
+                {/* Header */}
+                <div>
+                  <h2 className="font-['STIX_Two_Text',sans-serif] text-[32px] l:text-[36px] xl:text-[40px] hd:text-[44px] text-[#003b3c] mb-[8px]" style={{ fontWeight: 500 }}>
                     Welcome back
                   </h2>
                   <p className="font-['Inter',sans-serif] text-[16px] text-[#406c6d]">
-                    Log in to continue with your order
+                    Log in to continue with your order.
                   </p>
                 </div>
 
-                <form onSubmit={handleLogin} className="space-y-[20px]">
-                  {/* Email Field */}
-                  <div className="relative">
-                    <input
-                      type="email"
-                      value={loginEmail}
-                      onChange={(e) => setLoginEmail(e.target.value)}
-                      className="w-full py-[18px] px-[16px] border rounded-[8px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#003b3c] focus:outline-none transition-colors border-[#D9E2E2] hover:border-[#003b3c] focus:border-[#003b3c] placeholder:text-transparent"
-                      placeholder="Email"
-                    />
-                    {loginEmail.length > 0 && (
-                      <label className="absolute left-[12px] top-[-8px] px-[4px] bg-white font-['Inter',sans-serif] text-[12px] text-[#406c6d] pointer-events-none">
-                        Email
-                      </label>
-                    )}
-                    {loginEmail.length === 0 && (
-                      <label className="absolute left-[16px] top-[18px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#406c6d] pointer-events-none transition-all duration-200">
-                        Email
-                      </label>
-                    )}
+                {isSendingCode ? (
+                  /* Sending code loading state */
+                  <div className="flex flex-col items-center justify-center py-[60px]">
+                    <Loader2 className="w-[48px] h-[48px] text-[#009296] animate-spin mb-[16px]" />
+                    <p className="font-['Inter',sans-serif] text-[16px] text-[#003b3c]">
+                      Sending verification code...
+                    </p>
                   </div>
-
-                  {/* Password Field */}
-                  <div className="relative">
-                    <input
-                      type={showLoginPassword ? 'text' : 'password'}
-                      value={loginPassword}
-                      onChange={(e) => setLoginPassword(e.target.value)}
-                      className="w-full py-[18px] px-[16px] pr-[48px] border rounded-[8px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#003b3c] focus:outline-none transition-colors border-[#D9E2E2] hover:border-[#003b3c] focus:border-[#003b3c] placeholder:text-transparent"
-                      placeholder="Password"
-                    />
-                    {loginPassword.length > 0 && (
-                      <label className="absolute left-[12px] top-[-8px] px-[4px] bg-white font-['Inter',sans-serif] text-[12px] text-[#406c6d] pointer-events-none">
-                        Password
-                      </label>
-                    )}
-                    {loginPassword.length === 0 && (
-                      <label className="absolute left-[16px] top-[18px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#406c6d] pointer-events-none transition-all duration-200">
-                        Password
-                      </label>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => setShowLoginPassword(!showLoginPassword)}
-                      className="absolute right-[16px] top-1/2 -translate-y-1/2 text-[#406c6d] hover:text-[#003b3c] transition-colors"
-                      aria-label={showLoginPassword ? 'Hide password' : 'Show password'}
-                    >
-                      {showLoginPassword ? (
-                        <EyeOff className="w-[20px] h-[20px]" />
-                      ) : (
-                        <Eye className="w-[20px] h-[20px]" />
+                ) : !codeSent ? (
+                  /* Email input step */
+                  <div>
+                    <div className="mb-[24px]">
+                      <div className="relative">
+                        <input
+                          type="email"
+                          value={loginEmail}
+                          onChange={(e) => {
+                            setLoginEmail(e.target.value);
+                            setLoginCodeError('');
+                          }}
+                          onFocus={() => setIsEmailFocused(true)}
+                          onBlur={() => setIsEmailFocused(false)}
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                              handleSendLoginCode();
+                            }
+                          }}
+                          placeholder="Email Address"
+                          className={`w-full py-[18px] px-[16px] border rounded-[8px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#003b3c] focus:outline-none transition-colors ${
+                            isEmailFocused || loginEmail ? 'placeholder:text-transparent' : 'placeholder:text-[#406c6d]'
+                          } ${
+                            loginCodeError 
+                              ? 'border-[#D84315] hover:border-[#D84315] focus:border-[#D84315]' 
+                              : 'border-[#D9E2E2] hover:border-[#003b3c] focus:border-[#003b3c]'
+                          }`}
+                          autoFocus
+                        />
+                        {/* Floating label - shown when focused or has value */}
+                        {(isEmailFocused || loginEmail) && (
+                          <label className="absolute left-[12px] top-[-8px] px-[4px] bg-white font-['Inter',sans-serif] text-[12px] pointer-events-none text-[#406c6d]">
+                            Email Address
+                          </label>
+                        )}
+                      </div>
+                      {loginCodeError && (
+                        <p className="font-['Inter',sans-serif] text-[12px] text-[#D84315] mt-[6px]">
+                          {loginCodeError}
+                        </p>
                       )}
-                    </button>
-                  </div>
+                    </div>
 
-                  {/* Error Message */}
-                  {loginError && (
-                    <div className="bg-[#FFF3E0] border border-[#FF9800] rounded-[8px] px-[16px] py-[12px]">
-                      <p className="font-['Inter',sans-serif] text-[14px] text-[#D84315]">
-                        {loginError}
+                    <div className="bg-[#F5F9F9] rounded-[8px] p-[16px] mb-[24px]">
+                      <p className="font-['Inter',sans-serif] text-[12px] text-[#406c6d] leading-[1.5]">
+                        <strong className="text-[#003b3c]">Demo:</strong> Use <span className="font-mono bg-white px-[4px] py-[1px] rounded">demo@andrewlessman.com</span> to see the logged-in experience with saved addresses and payment methods.
                       </p>
                     </div>
-                  )}
 
-                  {/* Forgot Password Link */}
-                  <div className="text-right">
-                    <button 
-                      type="button" 
-                      onClick={handleForgotPasswordClick}
-                      className="font-['Inter',sans-serif] text-[14px] text-[#009296] underline hover:no-underline"
+                    <button
+                      type="button"
+                      onClick={handleSendLoginCode}
+                      className="w-full h-[56px] rounded-[999px] bg-[#009296] hover:bg-[#007d81] transition-colors font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase"
                     >
-                      Forgot password?
+                      Continue
                     </button>
-                  </div>
 
-                  {/* Login Button */}
-                  <button
-                    type="submit"
-                    disabled={!loginEmail || !loginPassword}
-                    className={`w-full h-[56px] rounded-[999px] flex items-center justify-center gap-[8px] transition-colors ${
-                      loginEmail && loginPassword
-                        ? 'bg-[#009296] hover:bg-[#007d81] cursor-pointer'
-                        : 'bg-[#C2CFCF] cursor-not-allowed'
-                    }`}
-                  >
-                    <span className="font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase">
-                      Log In
-                    </span>
-                  </button>
-
-                  {/* Demo Helper */}
-                  <div className="mt-[24px] bg-[#F5F9F9] border border-[#D9E2E2] rounded-[8px] px-[16px] py-[12px]">
-                    <p className="font-['Inter',sans-serif] text-[12px] text-[#406c6d] text-center">
-                      <strong>Demo:</strong> Use email "demo@andrewlessman.com" and password "password123"
+                    <p className="font-['Inter',sans-serif] text-[12px] text-[#406c6d] text-center mt-[16px]">
+                      We'll send you a verification code to confirm your email.
                     </p>
-                  </div>
 
-                  {/* Switch to Signup */}
-                  <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] text-center mt-[24px]">
-                    New customer?{' '}
-                    <button 
-                      type="button" 
-                      onClick={handleSwitchToSignup}
-                      className="text-[14px] text-[#009296] underline hover:no-underline"
-                    >
-                      Continue to checkout
-                    </button>
-                  </p>
-                </form>
-              </div>
-            ) : (
-            <form onSubmit={handlePlaceOrder} className="space-y-[40px]">
-              {/* Delivery */}
-              <div>
-                <div className="flex items-center justify-between mb-[20px]">
-                  <h2 className="font-['STIX_Two_Text',sans-serif] text-[32px] l:text-[36px] xl:text-[40px] hd:text-[44px] text-[#003b3c]" style={{ fontWeight: 500 }}>
-                    Delivery
-                  </h2>
-                  {!isLoggedIn && (
-                    <p className="font-['Inter',sans-serif] text-[14px] l:text-[15px] xl:text-[16px] text-[#406c6d]">
-                      Have an account?{' '}
-                      <button 
-                        type="button" 
-                        onClick={handleSwitchToLogin}
-                        className="text-[14px] l:text-[15px] xl:text-[16px] text-[#009296] underline hover:no-underline"
+                    <p className="font-['Inter',sans-serif] text-[14px] text-[#003b3c] text-center mt-[12px]">
+                      New customer? <button
+                        type="button"
+                        onClick={() => {
+                          setShowLoginMode(false);
+                          setLoginEmail('');
+                          setLoginCodeError('');
+                        }}
+                        className="font-['Inter',sans-serif] text-[14px] text-[#009296] underline hover:no-underline"
                       >
-                        Log in for faster checkout
+                        Continue to checkout
                       </button>
                     </p>
-                  )}
+                  </div>
+                ) : (
+                  /* Code verification step */
+                  <div>
+                    <div className="bg-[#E8F5F5] border border-[#009296] rounded-[8px] px-[16px] py-[16px] mb-[24px]">
+                      <div className="flex items-start gap-[12px]">
+                        <div className="w-[20px] h-[20px] rounded-full bg-[#009296] flex items-center justify-center flex-shrink-0 mt-[2px]">
+                          <Mail className="w-[12px] h-[12px] text-white" />
+                        </div>
+                        <div>
+                          <p className="font-['Inter',sans-serif] text-[14px] text-[#003b3c] font-medium mb-[4px]">
+                            Verification code sent
+                          </p>
+                          <p className="font-['Inter',sans-serif] text-[12px] text-[#406c6d]">
+                            We sent a 6-digit code to <strong>{loginEmail}</strong>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mb-[24px]">
+                      <label className="font-['Inter',sans-serif] text-[14px] text-[#003b3c] font-medium mb-[8px] block">
+                        Verification Code
+                      </label>
+                      <input
+                        type="text"
+                        value={loginCode}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, '');
+                          if (value.length <= 6) {
+                            setLoginCode(value);
+                            setLoginCodeError('');
+                          }
+                        }}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter' && loginCode.length === 6) {
+                            handleVerifyLoginCode();
+                          }
+                        }}
+                        placeholder="123456"
+                        maxLength={6}
+                        className={`w-full h-[72px] px-[16px] border rounded-[8px] font-['Inter',sans-serif] text-[28px] tracking-[8px] text-center text-[#003b3c] focus:outline-none transition-colors ${
+                          loginCodeError 
+                            ? 'border-[#D84315] hover:border-[#D84315] focus:border-[#D84315]' 
+                            : 'border-[#D9E2E2] hover:border-[#003b3c] focus:border-[#003b3c]'
+                        }`}
+                        autoFocus
+                      />
+                      {loginCodeError && (
+                        <p className="font-['Inter',sans-serif] text-[12px] text-[#D84315] mt-[6px]">
+                          {loginCodeError}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="bg-[#FFF9E6] border border-[#FFD54F] rounded-[8px] px-[16px] py-[12px] mb-[24px]">
+                      <p className="font-['Inter',sans-serif] text-[12px] text-[#003b3c]">
+                        <strong>Demo:</strong> Use code <span className="font-mono">123456</span>
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleVerifyLoginCode}
+                      disabled={loginCode.length !== 6 || isVerifyingCode}
+                      className={`w-full h-[56px] rounded-[999px] transition-colors font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase flex items-center justify-center gap-[8px] ${
+                        loginCode.length === 6 && !isVerifyingCode
+                          ? 'bg-[#009296] hover:bg-[#007d81] cursor-pointer'
+                          : 'bg-[#C2CFCF] cursor-not-allowed'
+                      }`}
+                    >
+                      {isVerifyingCode && <Loader2 className="w-[20px] h-[20px] animate-spin" />}
+                      {isVerifyingCode ? 'Verifying...' : 'Verify & Login'}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCodeSent(false);
+                        setLoginCode('');
+                        setLoginCodeError('');
+                      }}
+                      className="w-full mt-[12px] font-['Inter',sans-serif] text-[14px] text-[#009296] underline hover:no-underline"
+                    >
+                      Use a different email
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* Checkout Form */
+              <form onSubmit={handlePlaceOrder} className="space-y-[40px]">
+                {/* Delivery */}
+                <div>
+                  <div className="flex items-center justify-between mb-[20px]">
+                    <h2 className="font-['STIX_Two_Text',sans-serif] text-[32px] l:text-[36px] xl:text-[40px] hd:text-[44px] text-[#003b3c]" style={{ fontWeight: 500 }}>
+                      Delivery
+                    </h2>
                   {isLoggedIn && (
                     <p className="font-['Inter',sans-serif] text-[14px] l:text-[15px] xl:text-[16px] text-[#406c6d] flex items-center gap-[6px]">
                       <Check className="w-[16px] h-[16px] text-[#4CAF50]" />
@@ -1966,11 +2390,11 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
                           setBillingCity('');
                           setBillingState('');
                           setBillingZipCode('');
-                          setPassword('');
-                          setPasswordStrength('');
                           setSelectedAddressId('');
                           setSelectedPaymentId('');
                           setSavedCardCvv('');
+                          // Reset verification
+                          setIsVerified(false);
                         }}
                         className="text-[14px] l:text-[15px] xl:text-[16px] text-[#009296] underline hover:no-underline"
                       >
@@ -1979,9 +2403,33 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
                     </p>
                   )}
                 </div>
+                
+                {/* Login Button for Existing Customers */}
+                {!isLoggedIn && (
+                  <div className="bg-[#F5F9F9] border-2 border-[#009296] rounded-[12px] p-[20px] mb-[24px]">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-[12px]">
+                      <div>
+                        <p className="font-['Inter',sans-serif] font-medium text-[16px] text-[#003b3c] mb-[4px]">
+                          Already have an account?
+                        </p>
+                        <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d]">
+                          Log in for faster checkout with saved addresses and payment methods.
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowLoginMode(true)}
+                        className="shrink-0 h-[40px] px-[24px] rounded-[8px] bg-[#009296] hover:bg-[#007d81] transition-colors font-['Inter',sans-serif] font-medium text-[14px] text-white tracking-[1.68px] uppercase whitespace-nowrap"
+                      >
+                        Log In
+                      </button>
+                    </div>
+                  </div>
+                )}
+                
                 <div className="space-y-[16px]">
                   
-                  {/* Only show email field for non-logged-in users */}
+                  {/* Email field - always visible for non-logged-in users */}
                   {!isLoggedIn && (
                   <div>
                     <FormField
@@ -1990,91 +2438,36 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
                       value={email}
                       onChange={(value) => {
                         setEmail(value);
-                        // Reset recognition when email changes
-                        if (emailRecognized) {
-                          setEmailRecognized(false);
-                          setRecognizedEmailPassword('');
-                          setRecognizedEmailError('');
+                        // Reset verification when email changes
+                        if (isVerified) {
+                          setIsVerified(false);
                         }
                       }}
                       onBlur={() => {
                         handleBlur('email', email);
-                        handleEmailBlur();
                       }}
                       error={touched.email ? errors.email : undefined}
                       required
-                      isValid={isFieldValid('email', email)}
+                      isValid={isFieldValid('email', email) || isVerified}
                     />
                     
-                    {/* Email recognized - show password prompt */}
-                    {emailRecognized && (
-                      <div className="mt-[16px] bg-[#E8F5F5] border border-[#009296] rounded-[8px] px-[16px] py-[16px]">
-                        <div className="flex items-start gap-[12px] mb-[16px]">
-                          <div className="w-[20px] h-[20px] rounded-full bg-[#009296] flex items-center justify-center flex-shrink-0 mt-[2px]">
+                    {/* Show verified badge if email is verified */}
+                    {isVerified && (
+                      <div className="mt-[16px] bg-[#E8F5F5] border border-[#009296] rounded-[8px] px-[16px] py-[12px]">
+                        <div className="flex items-center gap-[12px]">
+                          <div className="w-[20px] h-[20px] rounded-full bg-[#009296] flex items-center justify-center flex-shrink-0">
                             <Check className="w-[12px] h-[12px] text-white" />
                           </div>
-                          <div>
-                            <p className="font-['Inter',sans-serif] text-[14px] text-[#003b3c] font-medium mb-[4px]">
-                              We found your account!
-                            </p>
-                            <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d]">
-                              Please enter your password to continue and we'll fill in your saved information.
-                            </p>
-                          </div>
-                        </div>
-                        
-                        <div className="relative">
-                          <input
-                            type={showRecognizedPassword ? 'text' : 'password'}
-                            value={recognizedEmailPassword}
-                            onChange={(e) => {
-                              setRecognizedEmailPassword(e.target.value);
-                              setRecognizedEmailError('');
-                            }}
-                            onKeyPress={(e) => {
-                              if (e.key === 'Enter') {
-                                handleRecognizedEmailLogin();
-                              }
-                            }}
-                            placeholder="Enter your password"
-                            className="w-full py-[12px] px-[16px] pr-[48px] border border-[#D9E2E2] rounded-[8px] font-['Inter',sans-serif] text-[16px] text-[#003b3c] focus:outline-none focus:border-[#003b3c]"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setShowRecognizedPassword(!showRecognizedPassword)}
-                            className="absolute right-[16px] top-1/2 -translate-y-1/2 text-[#406c6d] hover:text-[#003b3c]"
-                          >
-                            {showRecognizedPassword ? <EyeOff className="w-[20px] h-[20px]" /> : <Eye className="w-[20px] h-[20px]" />}
-                          </button>
-                        </div>
-                        
-                        {recognizedEmailError && (
-                          <p className="font-['Inter',sans-serif] text-[12px] text-[#D84315] mt-[8px]">
-                            {recognizedEmailError}
+                          <p className="font-['Inter',sans-serif] text-[14px] text-[#003b3c] font-medium">
+                            Email verified
                           </p>
-                        )}
-                        
-                        <button
-                          type="button"
-                          onClick={handleRecognizedEmailLogin}
-                          className="w-full mt-[12px] h-[48px] rounded-[8px] bg-[#009296] hover:bg-[#007d81] transition-colors flex items-center justify-center"
-                        >
-                          <span className="font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase">
-                            Continue
-                          </span>
-                        </button>
-                        
-                        <p className="font-['Inter',sans-serif] text-[12px] text-[#406c6d] text-center mt-[12px]">
-                          <strong>Demo:</strong> Use password "password123"
-                        </p>
+                        </div>
                       </div>
                     )}
                   </div>
                   )}
                   
-                  {/* Shipping Address Section */}
-                  {!emailRecognized && (
-                  <>
+                  {/* Shipping Address Section - Always visible */}
                   {/* Logged-in users: Show saved addresses */}
                   {isLoggedIn && !showNewAddressForm ? (
                     <div className="mt-[24px]">
@@ -2265,17 +2658,14 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
                   )}
                   </>
                   )}
-                  </>
-                  )}
 
                 </div>
               </div>
 
               {/* Divider */}
-              {!emailRecognized && <div className="border-t border-[#D9E2E2]"></div>}
+              <div className="border-t border-[#D9E2E2]"></div>
 
               {/* Shipping */}
-              {!emailRecognized && (
               <div>
                 <h2 className="font-['STIX_Two_Text',sans-serif] text-[32px] text-[#003b3c] mb-[20px]" style={{ fontWeight: 500 }}>
                   Shipping
@@ -2375,13 +2765,11 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
                   </label>
                 </div>
               </div>
-              )}
 
               {/* Divider */}
-              {!emailRecognized && <div className="border-t border-[#D9E2E2]"></div>}
+              <div className="border-t border-[#D9E2E2]"></div>
 
               {/* Payment */}
-              {!emailRecognized && (
               <div>
                 <h2 className="font-['STIX_Two_Text',sans-serif] text-[32px] l:text-[36px] xl:text-[40px] hd:text-[44px] text-[#003b3c] mb-[20px]" style={{ fontWeight: 500 }}>
                   Payment
@@ -2493,131 +2881,8 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
                 </>
                 )}
               </div>
-              )}
 
-              {/* Divider */}
-              {!isLoggedIn && email && email.length > 0 && !emailRecognized && <div className="border-t border-[#D9E2E2]"></div>}
-
-              {/* Account Creation - Only show if not logged in and email is filled and not in recognition mode */}
-              {!isLoggedIn && email && email.length > 0 && !emailRecognized && <div>
-                <h2 className="font-['STIX_Two_Text',sans-serif] text-[32px] text-[#003b3c] mb-[8px]" style={{ fontWeight: 500 }}>
-                  Complete Your Order
-                </h2>
-                <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] mb-[20px]">
-                  We'll create your account for easy reordering and shipment tracking.
-                </p>
-                <div className="space-y-[16px]">
-                  {/* Email (pre-filled from shipping) */}
-                  <div className="relative">
-                    <div className="relative">
-                      <input
-                        type="email"
-                        value={email}
-                        disabled
-                        className="w-full py-[18px] px-[16px] border rounded-[8px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#003b3c] focus:outline-none transition-colors bg-[#F5F9F9] border-[#D9E2E2]"
-                      />
-                      <label className="absolute left-[12px] top-[-8px] px-[4px] bg-white font-['Inter',sans-serif] text-[12px] text-[#406c6d] pointer-events-none">
-                        Email
-                      </label>
-                      <div className="absolute right-[16px] top-1/2 -translate-y-1/2">
-                        <div className="w-[20px] h-[20px] rounded-full bg-[#4CAF50] flex items-center justify-center">
-                          <Check className="w-[12px] h-[12px] text-white" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Password with show/hide toggle */}
-                  <div className="relative">
-                    <div className="relative">
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        value={password}
-                        onChange={(e) => {
-                          const newPassword = e.target.value;
-                          setPassword(newPassword);
-                          setPasswordStrength(calculatePasswordStrength(newPassword));
-                        }}
-                        onFocus={() => setPasswordStrength(calculatePasswordStrength(password))}
-                        onBlur={() => {
-                          handleBlur('password', password);
-                          if (password.length === 0) setPasswordStrength('');
-                        }}
-                        className={`w-full py-[18px] px-[16px] pr-[48px] border rounded-[8px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#003b3c] focus:outline-none transition-colors placeholder:text-transparent ${
-                          touched.password && errors.password
-                            ? 'border-[#D84315] hover:border-[#D84315] focus:border-[#D84315]'
-                            : 'border-[#D9E2E2] hover:border-[#003b3c] focus:border-[#003b3c]'
-                        }`}
-                        aria-invalid={errors.password ? 'true' : 'false'}
-                      />
-                      {password.length > 0 && (
-                        <label className="absolute left-[12px] top-[-8px] px-[4px] bg-white font-['Inter',sans-serif] text-[12px] text-[#406c6d] pointer-events-none">
-                          Create Password *
-                        </label>
-                      )}
-                      {password.length === 0 && (
-                        <label className="absolute left-[16px] top-[18px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#406c6d] pointer-events-none transition-all duration-200">
-                          Create Password *
-                        </label>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-[16px] top-1/2 -translate-y-1/2 text-[#406c6d] hover:text-[#003b3c] transition-colors"
-                        aria-label={showPassword ? 'Hide password' : 'Show password'}
-                      >
-                        {showPassword ? (
-                          <EyeOff className="w-[20px] h-[20px]" />
-                        ) : (
-                          <Eye className="w-[20px] h-[20px]" />
-                        )}
-                      </button>
-                    </div>
-                    
-                    {/* Password strength indicator */}
-                    {passwordStrength && (
-                      <div className="mt-[6px]">
-                        <div className="flex gap-[4px] mb-[4px]">
-                          <div className={`h-[4px] flex-1 rounded-full transition-colors ${
-                            passwordStrength === 'weak' ? 'bg-[#D84315]' : 
-                            passwordStrength === 'medium' ? 'bg-[#FF9800]' : 
-                            'bg-[#4CAF50]'
-                          }`}></div>
-                          <div className={`h-[4px] flex-1 rounded-full transition-colors ${
-                            passwordStrength === 'medium' || passwordStrength === 'strong' ? 
-                            passwordStrength === 'medium' ? 'bg-[#FF9800]' : 'bg-[#4CAF50]' : 
-                            'bg-[#E5E5E5]'
-                          }`}></div>
-                          <div className={`h-[4px] flex-1 rounded-full transition-colors ${
-                            passwordStrength === 'strong' ? 'bg-[#4CAF50]' : 'bg-[#E5E5E5]'
-                          }`}></div>
-                        </div>
-                        <p className={`font-['Inter',sans-serif] text-[12px] ${
-                          passwordStrength === 'weak' ? 'text-[#D84315]' :
-                          passwordStrength === 'medium' ? 'text-[#FF9800]' :
-                          'text-[#4CAF50]'
-                        }`}>
-                          {passwordStrength === 'weak' && 'Weak password - add more characters'}
-                          {passwordStrength === 'medium' && 'Medium strength'}
-                          {passwordStrength === 'strong' && 'Strong password'}
-                        </p>
-                      </div>
-                    )}
-                    
-                    {touched.password && errors.password && (
-                      <p className="font-['Inter',sans-serif] text-[12px] text-[#D84315] mt-[6px]">
-                        {errors.password}
-                      </p>
-                    )}
-                    
-                    {!errors.password && (
-                      <p className="font-['Inter',sans-serif] text-[12px] text-[#406c6d] mt-[6px]">
-                        At least 8 characters
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>}
+              {/* Account will be created automatically - no password section needed */}
 
               {/* Place Order Button */}
               <div>
@@ -2639,7 +2904,7 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
                   <span className="font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase">
                     {isPlacingOrder 
                       ? 'Processing Order...' 
-                      : (isLoggedIn ? 'Place Order' : 'Place Order & Create Account')
+                      : 'Place Order'
                     }
                   </span>
                 </button>
@@ -2687,115 +2952,9 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
               />
             </div>
           </div>
-          </div>
         </div>
       </div>
-      
-      {/* Forgot Password Modal */}
-      {showForgotPasswordModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-[16px]">
-          <div className="bg-white rounded-[16px] max-w-[480px] w-full p-[32px] relative">
-            {/* Close button */}
-            <button
-              onClick={handleCloseForgotPassword}
-              className="absolute top-[16px] right-[16px] text-[#406c6d] hover:text-[#003b3c] transition-colors"
-              aria-label="Close"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </button>
-
-            {!forgotPasswordSubmitted ? (
-              <>
-                {/* Header */}
-                <div className="mb-[24px]">
-                  <h2 className="font-['Inter',sans-serif] text-[24px] font-medium text-[#003b3c] mb-[8px]">
-                    Reset Your Password
-                  </h2>
-                  <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d]">
-                    Enter your email address and we'll send you a link to reset your password.
-                  </p>
-                </div>
-
-                {/* Form */}
-                <form onSubmit={handleForgotPasswordSubmit}>
-                  <div className="mb-[24px]">
-                    <label className="block font-['Inter',sans-serif] text-[14px] text-[#003b3c] mb-[8px]">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      value={forgotPasswordEmail}
-                      onChange={(e) => {
-                        setForgotPasswordEmail(e.target.value);
-                        setForgotPasswordError('');
-                      }}
-                      placeholder="your.email@example.com"
-                      className={`w-full h-[56px] px-[16px] border rounded-[8px] font-['Inter',sans-serif] text-[16px] text-[#003b3c] placeholder:text-[#999999] focus:outline-none transition-colors ${
-                        forgotPasswordError
-                          ? 'border-[#D84315] focus:border-[#D84315]'
-                          : 'border-[#D9E2E2] focus:border-[#003b3c]'
-                      }`}
-                      autoFocus
-                    />
-                    {forgotPasswordError && (
-                      <p className="font-['Inter',sans-serif] text-[12px] text-[#D84315] mt-[8px]">
-                        {forgotPasswordError}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Buttons */}
-                  <div className="flex gap-[12px]">
-                    <button
-                      type="button"
-                      onClick={handleCloseForgotPassword}
-                      className="flex-1 h-[48px] rounded-[8px] border border-[#009296] text-[#009296] hover:bg-[#F5F9F9] transition-colors font-['Inter',sans-serif] font-medium text-[16px] tracking-[1.92px] uppercase flex items-center justify-center"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="flex-1 h-[48px] rounded-[8px] bg-[#009296] hover:bg-[#007d81] transition-colors font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase flex items-center justify-center"
-                    >
-                      Send Link
-                    </button>
-                  </div>
-                </form>
-              </>
-            ) : (
-              <>
-                {/* Success State */}
-                <div className="text-center">
-                  <div className="w-[64px] h-[64px] rounded-full bg-[#E8F5F5] flex items-center justify-center mx-auto mb-[24px]">
-                    <Check className="w-[32px] h-[32px] text-[#009296]" />
-                  </div>
-                  <h2 className="font-['Inter',sans-serif] text-[24px] font-medium text-[#003b3c] mb-[12px]">
-                    Check Your Email
-                  </h2>
-                  <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] mb-[8px]">
-                    We've sent password reset instructions to:
-                  </p>
-                  <p className="font-['Inter',sans-serif] text-[14px] font-medium text-[#003b3c] mb-[24px]">
-                    {forgotPasswordEmail}
-                  </p>
-                  <p className="font-['Inter',sans-serif] text-[12px] text-[#406c6d] mb-[32px]">
-                    Didn't receive the email? Check your spam folder or try again with a different email address.
-                  </p>
-                  <button
-                    onClick={handleCloseForgotPassword}
-                    className="w-full h-[48px] rounded-[8px] bg-[#009296] hover:bg-[#007d81] transition-colors font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase flex items-center justify-center"
-                  >
-                    Got It
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      </div>
       
       {/* Edit Address Modal */}
       {editingAddressId && savedAddresses.find(a => a.id === editingAddressId) && (
@@ -2824,6 +2983,14 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
           }}
         />
       )}
+      
+      {/* Email Verification Modal */}
+      <EmailVerificationModal
+        isOpen={showVerificationModal}
+        email={email}
+        onClose={() => setShowVerificationModal(false)}
+        onVerified={handleEmailVerified}
+      />
     </div>
   );
 }

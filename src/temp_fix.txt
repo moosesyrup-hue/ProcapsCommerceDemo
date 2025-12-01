@@ -1,0 +1,27 @@
+                           <input
+                            type="text"
+                            value={verificationCode}
+                            onChange={(e) => {
+                              // Only allow numbers, max 6 digits
+                              const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+                              setVerificationCode(value);
+                              setLoginError('');
+                            }}
+                            className={`w-full py-[18px] px-[16px] border rounded-[8px] font-['Inter',sans-serif] text-[16px] leading-[20px] text-[#003b3c] focus:outline-none transition-colors placeholder:text-transparent ${
+                              loginError
+                                ? 'border-[#D84315] hover:border-[#D84315] focus:border-[#D84315]'
+                                : 'border-[#D9E2E2] hover:border-[#003b3c] focus:border-[#003b3c]'
+                            }`}
+                            placeholder="Verification code"
+                            maxLength={6}
+                            autoComplete="one-time-code"
+                            autoFocus
+                          />
+                          {/* Floating label */}
+                          {verificationCode.length > 0 && (
+                            <label className={`absolute left-[12px] top-[-8px] px-[4px] bg-white font-['Inter',sans-serif] text-[12px] pointer-events-none ${
+                              loginError ? 'text-[#D84315]' : 'text-[#406c6d]'
+                            }`}>
+                              Verification code
+                            </label>
+                          )}

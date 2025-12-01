@@ -340,7 +340,7 @@ export default function OrderConfirmationPage({
                   stroke="white"
                   strokeWidth="3"
                   strokeLinecap="round"
-                  strokeLinejejoin="round"
+                  strokeLinejoin="round"
                   className="stroke-dasharray-[24] stroke-dashoffset-[24] animate-[check-stroke_0.5s_cubic-bezier(0.65,0,0.45,1)_0.4s_forwards]"
                   style={{
                     strokeDasharray: '24',
@@ -588,6 +588,24 @@ export default function OrderConfirmationPage({
                   Continue Shopping
                 </button>
               </div>
+            </div>
+
+            {/* Order Status & Account Card */}
+            <div className="bg-white rounded-[12px] border border-[#e0e0e0] p-[24px]">
+              <h3 className="font-['Inter',sans-serif] text-[20px] font-medium text-[#003b3c] mb-[16px]">
+                Order Status & Account
+              </h3>
+              
+              <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] mb-[20px] leading-relaxed">
+                You can check your order status anytime by logging in with your email address.
+              </p>
+
+              <button
+                onClick={onAccountClick}
+                className="w-full px-[16px] py-[12px] bg-[#009296] rounded-[8px] font-['Inter',sans-serif] text-[16px] font-medium text-white hover:bg-[#007a7d] transition-colors"
+              >
+                Log In
+              </button>
             </div>
 
             {/* Support Card */}

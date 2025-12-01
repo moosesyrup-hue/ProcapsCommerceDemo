@@ -786,6 +786,10 @@
     margin-right: -20px;
   }
 
+  .mr-\[8px\] {
+    margin-right: 8px;
+  }
+
   .mb-0 {
     margin-bottom: calc(var(--spacing) * 0);
   }
@@ -1067,10 +1071,6 @@
     height: 3px;
   }
 
-  .h-\[4px\] {
-    height: 4px;
-  }
-
   .h-\[6px\] {
     height: 6px;
   }
@@ -1105,10 +1105,6 @@
 
   .h-\[26px\] {
     height: 26px;
-  }
-
-  .h-\[32px\] {
-    height: 32px;
   }
 
   .h-\[36px\] {
@@ -1153,6 +1149,10 @@
 
   .h-\[64px\] {
     height: 64px;
+  }
+
+  .h-\[72px\] {
+    height: 72px;
   }
 
   .h-\[80px\] {
@@ -1279,10 +1279,6 @@
     width: 26px;
   }
 
-  .w-\[32px\] {
-    width: 32px;
-  }
-
   .w-\[36px\] {
     width: 36px;
   }
@@ -1297,6 +1293,10 @@
 
   .w-\[46px\] {
     width: 46px;
+  }
+
+  .w-\[48px\] {
+    width: 48px;
   }
 
   .w-\[56px\] {
@@ -1650,10 +1650,6 @@
     gap: 2px;
   }
 
-  .gap-\[4px\] {
-    gap: 4px;
-  }
-
   .gap-\[6px\] {
     gap: 6px;
   }
@@ -1794,6 +1790,12 @@
     margin-block-end: calc(24px * calc(1 - var(--tw-space-y-reverse)));
   }
 
+  :where(.space-y-\[32px\] > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(32px * var(--tw-space-y-reverse));
+    margin-block-end: calc(32px * calc(1 - var(--tw-space-y-reverse)));
+  }
+
   :where(.space-y-\[40px\] > :not(:last-child)) {
     --tw-space-y-reverse: 0;
     margin-block-start: calc(40px * var(--tw-space-y-reverse));
@@ -1840,6 +1842,10 @@
 
   .scroll-smooth {
     scroll-behavior: smooth;
+  }
+
+  .rounded {
+    border-radius: .25rem;
   }
 
   .rounded-2xl {
@@ -2003,10 +2009,6 @@
     border-color: #d84315;
   }
 
-  .border-\[\#FF9800\] {
-    border-color: #ff9800;
-  }
-
   .border-\[\#FFD54F\] {
     border-color: #ffd54f;
   }
@@ -2067,16 +2069,8 @@
     background-color: #d9e2e2;
   }
 
-  .bg-\[\#D84315\] {
-    background-color: #d84315;
-  }
-
   .bg-\[\#E0F7F8\] {
     background-color: #e0f7f8;
-  }
-
-  .bg-\[\#E5E5E5\] {
-    background-color: #e5e5e5;
   }
 
   .bg-\[\#E8F5E9\] {
@@ -2109,14 +2103,6 @@
 
   .bg-\[\#F79E1B\] {
     background-color: #f79e1b;
-  }
-
-  .bg-\[\#FF9800\] {
-    background-color: #ff9800;
-  }
-
-  .bg-\[\#FFF3E0\] {
-    background-color: #fff3e0;
   }
 
   .bg-\[\#FFF9E6\] {
@@ -2482,6 +2468,10 @@
     padding-block: calc(var(--spacing) * 8);
   }
 
+  .py-\[1px\] {
+    padding-block: 1px;
+  }
+
   .py-\[2px\] {
     padding-block: 2px;
   }
@@ -2708,6 +2698,10 @@
 
   .font-\[\'STIX_Two_Text\:Regular\'\,sans-serif\] {
     font-family: STIX Two Text\:Regular, sans-serif;
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
   }
 
   .text-2xl {
@@ -2963,6 +2957,11 @@
     letter-spacing: 1.6px;
   }
 
+  .tracking-\[1\.68px\] {
+    --tw-tracking: 1.68px;
+    letter-spacing: 1.68px;
+  }
+
   .tracking-\[1\.92px\] {
     --tw-tracking: 1.92px;
     letter-spacing: 1.92px;
@@ -2971,6 +2970,11 @@
   .tracking-\[2px\] {
     --tw-tracking: 2px;
     letter-spacing: 2px;
+  }
+
+  .tracking-\[8px\] {
+    --tw-tracking: 8px;
+    letter-spacing: 8px;
   }
 
   .text-nowrap {
@@ -3027,10 +3031,6 @@
 
   .text-\[\#D84315\] {
     color: #d84315;
-  }
-
-  .text-\[\#FF9800\] {
-    color: #ff9800;
   }
 
   .text-\[rgb\(0\,59\,60\)\] {
@@ -3321,8 +3321,8 @@
     display: none;
   }
 
-  .placeholder\:text-\[\#999999\]::placeholder {
-    color: #999;
+  .placeholder\:text-\[\#406c6d\]::placeholder {
+    color: #406c6d;
   }
 
   .placeholder\:text-\[\#C2CFCF\]::placeholder {
@@ -3366,14 +3366,6 @@
   .last\:border-b-0:last-child {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 0;
-  }
-
-  .checked\:border-\[\#009296\]:checked {
-    border-color: #009296;
-  }
-
-  .checked\:bg-\[\#009296\]:checked {
-    background-color: #009296;
   }
 
   @media (hover: hover) {
@@ -3689,6 +3681,10 @@
     background-color: #c2cfcf;
   }
 
+  .disabled\:bg-\[\#D9E2E2\]:disabled {
+    background-color: #d9e2e2;
+  }
+
   .disabled\:bg-\[\#F5F9F9\]:disabled {
     background-color: #f5f9f9;
   }
@@ -3703,6 +3699,12 @@
 
   .disabled\:opacity-50:disabled {
     opacity: .5;
+  }
+
+  @media (hover: hover) {
+    .disabled\:hover\:bg-\[\#009296\]:disabled:hover {
+      background-color: #009296;
+    }
   }
 
   @media (hover: hover) {
@@ -4184,6 +4186,18 @@
   @media (width >= 40rem) {
     .sm\:grid-cols-3 {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (width >= 40rem) {
+    .sm\:flex-row {
+      flex-direction: row;
+    }
+  }
+
+  @media (width >= 40rem) {
+    .sm\:items-center {
+      align-items: center;
     }
   }
 
