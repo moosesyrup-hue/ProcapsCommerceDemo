@@ -204,53 +204,6 @@ export default function FilterSidebar({ onClose, filters, setFilters }: {
               </div>
             )}
 
-            {/* A-Z Product Name Filter */}
-            <div className="w-full mb-[30px]">
-              <p className="font-['Inter',sans-serif] font-medium text-[20px] text-[#003b3c] mb-[16px]">
-                Browse A-Z
-              </p>
-              
-              {/* Alphabet Grid - 2 rows with even distribution */}
-              <div className="grid grid-cols-7 gap-[6px]">
-                {/* All letters A-Z */}
-                {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'].map((letter) => {
-                  const isActive = filters.alphabet === letter;
-                  const hasProducts = true; // TODO: Calculate based on actual products
-                  
-                  return (
-                    <button
-                      key={letter}
-                      onClick={() => {
-                        setFilters(prev => ({
-                          ...prev,
-                          alphabet: isActive ? undefined : letter
-                        }));
-                      }}
-                      disabled={!hasProducts}
-                      className={`
-                        h-[36px] rounded-[6px] flex items-center justify-center
-                        font-['Inter',sans-serif] font-medium text-[14px]
-                        transition-all duration-200
-                        ${isActive 
-                          ? 'bg-[#009296] text-white shadow-sm' 
-                          : hasProducts
-                            ? 'bg-[#EBF6F4] text-[#003b3c] hover:bg-[#009296] hover:text-white'
-                            : 'bg-gray-100 text-gray-300 cursor-not-allowed'
-                        }
-                      `}
-                    >
-                      {letter}
-                    </button>
-                  );
-                })}
-                {/* Empty placeholders to fill the last row */}
-                <div className="h-[36px]"></div>
-                <div className="h-[36px]"></div>
-              </div>
-              
-              <div className="h-0 w-full border-t border-[#D9E2E2] mt-[30px]" />
-            </div>
-
             {/* Categories Section */}
             <div className="w-full">
               <div className="border-b border-[#D9E2E2] pb-[30px]">
