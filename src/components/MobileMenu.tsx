@@ -8,6 +8,7 @@ interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   onNavigate?: (category: string) => void;
+  onIngredientsClick?: () => void;
 }
 
 type MenuLevel = 'main' | 'shop';
@@ -199,7 +200,7 @@ const itemVariants = {
   })
 };
 
-export default function MobileMenu({ isOpen, onClose, onNavigate }: MobileMenuProps) {
+export default function MobileMenu({ isOpen, onClose, onNavigate, onIngredientsClick }: MobileMenuProps) {
   const [menuLevel, setMenuLevel] = useState<MenuLevel>('main');
   const [expandedSection, setExpandedSection] = useState<ExpandedSection>(null);
 
@@ -528,6 +529,10 @@ export default function MobileMenu({ isOpen, onClose, onNavigate }: MobileMenuPr
                       animate="visible"
                       variants={itemVariants}
                       className="content-stretch flex items-center justify-between w-full cursor-pointer"
+                      onClick={() => {
+                        onIngredientsClick?.();
+                        handleClose();
+                      }}
                     >
                       <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.4] not-italic text-[#003b3c] text-[24px] text-nowrap tracking-[-0.48px] whitespace-pre">Ingredients</p>
                     </motion.div>

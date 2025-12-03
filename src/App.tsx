@@ -4,6 +4,11 @@ import CheckoutPage from './components/CheckoutPage';
 import OrderConfirmationPage from './components/OrderConfirmationPage';
 import FindMySupplementsPage from './components/FindMySupplementsPage';
 import CollectionPage from './components/CollectionPage';
+import FAQPage from './components/FAQPage';
+import PrivacyPolicyPage from './components/PrivacyPolicyPage';
+import TermsOfUsePage from './components/TermsOfUsePage';
+import ShippingReturnsPage from './components/ShippingReturnsPage';
+import IngredientsPage from './components/IngredientsPage';
 import GlobalHeader from './components/GlobalHeader';
 import GlobalFooter from './components/GlobalFooter';
 import MiniCart from './components/MiniCart';
@@ -14,7 +19,7 @@ import imgImage from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png";
 
 export default function App() {
   // Routing state
-  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'checkout' | 'order-confirmation' | 'find-supplements'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'checkout' | 'order-confirmation' | 'find-supplements' | 'faq' | 'privacy-policy' | 'terms-of-use' | 'shipping-returns' | 'ingredients'>('home');
   const [selectedCategory, setSelectedCategory] = useState<string>('digestive-health');
   
   // UI state
@@ -104,6 +109,31 @@ export default function App() {
 
   const handleFindSupplementsClick = () => {
     setCurrentPage('find-supplements');
+  };
+
+  const handleFAQClick = () => {
+    setCurrentPage('faq');
+    window.scrollTo(0, 0);
+  };
+
+  const handlePrivacyPolicyClick = () => {
+    setCurrentPage('privacy-policy');
+    window.scrollTo(0, 0);
+  };
+
+  const handleTermsOfUseClick = () => {
+    setCurrentPage('terms-of-use');
+    window.scrollTo(0, 0);
+  };
+
+  const handleShippingReturnsClick = () => {
+    setCurrentPage('shipping-returns');
+    window.scrollTo(0, 0);
+  };
+
+  const handleIngredientsClick = () => {
+    setCurrentPage('ingredients');
+    window.scrollTo(0, 0);
   };
 
   // Cart handlers
@@ -205,6 +235,8 @@ export default function App() {
           onAccountClick={() => setAccountTrayOpen(!accountTrayOpen)}
           isLoggedIn={isLoggedIn}
           userFirstName={userData?.firstName}
+          onFAQClick={handleFAQClick}
+          onIngredientsClick={handleIngredientsClick}
         />
       )}
 
@@ -217,6 +249,7 @@ export default function App() {
           setCurrentPage('collection');
           setMobileMenuOpen(false);
         }}
+        onIngredientsClick={handleIngredientsClick}
       />
 
       {/* Account Tray */}
@@ -246,6 +279,16 @@ export default function App() {
         />
       ) : currentPage === 'find-supplements' ? (
         <FindMySupplementsPage onClose={handleLogoClick} />
+      ) : currentPage === 'faq' ? (
+        <FAQPage />
+      ) : currentPage === 'privacy-policy' ? (
+        <PrivacyPolicyPage />
+      ) : currentPage === 'terms-of-use' ? (
+        <TermsOfUsePage />
+      ) : currentPage === 'shipping-returns' ? (
+        <ShippingReturnsPage />
+      ) : currentPage === 'ingredients' ? (
+        <IngredientsPage />
       ) : currentPage === 'checkout' ? (
         <CheckoutPage 
           items={cartItems}
@@ -272,7 +315,7 @@ export default function App() {
       )}
 
       {/* Global Footer - Hide on checkout, order confirmation, and find-supplements */}
-      {currentPage !== 'checkout' && currentPage !== 'order-confirmation' && currentPage !== 'find-supplements' && <GlobalFooter />}
+      {currentPage !== 'checkout' && currentPage !== 'order-confirmation' && currentPage !== 'find-supplements' && <GlobalFooter onFAQClick={handleFAQClick} onPrivacyPolicyClick={handlePrivacyPolicyClick} onTermsOfUseClick={handleTermsOfUseClick} onMyAccountClick={() => setAccountTrayOpen(true)} onShippingReturnsClick={handleShippingReturnsClick} onTrackOrderClick={() => setAccountTrayOpen(true)} />}
 
       {/* MiniCart Sheet */}
       <Sheet open={cartOpen} onOpenChange={setCartOpen}>

@@ -116,7 +116,9 @@ export default function GlobalHeader({
   onNavigateToCollection,
   onAccountClick,
   isLoggedIn,
-  userFirstName
+  userFirstName,
+  onFAQClick,
+  onIngredientsClick
 }: { 
   onMenuClick: () => void; 
   onCartClick: () => void;
@@ -126,6 +128,8 @@ export default function GlobalHeader({
   onAccountClick: () => void;
   isLoggedIn?: boolean;
   userFirstName?: string;
+  onFAQClick?: () => void;
+  onIngredientsClick?: () => void;
 }) {
   const [breakpoint, setBreakpoint] = useState<'S' | 'M' | 'L' | 'XL' | 'HD'>('M');
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
@@ -344,6 +348,8 @@ export default function GlobalHeader({
             // Handle navigation to collection page with category
             if (pathOrCategory === 'specials') {
               onSpecialsClick();
+            } else if (pathOrCategory === 'ingredients') {
+              onIngredientsClick?.();
             } else {
               // All other paths are category slugs that go to collection page
               onNavigateToCollection?.(pathOrCategory);

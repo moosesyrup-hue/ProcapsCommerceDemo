@@ -3,7 +3,16 @@ import { Plus, Minus } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 import svgPaths from "../imports/svg-vsxzdz3mbf";
 
-export default function GlobalFooter() {
+interface GlobalFooterProps {
+  onFAQClick?: () => void;
+  onPrivacyPolicyClick?: () => void;
+  onTermsOfUseClick?: () => void;
+  onMyAccountClick?: () => void;
+  onShippingReturnsClick?: () => void;
+  onTrackOrderClick?: () => void;
+}
+
+export default function GlobalFooter({ onFAQClick, onPrivacyPolicyClick, onTermsOfUseClick, onMyAccountClick, onShippingReturnsClick, onTrackOrderClick }: GlobalFooterProps) {
   const [breakpoint, setBreakpoint] = useState<'S' | 'M' | 'L' | 'XL' | 'HD'>('M');
 
   useEffect(() => {
@@ -79,10 +88,25 @@ export default function GlobalFooter() {
                   </AccordionTrigger>
                   <AccordionContent>
                     <div className="font-['Inter',sans-serif] leading-[1.8] text-[14px] text-white pb-[10px]">
-                      <p className="mb-0">My Account</p>
-                      <p className="mb-0">Track Order</p>
+                      <p 
+                        className="mb-0 cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={onMyAccountClick}
+                      >
+                        My Account
+                      </p>
+                      <p 
+                        className="mb-0 cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={onTrackOrderClick}
+                      >
+                        Track Order
+                      </p>
                       <p className="mb-0">Reset Password</p>
-                      <p>Shipping & Returns</p>
+                      <p 
+                        className="cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={onShippingReturnsClick}
+                      >
+                        Shipping & Returns
+                      </p>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -119,7 +143,7 @@ export default function GlobalFooter() {
                   <AccordionContent>
                     <div className="font-['Inter',sans-serif] leading-[1.8] text-[14px] text-white pb-[10px]">
                       <p className="mb-0">Contact</p>
-                      <p>FAQs</p>
+                      <p className="cursor-pointer hover:underline" onClick={onFAQClick}>FAQs</p>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -174,10 +198,25 @@ export default function GlobalFooter() {
                 <div className="flex flex-col gap-[30px] text-white">
                   <p className="font-['Inter',sans-serif] font-medium leading-[1.2] text-[24px]">Account</p>
                   <div className="font-['Inter',sans-serif] leading-[1.8] text-[16px]">
-                    <p className="mb-0">My Account</p>
-                    <p className="mb-0">Track Order</p>
+                    <p 
+                      className="mb-0 cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={onMyAccountClick}
+                    >
+                      My Account
+                    </p>
+                    <p 
+                      className="mb-0 cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={onTrackOrderClick}
+                    >
+                      Track Order
+                    </p>
                     <p className="mb-0">Reset Password</p>
-                    <p>Shipping & Returns</p>
+                    <p 
+                      className="cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={onShippingReturnsClick}
+                    >
+                      Shipping & Returns
+                    </p>
                   </div>
                 </div>
 
@@ -196,7 +235,7 @@ export default function GlobalFooter() {
                   <p className="font-['Inter',sans-serif] font-medium leading-[1.2] text-[24px]">Support</p>
                   <div className="font-['Inter',sans-serif] leading-[1.8] text-[16px]">
                     <p className="mb-0">Contact</p>
-                    <p>FAQs</p>
+                    <p className="cursor-pointer hover:underline" onClick={onFAQClick}>FAQs</p>
                   </div>
                 </div>
               </div>
@@ -222,8 +261,18 @@ export default function GlobalFooter() {
 
             <p className="font-['Inter',sans-serif] leading-[1.8] text-[14px] text-white">
               <span>Copyright © 2024 ProCaps Laboratories, Inc.    </span>
-              <span className="underline">Terms of Use</span>{' '}
-              <span className="underline">Privacy Policy</span>
+              <span 
+                className="underline cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={onTermsOfUseClick}
+              >
+                Terms of Use
+              </span>{' '}
+              <span 
+                className="underline cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={onPrivacyPolicyClick}
+              >
+                Privacy Policy
+              </span>
             </p>
 
             {/* FDA */}
