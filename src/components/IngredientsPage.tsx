@@ -86,42 +86,40 @@ export default function IngredientsPage() {
 
       {/* A-Z Navigation Menu */}
       <div className="w-full bg-white border-b border-[#D9E2E2] sticky top-0 z-10">
-        <div className="w-full py-[16px] md:py-[20px]">
-          <div className="max-w-[1400px] mx-auto pl-[20px] md:pl-[40px]">
-            <div className="flex items-center justify-start gap-[8px] md:gap-[10px] lg:gap-[12px] overflow-x-auto scrollbar-hide pr-[20px] md:pr-[40px]">
-              {allLetters.map((letter) => {
-                const hasIngredients = letter in placeholderIngredients;
-                const isActive = activeLetter === letter;
-                
-                return (
-                  <button
-                    key={letter}
-                    onClick={() => hasIngredients && scrollToLetter(letter)}
-                    disabled={!hasIngredients}
-                    className={`
-                      flex-shrink-0 w-[32px] h-[32px] md:w-[36px] md:h-[36px] lg:w-[40px] lg:h-[40px]
-                      rounded-[6px] font-['Inter:Medium',sans-serif] font-medium
-                      text-[14px] md:text-[15px] lg:text-[16px] transition-all duration-200
-                      ${hasIngredients 
-                        ? isActive 
-                          ? 'bg-[#009296] text-white shadow-sm' 
-                          : 'bg-[#F5F5F5] text-[#003b3c] hover:bg-[#EBF6F4] hover:text-[#009296] cursor-pointer'
-                        : 'bg-transparent text-[#C5C5C5] cursor-not-allowed'
-                      }
-                    `}
-                  >
-                    {letter}
-                  </button>
-                );
-              })}
-            </div>
+        <div className="w-full py-[16px] md:py-[20px] pl-[20px] md:pl-[40px]">
+          <div className="flex items-center justify-start gap-[8px] md:gap-[10px] lg:gap-[12px] overflow-x-auto scrollbar-hide pr-[20px] md:pr-[40px]">
+            {allLetters.map((letter) => {
+              const hasIngredients = letter in placeholderIngredients;
+              const isActive = activeLetter === letter;
+              
+              return (
+                <button
+                  key={letter}
+                  onClick={() => hasIngredients && scrollToLetter(letter)}
+                  disabled={!hasIngredients}
+                  className={`
+                    flex-shrink-0 w-[32px] h-[32px] md:w-[36px] md:h-[36px] lg:w-[40px] lg:h-[40px]
+                    rounded-[6px] font-['Inter:Medium',sans-serif] font-medium
+                    text-[14px] md:text-[15px] lg:text-[16px] transition-all duration-200
+                    ${hasIngredients 
+                      ? isActive 
+                        ? 'bg-[#009296] text-white shadow-sm' 
+                        : 'bg-[#F5F5F5] text-[#003b3c] hover:bg-[#EBF6F4] hover:text-[#009296] cursor-pointer'
+                      : 'bg-transparent text-[#C5C5C5] cursor-not-allowed'
+                    }
+                  `}
+                >
+                  {letter}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
 
       {/* Ingredients List */}
       <div className="w-full px-[20px] md:px-[40px] py-[40px] md:py-[60px]">
-        <div className="max-w-[1400px] mx-auto">
+        <div>
           {Object.entries(placeholderIngredients).map(([letter, ingredients], index) => (
             <div key={letter} id={`letter-${letter}`}>
               {/* Letter Section */}
