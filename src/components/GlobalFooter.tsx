@@ -100,7 +100,6 @@ export default function GlobalFooter({ onFAQClick, onPrivacyPolicyClick, onTerms
                       >
                         Track Order
                       </p>
-                      <p className="mb-0">Reset Password</p>
                       <p 
                         className="cursor-pointer hover:opacity-80 transition-opacity"
                         onClick={onShippingReturnsClick}
@@ -210,7 +209,6 @@ export default function GlobalFooter({ onFAQClick, onPrivacyPolicyClick, onTerms
                     >
                       Track Order
                     </p>
-                    <p className="mb-0">Reset Password</p>
                     <p 
                       className="cursor-pointer hover:opacity-80 transition-opacity"
                       onClick={onShippingReturnsClick}
