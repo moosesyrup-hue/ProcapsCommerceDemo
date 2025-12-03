@@ -1125,6 +1125,10 @@
     height: 26px;
   }
 
+  .h-\[28px\] {
+    height: 28px;
+  }
+
   .h-\[32px\] {
     height: 32px;
   }
@@ -1299,6 +1303,10 @@
 
   .w-\[26px\] {
     width: 26px;
+  }
+
+  .w-\[28px\] {
+    width: 28px;
   }
 
   .w-\[32px\] {
@@ -2223,6 +2231,16 @@
 
   .bg-white {
     background-color: var(--color-white);
+  }
+
+  .bg-white\/20 {
+    background-color: #fff3;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .bg-white\/20 {
+      background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
+    }
   }
 
   .bg-white\/80 {
@@ -3226,6 +3244,16 @@
     }
   }
 
+  .text-white\/90 {
+    color: #ffffffe6;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .text-white\/90 {
+      color: color-mix(in oklab, var(--color-white) 90%, transparent);
+    }
+  }
+
   .uppercase {
     text-transform: uppercase;
   }
@@ -3637,6 +3665,18 @@
   }
 
   @media (hover: hover) {
+    .hover\:bg-white\/95:hover {
+      background-color: #fffffff2;
+    }
+
+    @supports (color: color-mix(in lab, red, red)) {
+      .hover\:bg-white\/95:hover {
+        background-color: color-mix(in oklab, var(--color-white) 95%, transparent);
+      }
+    }
+  }
+
+  @media (hover: hover) {
     .hover\:text-\[\#003b3c\]:hover {
       color: #003b3c;
     }
@@ -3997,6 +4037,12 @@
   @media (width >= 1440px) {
     .xl\:w-\[300px\] {
       width: 300px;
+    }
+  }
+
+  @media (width >= 1440px) {
+    .xl\:w-\[360px\] {
+      width: 360px;
     }
   }
 
@@ -4675,6 +4721,12 @@
   }
 
   @media (width >= 48rem) {
+    .md\:p-\[40px\] {
+      padding: 40px;
+    }
+  }
+
+  @media (width >= 48rem) {
     .md\:px-\[20px\] {
       padding-inline: 20px;
     }
@@ -4787,6 +4839,12 @@
   }
 
   @media (width >= 48rem) {
+    .md\:text-\[32px\] {
+      font-size: 32px;
+    }
+  }
+
+  @media (width >= 48rem) {
     .md\:text-\[38px\] {
       font-size: 38px;
     }
@@ -4821,6 +4879,12 @@
   @media (width >= 1280px) {
     .lg\:top-\[40px\] {
       top: 40px;
+    }
+  }
+
+  @media (width >= 1280px) {
+    .lg\:top-\[140px\] {
+      top: 140px;
     }
   }
 
@@ -4885,6 +4949,12 @@
   }
 
   @media (width >= 1280px) {
+    .lg\:w-\[320px\] {
+      width: 320px;
+    }
+  }
+
+  @media (width >= 1280px) {
     .lg\:w-\[1200px\] {
       width: 1200px;
     }
@@ -4903,8 +4973,20 @@
   }
 
   @media (width >= 1280px) {
+    .lg\:flex-row {
+      flex-direction: row;
+    }
+  }
+
+  @media (width >= 1280px) {
     .lg\:gap-\[12px\] {
       gap: 12px;
+    }
+  }
+
+  @media (width >= 1280px) {
+    .lg\:gap-\[60px\] {
+      gap: 60px;
     }
   }
 

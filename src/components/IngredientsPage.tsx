@@ -1,6 +1,7 @@
 import CollectionBanner from './CollectionBanner';
 import svgPaths from "../imports/svg-vsxzdz3mbf";
 import { useState, useEffect } from 'react';
+import { Leaf } from 'lucide-react';
 import ingredientsBannerImage from "figma:asset/a7cb9223d250c550dddc253d3871c182ee65cc1d.png";
 
 // Real ingredients data
@@ -79,7 +80,7 @@ export default function IngredientsPage({
     <div className="bg-white w-full">
       {/* Banner */}
       <CollectionBanner 
-        title="Our Ingredients"
+        title="Ingredient Index"
         description="Explore our comprehensive list of high-quality ingredients, each carefully selected for its purity and potency."
         imageSrc={ingredientsBannerImage}
         backgroundColor="#F6F2EC"
@@ -121,36 +122,66 @@ export default function IngredientsPage({
 
       {/* Ingredients List */}
       <div className="w-full px-[20px] md:px-[40px] py-[40px] md:py-[60px]">
-        <div>
-          {Object.entries(placeholderIngredients).map(([letter, ingredients], index) => (
-            <div key={letter} id={`letter-${letter}`}>
-              {/* Letter Section */}
-              <div className="mb-[40px] md:mb-[50px]">
-                {/* Letter Headline */}
-                <h2 className="font-['STIX_Two_Text:Medium',serif] font-medium text-[#003b3c] text-[48px] md:text-[64px] leading-[1.1] tracking-[-0.96px] md:tracking-[-1.28px] mb-[20px] md:mb-[30px]">
-                  {letter}
-                </h2>
+        <div className="flex flex-col lg:flex-row gap-[40px] lg:gap-[60px]">
+          {/* Main Ingredients List - 3 columns on desktop */}
+          <div className="flex-1">
+            {Object.entries(placeholderIngredients).map(([letter, ingredients], index) => (
+              <div key={letter} id={`letter-${letter}`}>
+                {/* Letter Section */}
+                <div className="mb-[40px] md:mb-[50px]">
+                  {/* Letter Headline */}
+                  <h2 className="font-['STIX_Two_Text:Medium',serif] font-medium text-[#003b3c] text-[48px] md:text-[64px] leading-[1.1] tracking-[-0.96px] md:tracking-[-1.28px] mb-[20px] md:mb-[30px]">
+                    {letter}
+                  </h2>
 
-                {/* 3 Column Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-[30px] md:gap-x-[40px] gap-y-[12px] md:gap-y-[16px]">
-                  {ingredients.map((ingredient, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => onNavigateToIngredient && onNavigateToIngredient(ingredient)}
-                      className="font-['Inter',sans-serif] text-[#003b3c] text-[16px] md:text-[18px] leading-[1.6] hover:text-[#009296] transition-colors cursor-pointer text-left"
-                    >
-                      {ingredient}
-                    </button>
-                  ))}
+                  {/* 3 Column Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-[30px] md:gap-x-[40px] gap-y-[12px] md:gap-y-[16px]">
+                    {ingredients.map((ingredient, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => onNavigateToIngredient && onNavigateToIngredient(ingredient)}
+                        className="font-['Inter',sans-serif] text-[#003b3c] text-[16px] md:text-[18px] leading-[1.6] hover:text-[#009296] transition-colors cursor-pointer text-left"
+                      >
+                        {ingredient}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              {/* Divider - Don't show after last section */}
-              {index < Object.entries(placeholderIngredients).length - 1 && (
-                <div className="w-full h-[1px] bg-[#D9E2E2] mb-[40px] md:mb-[50px]" />
-              )}
+                {/* Divider - Don't show after last section */}
+                {index < Object.entries(placeholderIngredients).length - 1 && (
+                  <div className="w-full h-[1px] bg-[#D9E2E2] mb-[40px] md:mb-[50px]" />
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Sticky Quality Box - 4th column on desktop */}
+          <div className="lg:w-[320px] xl:w-[360px]">
+            <div className="lg:sticky lg:top-[140px]">
+              <div className="bg-[#009296] rounded-[12px] p-[32px] md:p-[40px]">
+                {/* Icon */}
+                <div className="w-[56px] h-[56px] bg-white/20 rounded-full flex items-center justify-center mb-[24px]">
+                  <Leaf className="w-[28px] h-[28px] text-white" />
+                </div>
+
+                {/* Headline */}
+                <h3 className="font-['STIX_Two_Text:Medium',serif] font-medium text-white text-[28px] md:text-[32px] leading-[1.2] tracking-[-0.64px] mb-[16px]">
+                  Committed to 100% Clean
+                </h3>
+
+                {/* Description */}
+                <p className="font-['Inter',sans-serif] text-white/90 text-[16px] leading-[1.6] mb-[24px]">
+                  Every ingredient we use is carefully selected for its purity, potency, and scientific backing. We never compromise on quality—only the finest, most effective ingredients make it into our formulas.
+                </p>
+
+                {/* Button */}
+                <button className="w-full bg-white text-[#009296] rounded-full px-[24px] py-[14px] font-['Inter:Medium',sans-serif] font-medium text-[16px] hover:bg-white/95 transition-colors">
+                  See Our No List
+                </button>
+              </div>
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </div>
