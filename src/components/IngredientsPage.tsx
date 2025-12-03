@@ -83,7 +83,7 @@ export default function IngredientsPage() {
       />
 
       {/* A-Z Navigation Menu */}
-      <div className="w-full bg-white border-b border-[#D9E2E2] sticky top-0 z-10">
+      <div className="w-full bg-white/95 sticky top-0 z-10">
         <div className="w-full py-[16px] md:py-[20px] pl-[20px] md:pl-[40px]">
           <div className="flex items-center justify-start gap-[8px] md:gap-[10px] lg:gap-[12px] overflow-x-auto scrollbar-hide pr-[20px] md:pr-[40px]">
             {allLetters.map((letter) => {
