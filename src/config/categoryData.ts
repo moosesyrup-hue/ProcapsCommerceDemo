@@ -12,6 +12,7 @@ import imgDigestiveHealth from "figma:asset/b7fb994faa19e600c2f396a1821c1f45aa48
 import imgBeauty from "figma:asset/3fa6bfb0faf85914075f07ca7348c21a8ed08040.png";
 import imgCardiovascular from "figma:asset/b1f564f479c6c5508b63df5d116b737af344df3f.png";
 import imgWeightManagement from "figma:asset/e22a5dae0c39c44393e94eabfc13c48b707c7e06.png";
+import imgAllProducts from "figma:asset/c3a51cf5e0f05ab9016327d22ec28ea4ef6fcd02.png";
 
 export interface CategoryBannerConfig {
   title: string;
@@ -28,10 +29,9 @@ export const categoryData: Record<string, CategoryBannerConfig> = {
   'all-products': {
     title: 'All Products',
     description: 'Explore our complete collection of premium supplements designed to support your health and wellness goals.',
-    svgPath: svgPaths.pdc9e330,
+    imageSrc: imgAllProducts,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   // PLACEHOLDER: Default fallback for any category not yet configured

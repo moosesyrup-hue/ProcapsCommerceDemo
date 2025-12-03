@@ -243,18 +243,22 @@ function ProductGrid({ filtersVisible, onQuickView }: { filtersVisible: boolean;
         {/* Desktop Layout - Original */}
         <div className="hidden lg:block w-full">
           {/* First Row */}
-          <div className="flex gap-[20px] items-center min-h-[425px] xl:min-h-[500px] w-full mb-[20px]">
+          <div className={`grid gap-[20px] items-center min-h-[425px] xl:min-h-[500px] w-full mb-[20px] ${
+            desktopColumns === 3 ? 'grid-cols-3' : 'grid-cols-4'
+          }`}>
             {products.slice(0, desktopColumns).map((product, i) => (
-              <div key={i} className="basis-0 grow self-stretch">
+              <div key={i} className="self-stretch">
                 <ProductCard hasImage={product.hasImage} onQuickView={onQuickView} headline={getHeadline(i)} />
               </div>
             ))}
           </div>
 
           {/* Product Info Row */}
-          <div className="flex gap-[20px] items-start pb-[40px] w-full">
+          <div className={`grid gap-[20px] items-start pb-[40px] w-full ${
+            desktopColumns === 3 ? 'grid-cols-3' : 'grid-cols-4'
+          }`}>
             {[...Array(desktopColumns)].map((_, i) => (
-              <div key={i} className="basis-0 grow">
+              <div key={i}>
                 <div className="box-border flex flex-col gap-[20px] items-start pr-[20px] text-[#003b3c]">
                   <div className="flex flex-col gap-[10px] items-start leading-[1.4] text-[16px] w-full">
                     <p className="font-['Inter',sans-serif] font-medium">Fibermucil</p>
@@ -270,18 +274,22 @@ function ProductGrid({ filtersVisible, onQuickView }: { filtersVisible: boolean;
           </div>
 
           {/* Second Row */}
-          <div className="flex gap-[20px] items-center min-h-[425px] xl:min-h-[500px] w-full mb-[20px]">
+          <div className={`grid gap-[20px] items-center min-h-[425px] xl:min-h-[500px] w-full mb-[20px] ${
+            desktopColumns === 3 ? 'grid-cols-3' : 'grid-cols-4'
+          }`}>
             {products.slice(desktopColumns, desktopColumns * 2).map((product, i) => (
-              <div key={i} className="basis-0 grow self-stretch">
+              <div key={i} className="self-stretch">
                 <ProductCard hasImage={product.hasImage} onQuickView={onQuickView} headline={getHeadline(i + desktopColumns)} />
               </div>
             ))}
           </div>
 
           {/* Product Info Row */}
-          <div className="flex gap-[20px] items-start pb-[40px] w-full">
+          <div className={`grid gap-[20px] items-start pb-[40px] w-full ${
+            desktopColumns === 3 ? 'grid-cols-3' : 'grid-cols-4'
+          }`}>
             {[...Array(desktopColumns)].map((_, i) => (
-              <div key={i} className="basis-0 grow">
+              <div key={i}>
                 <div className="box-border flex flex-col gap-[20px] items-start pr-[20px] text-[#003b3c]">
                   <div className="flex flex-col gap-[10px] items-start leading-[1.4] text-[16px] w-full">
                     <p className="font-['Inter',sans-serif] font-medium">Fibermucil</p>

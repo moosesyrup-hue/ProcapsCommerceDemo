@@ -3148,6 +3148,10 @@
     color: #003b3c;
   }
 
+  .text-\[\#003b3c\]\/60 {
+    color: oklab(31.9433% -.05211 -.0155857 / .6);
+  }
+
   .text-\[\#4CAF50\] {
     color: #4caf50;
   }
@@ -4379,6 +4383,12 @@
   }
 
   @media (width >= 40rem) {
+    .sm\:gap-\[40px\] {
+      gap: 40px;
+    }
+  }
+
+  @media (width >= 40rem) {
     :where(.sm\:space-y-3 > :not(:last-child)) {
       --tw-space-y-reverse: 0;
       margin-block-start: calc(calc(var(--spacing) * 3) * var(--tw-space-y-reverse));
@@ -4557,6 +4567,12 @@
     .sm\:text-xl {
       font-size: var(--text-xl);
       line-height: var(--tw-leading, var(--text-xl--line-height));
+    }
+  }
+
+  @media (width >= 40rem) {
+    .sm\:text-\[16px\] {
+      font-size: 16px;
     }
   }
 

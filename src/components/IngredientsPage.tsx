@@ -1,6 +1,7 @@
 import CollectionBanner from './CollectionBanner';
 import svgPaths from "../imports/svg-vsxzdz3mbf";
 import { useState, useEffect } from 'react';
+import ingredientsBannerImage from "figma:asset/a7cb9223d250c550dddc253d3871c182ee65cc1d.png";
 
 // Real ingredients data
 const placeholderIngredients = {
@@ -32,7 +33,11 @@ const placeholderIngredients = {
 
 const allLetters = '#ABCDEFGHIKLMNOPQRSTUVWZ'.split('');
 
-export default function IngredientsPage() {
+export default function IngredientsPage({ 
+  onNavigateToIngredient 
+}: { 
+  onNavigateToIngredient?: (ingredient: string) => void;
+}) {
   const [activeLetter, setActiveLetter] = useState<string>('A');
 
   // Scroll to section smoothly
@@ -76,10 +81,9 @@ export default function IngredientsPage() {
       <CollectionBanner 
         title="Our Ingredients"
         description="Explore our comprehensive list of high-quality ingredients, each carefully selected for its purity and potency."
-        svgPath={svgPaths.pdc9e330}
+        imageSrc={ingredientsBannerImage}
         backgroundColor="#F6F2EC"
         imageBackgroundColor="#e5ddd3"
-        svgFillColor="#B9B1A8"
       />
 
       {/* A-Z Navigation Menu */}
@@ -130,17 +134,13 @@ export default function IngredientsPage() {
                 {/* 3 Column Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-[30px] md:gap-x-[40px] gap-y-[12px] md:gap-y-[16px]">
                   {ingredients.map((ingredient, idx) => (
-                    <a
+                    <button
                       key={idx}
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        // TODO: Navigate to ingredient detail page
-                      }}
-                      className="font-['Inter',sans-serif] text-[#003b3c] text-[16px] md:text-[18px] leading-[1.6] hover:text-[#009296] transition-colors cursor-pointer"
+                      onClick={() => onNavigateToIngredient && onNavigateToIngredient(ingredient)}
+                      className="font-['Inter',sans-serif] text-[#003b3c] text-[16px] md:text-[18px] leading-[1.6] hover:text-[#009296] transition-colors cursor-pointer text-left"
                     >
                       {ingredient}
-                    </a>
+                    </button>
                   ))}
                 </div>
               </div>

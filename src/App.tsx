@@ -9,6 +9,7 @@ import PrivacyPolicyPage from './components/PrivacyPolicyPage';
 import TermsOfUsePage from './components/TermsOfUsePage';
 import ShippingReturnsPage from './components/ShippingReturnsPage';
 import IngredientsPage from './components/IngredientsPage';
+import IngredientCollectionPage from './components/IngredientCollectionPage';
 import GlobalHeader from './components/GlobalHeader';
 import GlobalFooter from './components/GlobalFooter';
 import MiniCart from './components/MiniCart';
@@ -19,8 +20,9 @@ import imgImage from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png";
 
 export default function App() {
   // Routing state
-  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'checkout' | 'order-confirmation' | 'find-supplements' | 'faq' | 'privacy-policy' | 'terms-of-use' | 'shipping-returns' | 'ingredients'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'checkout' | 'order-confirmation' | 'find-supplements' | 'faq' | 'privacy-policy' | 'terms-of-use' | 'shipping-returns' | 'ingredients' | 'ingredient-collection'>('home');
   const [selectedCategory, setSelectedCategory] = useState<string>('digestive-health');
+  const [selectedIngredient, setSelectedIngredient] = useState<string>('Vitamin C');
   
   // UI state
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -288,7 +290,25 @@ export default function App() {
       ) : currentPage === 'shipping-returns' ? (
         <ShippingReturnsPage />
       ) : currentPage === 'ingredients' ? (
-        <IngredientsPage />
+        <IngredientsPage 
+          onNavigateToIngredient={(ingredient) => {
+            setSelectedIngredient(ingredient);
+            setCurrentPage('ingredient-collection');
+            window.scrollTo(0, 0);
+          }}
+        />
+      ) : currentPage === 'ingredient-collection' ? (
+        <IngredientCollectionPage 
+          cartItems={cartItems}
+          setCartItems={setCartItems}
+          onOpenCart={() => setCartOpen(true)}
+          ingredient={selectedIngredient}
+          onNavigateToCategory={(category) => {
+            setSelectedCategory(category);
+            setCurrentPage('collection');
+            window.scrollTo(0, 0);
+          }}
+        />
       ) : currentPage === 'checkout' ? (
         <CheckoutPage 
           items={cartItems}
