@@ -2,37 +2,35 @@ import CollectionBanner from './CollectionBanner';
 import svgPaths from "../imports/svg-vsxzdz3mbf";
 import { useState, useEffect } from 'react';
 
-// Placeholder data - will be replaced with real ingredients
+// Real ingredients data
 const placeholderIngredients = {
-  A: ['Alpha-Lipoic Acid', 'Ashwagandha', 'Acai Berry', 'Aloe Vera', 'Astaxanthin', 'Acetyl-L-Carnitine', 'Amino Acids'],
-  B: ['Biotin', 'B-Complex Vitamins', 'Beta-Carotene', 'Bilberry', 'Black Cohosh', 'Boron', 'Bromelain'],
-  C: ['Calcium', 'Chromium', 'Coenzyme Q10', 'Collagen', 'Copper', 'Curcumin', 'Cranberry Extract'],
-  D: ['Vitamin D3', 'DHA', 'DHEA', 'Digestive Enzymes', 'D-Mannose'],
-  E: ['Vitamin E', 'Echinacea', 'Elderberry', 'EPA', 'Evening Primrose Oil'],
-  F: ['Folic Acid', 'Fish Oil', 'Fiber', 'Flaxseed Oil', 'Fenugreek'],
-  G: ['Ginger Root', 'Ginkgo Biloba', 'Ginseng', 'Glucosamine', 'Glutamine', 'Grape Seed Extract', 'Green Tea Extract'],
-  H: ['Hyaluronic Acid', 'Hawthorn Berry', 'Holy Basil', 'Horsetail Extract'],
-  I: ['Iron', 'Inositol', 'Iodine'],
-  J: ['Juniper Berry'],
-  K: ['Vitamin K2', 'Krill Oil', 'Kelp'],
-  L: ['L-Theanine', 'Lutein', 'Lycopene', 'L-Carnitine', 'Licorice Root', 'Lysine'],
-  M: ['Magnesium', 'Manganese', 'Milk Thistle', 'MSM', 'Melatonin', 'Maca Root'],
-  N: ['NAC', 'Niacin', 'Nettle Leaf'],
-  O: ['Omega-3', 'Oregano Oil', 'Olive Leaf Extract'],
-  P: ['Probiotics', 'Phosphatidylserine', 'Peppermint Oil', 'Pine Bark Extract', 'Potassium', 'Psyllium Husk'],
-  Q: ['Quercetin', 'Quinoa Extract'],
-  R: ['Resveratrol', 'Rhodiola Rosea', 'Riboflavin', 'Rose Hips'],
-  S: ['Selenium', 'Spirulina', 'St. John\'s Wort', 'SAM-e', 'Saw Palmetto', 'Silymarin'],
-  T: ['Turmeric', 'Thiamine', 'Taurine', 'Tea Tree Oil', 'Tribulus Terrestris'],
-  U: ['Ubiquinol', 'Uva Ursi'],
-  V: ['Vitamin A', 'Vitamin B6', 'Vitamin B12', 'Vitamin C', 'Valerian Root', 'Vanadium'],
-  W: ['Whey Protein', 'White Willow Bark'],
-  X: ['Xylitol'],
-  Y: ['Yohimbe', 'Yucca Root'],
-  Z: ['Zinc', 'Zeaxanthin'],
+  '#': ['5-HTP'],
+  A: ['Acai Berry', 'Acetyl L-Carnitine', 'Algal Oil', 'Aloe Vera', 'Alpha Lipoic Acid', 'Amino Acid Complex', 'Apple', 'Ashwagandha', 'Asian Ginseng', 'Astaxanthin', 'Astragalus'],
+  B: ['B-Complex Vitamins', 'Bacopa Monnieri', 'Barley Grass', 'Berberine', 'Berberine Phospholipid Complex', 'Bergamot', 'Bifidobacterium Lactis', 'Bilberry', 'Biotin', 'Black Cohosh', 'Black Currant', 'Blackberry', 'Blue-Green Algae', 'Blueberry', 'Branched Chain Amino Acid Complex', 'Broccoli', 'Brussels Sprouts', 'Butcher\'s Broom'],
+  C: ['Calcium', 'Carnitine', 'Chamomile', 'Cherry', 'Chlorella', 'Chokeberry', 'Choline', 'Chondroitin Sulfate', 'Cinnamon', 'Citrus Bioflavonoid Complex', 'Coenzyme Q-10', 'Collagen', 'Cranberry'],
+  D: ['D-Mannose', 'Daidzein', 'Damiana', 'DHA', 'DHEA', 'Digestive Enzymes', 'Diosmin', 'Dong Quai', 'DPA'],
+  E: ['Echinacea', 'EGCG', 'Elderberry', 'Eleuthero', 'EPA', 'Essential Amino Acids', 'Evening Primrose Oil'],
+  F: ['Fermented Pea & Rice Protein', 'Fish Oil', 'Free Range Collagen Peptides'],
+  G: ['Gamma Tocopherol', 'Garlic', 'Genistein', 'Ginger', 'Ginkgo biloba', 'Glucosamine Sulfate', 'Glutamine', 'Glutathione', 'Glycine', 'Goldenseal', 'Grape Seed Extract', 'Grape Skin', 'Green Tea Extract', 'Guarana'],
+  H: ['Hesperidin', 'Hops', 'Horse Chestnut Seed Extract', 'Huperzine Extract'],
+  I: ['Indole-3-Carbinol', 'Iodine', 'Iron'],
+  K: ['Kale'],
+  L: ['Lutein', 'Lycopene', 'Lysine'],
+  M: ['Magnesium', 'Marine Collagen Peptides', 'Melatonin', 'Methyl Folate', 'Mixed Tocopherols', 'Mixed Tocotrienols', 'MSM', 'Mushroom Blend', 'Mustard Seed'],
+  N: ['N-Acetyl Cysteine', 'Natural Vitamin E Complex', 'Niacin'],
+  O: ['Omega-3', 'Oregano'],
+  P: ['Parsley Seed, oil', 'Passionflower', 'Peppermint Oil', 'Phosphatidyl Choline', 'Phosphatidyl Serine', 'Phytoceramides', 'Phytosterols', 'Pine Bark', 'Pomegranate', 'Potassium', 'PQQ', 'Probiotics', 'Protein', 'Psyllium Husk Powder', 'Pumpkin Seed Oil'],
+  Q: ['Quercetin'],
+  R: ['Raspberry', 'Red Cabbage', 'Red Wine', 'Resveratrol', 'Rhodiola rosea', 'Rosemary', 'Royal Jelly', 'Rutin'],
+  S: ['Saffron Extract', 'Sage', 'Saw Palmetto', 'Silymarin', 'Soy Isoflavones', 'Soy Lecithin Granules', 'Soy Lecithin Oil', 'Soy Protein', 'Spearmint Oil', 'Spirulina', 'Strawberry'],
+  T: ['Taurine', 'Tea', 'Theanine', 'Thyme', 'Turmeric (Curcumin)'],
+  U: ['UC-II® Chicken Cartilage'],
+  V: ['Valerian', 'Vinpocetine', 'Vitamin B12', 'Vitamin C', 'Vitamin D3', 'Vitamin E', 'Vitamin K-2 MK-7', 'Vitex Agnus'],
+  W: ['Wasabi', 'Wheat Grass', 'Whey Protein', 'White Tea'],
+  Z: ['Zeaxanthin', 'Zinc'],
 };
 
-const allLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const allLetters = '#ABCDEFGHIKLMNOPQRSTUVWZ'.split('');
 
 export default function IngredientsPage() {
   const [activeLetter, setActiveLetter] = useState<string>('A');
