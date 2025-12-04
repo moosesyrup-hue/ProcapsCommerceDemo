@@ -30,6 +30,9 @@ export default function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const [accountTrayOpen, setAccountTrayOpen] = useState(false);
   
+  // Help page reset key - increments to reset the page when navigating to it
+  const [helpPageKey, setHelpPageKey] = useState(0);
+  
   // User/Auth state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState<{
@@ -135,6 +138,7 @@ export default function App() {
   };
 
   const handleHelpClick = () => {
+    setHelpPageKey(prevKey => prevKey + 1);
     setCurrentPage('help');
     window.scrollTo(0, 0);
   };
@@ -297,7 +301,7 @@ export default function App() {
       ) : currentPage === 'shipping-returns' ? (
         <ShippingReturnsPage />
       ) : currentPage === 'help' ? (
-        <HelpPage />
+        <HelpPage key={helpPageKey} />
       ) : currentPage === 'ingredients' ? (
         <IngredientsPage 
           onNavigateToIngredient={(ingredient) => {
