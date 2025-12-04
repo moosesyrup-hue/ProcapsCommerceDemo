@@ -13,6 +13,7 @@ import imgBeauty from "figma:asset/3fa6bfb0faf85914075f07ca7348c21a8ed08040.png"
 import imgCardiovascular from "figma:asset/b1f564f479c6c5508b63df5d116b737af344df3f.png";
 import imgWeightManagement from "figma:asset/e22a5dae0c39c44393e94eabfc13c48b707c7e06.png";
 import imgAllProducts from "figma:asset/c3a51cf5e0f05ab9016327d22ec28ea4ef6fcd02.png";
+import imgVisionHealth from "figma:asset/d6a744d8ff1946177a6e3fd0edd10cda227a66ef.png";
 
 export interface CategoryBannerConfig {
   title: string;
@@ -265,10 +266,9 @@ export const categoryData: Record<string, CategoryBannerConfig> = {
   'vision-health': {
     title: 'Vision Health',
     description: 'Protect and support your eye health.',
-    svgPath: svgPaths.pdc9e330, // TODO: Replace with actual SVG/image
+    imageSrc: imgVisionHealth,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   // WEIGHT MANAGEMENT - Placeholder (ready for content)

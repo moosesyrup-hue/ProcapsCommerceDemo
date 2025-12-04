@@ -8,6 +8,7 @@ import FAQPage from './components/FAQPage';
 import PrivacyPolicyPage from './components/PrivacyPolicyPage';
 import TermsOfUsePage from './components/TermsOfUsePage';
 import ShippingReturnsPage from './components/ShippingReturnsPage';
+import HelpPage from './components/HelpPage';
 import IngredientsPage from './components/IngredientsPage';
 import IngredientCollectionPage from './components/IngredientCollectionPage';
 import GlobalHeader from './components/GlobalHeader';
@@ -20,7 +21,7 @@ import imgImage from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png";
 
 export default function App() {
   // Routing state
-  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'checkout' | 'order-confirmation' | 'find-supplements' | 'faq' | 'privacy-policy' | 'terms-of-use' | 'shipping-returns' | 'ingredients' | 'ingredient-collection'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'checkout' | 'order-confirmation' | 'find-supplements' | 'faq' | 'privacy-policy' | 'terms-of-use' | 'shipping-returns' | 'help' | 'ingredients' | 'ingredient-collection'>('home');
   const [selectedCategory, setSelectedCategory] = useState<string>('digestive-health');
   const [selectedIngredient, setSelectedIngredient] = useState<string>('Vitamin C');
   
@@ -133,6 +134,11 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
+  const handleHelpClick = () => {
+    setCurrentPage('help');
+    window.scrollTo(0, 0);
+  };
+
   const handleIngredientsClick = () => {
     setCurrentPage('ingredients');
     window.scrollTo(0, 0);
@@ -239,6 +245,7 @@ export default function App() {
           userFirstName={userData?.firstName}
           onFAQClick={handleFAQClick}
           onIngredientsClick={handleIngredientsClick}
+          onHelpClick={handleHelpClick}
         />
       )}
 
@@ -289,6 +296,8 @@ export default function App() {
         <TermsOfUsePage />
       ) : currentPage === 'shipping-returns' ? (
         <ShippingReturnsPage />
+      ) : currentPage === 'help' ? (
+        <HelpPage />
       ) : currentPage === 'ingredients' ? (
         <IngredientsPage 
           onNavigateToIngredient={(ingredient) => {
