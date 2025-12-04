@@ -10,9 +10,10 @@ interface GlobalFooterProps {
   onMyAccountClick?: () => void;
   onShippingReturnsClick?: () => void;
   onTrackOrderClick?: () => void;
+  onContactClick?: () => void;
 }
 
-export default function GlobalFooter({ onFAQClick, onPrivacyPolicyClick, onTermsOfUseClick, onMyAccountClick, onShippingReturnsClick, onTrackOrderClick }: GlobalFooterProps) {
+export default function GlobalFooter({ onFAQClick, onPrivacyPolicyClick, onTermsOfUseClick, onMyAccountClick, onShippingReturnsClick, onTrackOrderClick, onContactClick }: GlobalFooterProps) {
   const [breakpoint, setBreakpoint] = useState<'S' | 'M' | 'L' | 'XL' | 'HD'>('M');
 
   useEffect(() => {
@@ -141,7 +142,7 @@ export default function GlobalFooter({ onFAQClick, onPrivacyPolicyClick, onTerms
                   </AccordionTrigger>
                   <AccordionContent>
                     <div className="font-['Inter',sans-serif] leading-[1.8] text-[14px] text-white pb-[10px]">
-                      <p className="mb-0">Contact</p>
+                      <p className="mb-0 cursor-pointer hover:opacity-80 transition-opacity" onClick={onContactClick}>Contact</p>
                       <p className="cursor-pointer hover:underline" onClick={onFAQClick}>FAQs</p>
                     </div>
                   </AccordionContent>
@@ -232,7 +233,7 @@ export default function GlobalFooter({ onFAQClick, onPrivacyPolicyClick, onTerms
                 <div className="flex flex-col gap-[30px] text-white">
                   <p className="font-['Inter',sans-serif] font-medium leading-[1.2] text-[24px]">Support</p>
                   <div className="font-['Inter',sans-serif] leading-[1.8] text-[16px]">
-                    <p className="mb-0">Contact</p>
+                    <p className="mb-0 cursor-pointer hover:opacity-80 transition-opacity" onClick={onContactClick}>Contact</p>
                     <p className="cursor-pointer hover:underline" onClick={onFAQClick}>FAQs</p>
                   </div>
                 </div>

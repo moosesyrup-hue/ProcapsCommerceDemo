@@ -57,6 +57,15 @@ export default function HelpPage() {
     headlineTracking = 'tracking-[-1.44px]';
   }
 
+  // Determine FAQ section title size based on breakpoint
+  let faqTitleSize = '';
+  if (breakpoint === 'S' || breakpoint === 'M') {
+    faqTitleSize = 'text-[20px]';
+  } else {
+    // L, XL, HD
+    faqTitleSize = 'text-[24px]';
+  }
+
   // Global FAQs (shown by default)
   const globalFAQs: FAQ[] = [
     {
@@ -189,7 +198,7 @@ export default function HelpPage() {
           <h1 className={`font-['STIX_Two_Text:Medium',serif] font-medium text-white ${headlineSize} leading-[1.1] ${headlineTracking} mb-[20px] md:mb-[24px]`}>
             Contact us
           </h1>
-          <p className="font-['Inter',sans-serif] font-light text-[#D4F1F4] text-[18px] md:text-[24px] lg:text-[32px] leading-[1.4] max-w-[1200px]">
+          <p className="font-['Inter',sans-serif] text-[#D4F1F4] text-[20px] leading-[1.4] max-w-[1200px]">
             We're here to help. Browse our FAQs below or reach out to our Vitamin Specialist team to get all the answers you need.
           </p>
         </div>
@@ -225,12 +234,12 @@ export default function HelpPage() {
                       </option>
                     ))}
                   </select>
-                  <ChevronDown className="absolute right-[16px] top-1/2 transform -translate-y-1/2 w-[18px] h-[18px] text-[#003b3c] pointer-events-none" />
+                  <ChevronDown className="absolute right-[16px] top-1/2 transform -translate-y-1/2 w-[20px] h-[20px] text-[#003b3c] pointer-events-none" />
                 </div>
               </div>
 
               {/* FAQ Section Title */}
-              <h2 className="font-['Inter',sans-serif] text-[#003b3c] text-[24px] md:text-[28px] lg:text-[32px] leading-[1.2] mb-[28px] md:mb-[32px]">
+              <h2 className={`font-['Inter:Medium',sans-serif] font-medium text-[#003b3c] ${faqTitleSize} leading-[1.2] mb-[28px] md:mb-[32px]`}>
                 {selectedTopic ? 'Is this what you are looking for?' : 'Most frequently asked...'}
               </h2>
 

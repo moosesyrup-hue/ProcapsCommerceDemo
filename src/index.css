@@ -104,7 +104,6 @@
     --text-5xl--line-height: 1;
     --text-6xl: 3.75rem;
     --text-6xl--line-height: 1;
-    --font-weight-light: 300;
     --font-weight-normal: 400;
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
@@ -3041,11 +3040,6 @@
     line-height: var(--leading-tight);
   }
 
-  .font-light {
-    --tw-font-weight: var(--font-weight-light);
-    font-weight: var(--font-weight-light);
-  }
-
   .font-medium {
     --tw-font-weight: var(--font-weight-medium);
     font-weight: var(--font-weight-medium);
@@ -4950,18 +4944,6 @@
   }
 
   @media (width >= 48rem) {
-    .md\:text-\[24px\] {
-      font-size: 24px;
-    }
-  }
-
-  @media (width >= 48rem) {
-    .md\:text-\[28px\] {
-      font-size: 28px;
-    }
-  }
-
-  @media (width >= 48rem) {
     .md\:text-\[32px\] {
       font-size: 32px;
     }
@@ -5196,12 +5178,6 @@
   @media (width >= 1280px) {
     .lg\:text-\[20px\] {
       font-size: 20px;
-    }
-  }
-
-  @media (width >= 1280px) {
-    .lg\:text-\[32px\] {
-      font-size: 32px;
     }
   }
 
