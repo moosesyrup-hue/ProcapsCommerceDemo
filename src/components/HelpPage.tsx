@@ -211,7 +211,7 @@ export default function HelpPage() {
             {/* Left Side - FAQs */}
             <div className="flex-1">
               {/* Topic Selector Callout */}
-              <div className="bg-[#F5F9F9] rounded-[10px] p-[24px] md:p-[28px] mb-[40px] md:mb-[48px]">
+              <div className="bg-[#F6F2EC] rounded-[10px] p-[24px] md:p-[28px] mb-[40px] md:mb-[48px]">
                 {/* Title */}
                 <h3 className="font-['Inter:Medium',sans-serif] font-medium text-[#003b3c] text-[20px] leading-[1.3] mb-[16px]">
                   What can we help you with today?
@@ -301,7 +301,7 @@ export default function HelpPage() {
             {/* Right Side - Contact Cards */}
             <div className="lg:w-[480px] xl:w-[540px] flex flex-col gap-[20px]">
               {/* Chat Card */}
-              <div className="bg-[#F5F9F9] rounded-[10px] p-[24px] md:p-[30px]">
+              <div className="bg-[#F6F2EC] rounded-[10px] p-[24px] md:p-[30px]">
                 <div className="flex items-start gap-[16px] mb-[20px]">
                   <div className="w-[40px] h-[40px] bg-[#009296] rounded-full flex items-center justify-center flex-shrink-0">
                     <MessageCircle className="w-[20px] h-[20px] text-white" />
@@ -321,7 +321,7 @@ export default function HelpPage() {
               </div>
 
               {/* Phone Card */}
-              <div className="bg-[#F5F9F9] rounded-[10px] p-[24px] md:p-[30px]">
+              <div className="bg-[#F6F2EC] rounded-[10px] p-[24px] md:p-[30px]">
                 <div className="flex items-start gap-[16px] mb-[20px]">
                   <div className="w-[40px] h-[40px] bg-[#009296] rounded-full flex items-center justify-center flex-shrink-0">
                     <Phone className="w-[20px] h-[20px] text-white" />
@@ -341,7 +341,7 @@ export default function HelpPage() {
               </div>
 
               {/* Email Card */}
-              <div className="bg-[#F5F9F9] rounded-[10px] p-[24px] md:p-[30px]">
+              <div className="bg-[#F6F2EC] rounded-[10px] p-[24px] md:p-[30px]">
                 <div className="flex items-start gap-[16px] mb-[20px]">
                   <div className="w-[40px] h-[40px] bg-[#009296] rounded-full flex items-center justify-center flex-shrink-0">
                     <Mail className="w-[20px] h-[20px] text-white" />
