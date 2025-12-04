@@ -155,6 +155,72 @@ export default function HelpPage() {
       ]
     },
     {
+      id: 'gift-cards',
+      label: 'Gift Cards',
+      faqs: [
+        {
+          question: 'How do I purchase a gift card?',
+          answer: 'Gift cards are available for purchase on our website. Simply select the amount, add a personalized message, and check out. The recipient will receive the gift card via email.'
+        },
+        {
+          question: 'Do gift cards expire?',
+          answer: 'No, our gift cards never expire. Your recipient can use them whenever they\'re ready to shop.'
+        },
+        {
+          question: 'Can I use multiple gift cards on one order?',
+          answer: 'Yes, you can apply multiple gift cards to a single order during checkout.'
+        },
+        {
+          question: 'Can I check my gift card balance?',
+          answer: 'Yes, you can check your gift card balance by entering the card number on our gift card balance page or during checkout.'
+        }
+      ]
+    },
+    {
+      id: 'promo-codes',
+      label: 'Promo Codes',
+      faqs: [
+        {
+          question: 'Where do I enter my promo code?',
+          answer: 'You can enter your promo code during checkout. Look for the "Promo Code" field in your order summary before completing your purchase.'
+        },
+        {
+          question: 'Can I use multiple promo codes on one order?',
+          answer: 'Only one promo code can be applied per order. The system will automatically apply the code that gives you the best discount.'
+        },
+        {
+          question: 'Why isn\'t my promo code working?',
+          answer: 'Promo codes may have expiration dates, minimum purchase requirements, or product exclusions. Check the terms of your specific code. If you\'re still having trouble, contact our support team.'
+        },
+        {
+          question: 'Do promo codes work with subscription orders?',
+          answer: 'Most promo codes apply to one-time purchases only. Some special subscription codes may be available - check the specific terms of your code.'
+        }
+      ]
+    },
+    {
+      id: 'money-back-guarantee',
+      label: 'Money Back Guarantee',
+      faqs: [
+        {
+          question: 'What is your money back guarantee?',
+          answer: 'We stand behind our products with a 100% satisfaction guarantee. If you\'re not completely satisfied with any product, we\'ll provide a full refund or replacement.'
+        },
+        {
+          question: 'How long do I have to request a refund?',
+          answer: 'You can request a refund within 30 days of receiving your order. We want you to have enough time to try the product and see results.'
+        },
+        {
+          question: 'Do I need to return the product for a refund?',
+          answer: 'For most refund requests, you\'ll need to return the product. Contact our support team to receive return instructions and a prepaid shipping label.'
+        },
+        {
+          question: 'How will I receive my refund?',
+          answer: 'Refunds are issued to your original payment method within 5-7 business days after we receive your return.'
+        }
+      ]
+    },
+    {
       id: 'account-help',
       label: 'Account Help',
       faqs: [
