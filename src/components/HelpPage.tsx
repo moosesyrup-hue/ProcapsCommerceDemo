@@ -589,7 +589,7 @@ export default function HelpPage() {
                       </div>
                       
                       {/* Text */}
-                      <p className="font-['Inter',sans-serif] text-[#003b3c] text-[16px] md:text-[18px] leading-[1.5]">
+                      <p className="font-['Inter',sans-serif] text-[#003b3c] text-[20px] leading-[1.4]">
                         <span className="font-['Inter:Medium',sans-serif] font-medium">Still can't find answers to your questions?</span> <span className="text-[#009296] underline">Get personalized help</span> from our Vitamin Specialists!
                       </p>
                     </div>
