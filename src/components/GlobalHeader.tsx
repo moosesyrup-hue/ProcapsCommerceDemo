@@ -278,27 +278,20 @@ export default function GlobalHeader({
                     className="cursor-pointer hover:opacity-80 transition-opacity"
                     onMouseEnter={handleOtherNavHover}
                   >
-                    LEARN
+                    QUALITY
                   </p>
                   <p 
                     className="cursor-pointer hover:opacity-80 transition-opacity"
                     onMouseEnter={handleOtherNavHover}
                   >
-                    ABOUT
+                    OUR STORY
                   </p>
-                  <button
-                    onClick={onHelpClick}
-                    className="cursor-pointer hover:opacity-80 transition-opacity"
-                    onMouseEnter={handleOtherNavHover}
-                  >
-                    HELP
-                  </button>
                   <button 
                     onClick={onSpecialsClick} 
                     className="hover:opacity-80 transition-opacity"
                     onMouseEnter={handleOtherNavHover}
                   >
-                    <p>SPECIALS</p>
+                    SPECIALS
                   </button>
                 </div>
               )}
