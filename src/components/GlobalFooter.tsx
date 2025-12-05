@@ -70,7 +70,7 @@ export default function GlobalFooter({ onFAQClick, onPrivacyPolicyClick, onTerms
       <div className={`box-border flex gap-[10px] items-start ${containerPadding} ${verticalPadding}`}>
         <div className={`basis-0 flex flex-col ${headlineGap} grow`}>
           <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.2] ${headlineSize} text-white`}>
-            The supplement brand <span className="text-[#48E1DC]" style={{ fontFamily: "'STIX Two Text', serif", fontStyle: 'italic', fontWeight: 500 }}>trusted</span> for over 45 years.
+            The supplement brand <span className="text-[#48E1DC]" style={{ fontFamily: "'STIX Two Text', serif", fontStyle: 'italic', fontWeight: 400 }}>trusted</span> for over 45 years.
           </p>
 
           {/* Mobile/Tablet Accordion Layout */}

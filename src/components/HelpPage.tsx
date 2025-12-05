@@ -473,7 +473,7 @@ export default function HelpPage() {
       <div className="w-full bg-[#009296] px-[20px] md:px-[40px] py-[40px] md:py-[60px] lg:py-[80px]">
         <div className="w-full">
           <h1 className={`font-['STIX_Two_Text:Medium',serif] font-medium text-white ${headlineSize} leading-[1.1] ${headlineTracking} mb-[20px] md:mb-[24px]`}>
-            We're here to <span className="text-[#48E1DC] not-italic" style={{ fontFamily: "'STIX Two Text', serif", fontStyle: 'italic', fontWeight: 500 }}>help</span>
+            We're here to <span className="text-[#48E1DC] not-italic" style={{ fontFamily: "'STIX Two Text', serif", fontStyle: 'italic', fontWeight: 400 }}>help</span>
           </h1>
           <p className="font-['Inter',sans-serif] text-[#D4F1F4] text-[20px] leading-[1.4] max-w-[1200px]">
             Browse our FAQs below or reach out to our Vitamin Specialist team to get all the answers you need.
