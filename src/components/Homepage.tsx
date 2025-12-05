@@ -689,105 +689,54 @@ function PhactSection({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPat
 }
 
 // Procaps Difference Video Section
-function TopProcaps({ breakpoint }: { breakpoint: Breakpoint }) {
-  const textSize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[34px]' : 'text-[24px]';
-  const tracking = breakpoint === 'HD' || breakpoint === 'XL' ? 'tracking-[-0.68px]' : 'tracking-[-0.24px]';
-
-  return (
-    <div className="content-stretch flex flex-col gap-[30px] items-center relative shrink-0 w-full" data-name="top">
-      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#009296] ${textSize} text-center text-nowrap ${tracking} whitespace-pre`}>The Procaps Difference</p>
-      <div className="h-0 relative shrink-0 w-[100px]" data-name="line">
-        <div className="absolute bottom-0 left-0 right-0 top-[-1px]">
-          <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 100 1">
-            <line stroke="var(--stroke-0, #009296)" x2="100" y1="0.5" y2="0.5" />
-          </svg>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Copy2({ breakpoint }: { breakpoint: Breakpoint }) {
-  const headlineSize = breakpoint === 'HD' ? 'text-[72px]' : breakpoint === 'XL' ? 'text-[54px]' : 'text-[38px]';
-  const tracking = breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : 'tracking-[-0.76px]';
-  const subTextSize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]';
-  const subTextTracking = breakpoint === 'HD' || breakpoint === 'XL' ? 'tracking-[-0.2px]' : 'tracking-[-0.32px]';
-
-  return (
-    <div className="content-stretch flex flex-col gap-[30px] items-start relative shrink-0 text-[#003b3c] text-center w-full" data-name="copy">
-      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 ${headlineSize} ${tracking} w-full`}>Evolving with science, maximizing efficacy for you.</p>
-      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 ${subTextSize} ${subTextTracking} w-full`}>At Procaps Labs, innovation is at the heart of everything we do. Just as science is always advancing, we remain committed to evolving alongside it. With each new discovery, we refine our formulas to ensure they reflect the latest scientific breakthroughs. Our dedication to progress allows us to create the most effective, research-backed products possible.</p>
-    </div>
-  );
-}
-
-function Button5() {
-  return (
-    <div className="box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center px-[39px] py-[15px] relative rounded-[999px] shrink-0" data-name="button">
-      <div aria-hidden="true" className="absolute border border-[#009296] border-solid inset-0 pointer-events-none rounded-[999px]" />
-      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[#009296] text-[16px] text-center text-nowrap tracking-[1.92px] uppercase whitespace-pre">LEARN MORE</p>
-    </div>
-  );
-}
-
-function HeaderGroup({ breakpoint }: { breakpoint: Breakpoint }) {
-  const padding = breakpoint === 'HD' ? 'px-[220px]' : breakpoint === 'XL' ? 'px-[200px]' : 'px-[190px]';
-
-  return (
-    <div className="relative shrink-0 w-full" data-name="header GROUP">
-      <div className="flex flex-col items-center size-full">
-        <div className={`box-border content-stretch flex flex-col gap-[50px] items-center ${padding} py-0 relative w-full`}>
-          <TopProcaps breakpoint={breakpoint} />
-          <Copy2 breakpoint={breakpoint} />
-          <Button5 />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Play1({ svgPaths }: { svgPaths: any }) {
-  return (
-    <div className="relative shrink-0 size-[91px]" data-name="play">
-      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 91 91">
-        <g id="play">
-          <circle cx="45.5" cy="45.5" fill="var(--fill-0, white)" fillOpacity="0.15" r="44" stroke="var(--stroke-0, white)" strokeWidth="3" />
-          <path d={svgPaths.p3f714600} fill="var(--fill-0, white)" />
-        </g>
-      </svg>
-    </div>
-  );
-}
-
-function Video1({ svgPaths }: { svgPaths: any }) {
-  return (
-    <div className="aspect-[1060/658] bg-[#c4c4c4] relative rounded-[20px] shrink-0 w-full" data-name="video">
-      <div className="flex flex-row items-center justify-center size-full">
-        <div className="aspect-[1060/658] box-border content-stretch flex gap-[10px] items-center justify-center px-[288px] py-[339px] relative size-full">
-          <Play1 svgPaths={svgPaths} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Columns2({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
-  return (
-    <div className="basis-0 content-stretch flex flex-col gap-[120px] grow items-center min-h-px min-w-[1060px] relative shrink-0" data-name="columns">
-      <HeaderGroup breakpoint={breakpoint} />
-      <Video1 svgPaths={svgPaths} />
-    </div>
-  );
-}
-
 function ProcapsDifferenceVideo({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
-  const padding = breakpoint === 'HD' ? 'px-[400px] py-[80px]' : breakpoint === 'XL' ? 'px-[350px] py-[70px]' : 'px-[310px] py-[60px]';
+  const headlineSize = breakpoint === 'HD' ? 'text-[72px]' : breakpoint === 'XL' ? 'text-[54px]' : 'text-[38px]';
+  const headlineTracking = breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : 'tracking-[-0.76px]';
+  const labelSize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[34px]' : 'text-[24px]';
+  const labelTracking = breakpoint === 'HD' || breakpoint === 'XL' ? 'tracking-[-0.34px]' : 'tracking-[-0.24px]';
+  const bodySize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]';
+  const bodyTracking = breakpoint === 'HD' || breakpoint === 'XL' ? 'tracking-[-0.4px]' : 'tracking-[-0.32px]';
+  const padding = breakpoint === 'HD' ? 'px-[200px]' : breakpoint === 'XL' ? 'px-[150px]' : 'px-[100px]';
 
   return (
-    <div className="relative shrink-0 w-full" data-name="Procaps Difference +Video">
-      <div className="flex flex-row justify-center overflow-clip rounded-[inherit] size-full">
-        <div className={`box-border content-stretch flex gap-[140px] items-start justify-center ${padding} relative w-full`}>
-          <Columns2 breakpoint={breakpoint} svgPaths={svgPaths} />
+    <div className={`flex flex-col items-center py-[60px] ${padding} w-full`}>
+      <div className="flex flex-col items-center gap-[120px] max-w-[1060px] w-full">
+        {/* Header Section */}
+        <div className="flex flex-col items-center gap-[50px] w-full max-w-[900px]">
+          {/* Label with underline */}
+          <div className="flex flex-col items-center gap-[30px]">
+            <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] text-[#009296] ${labelSize} ${labelTracking} text-center`}>
+              The Procaps Difference
+            </p>
+            <div className="w-[100px] h-[1px] bg-[#009296]" />
+          </div>
+
+          {/* Copy */}
+          <div className="flex flex-col items-center gap-[30px] text-center w-full">
+            <h2 className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] text-[#003b3c] ${headlineSize} ${headlineTracking}`}>
+              Evolving with science, maximizing efficacy for you.
+            </h2>
+            <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] text-[#003b3c] ${bodySize} ${bodyTracking}`}>
+              At Procaps Labs, innovation is at the heart of everything we do. Just as science is always advancing, we remain committed to evolving alongside it. With each new discovery, we refine our formulas to ensure they reflect the latest scientific breakthroughs. Our dedication to progress allows us to create the most effective, research-backed products possible.
+            </p>
+          </div>
+
+          {/* Button */}
+          <button className="flex items-center justify-center h-[50px] px-[39px] py-[15px] rounded-full border border-[#009296]">
+            <span className="font-['Inter:Medium',sans-serif] font-medium text-[#009296] text-[16px] tracking-[1.92px] uppercase">
+              LEARN MORE
+            </span>
+          </button>
+        </div>
+
+        {/* Video */}
+        <div className="relative w-full aspect-[1060/658] bg-[#c4c4c4] rounded-[20px] flex items-center justify-center">
+          <div className="size-[91px]">
+            <svg className="block size-full" fill="none" viewBox="0 0 91 91">
+              <circle cx="45.5" cy="45.5" fill="white" fillOpacity="0.15" r="44" stroke="white" strokeWidth="3" />
+              <path d={svgPaths.p3f714600} fill="white" />
+            </svg>
+          </div>
         </div>
       </div>
     </div>
