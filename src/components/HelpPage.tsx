@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown, Plus, Minus, MessageCircle, Phone, Mail, ArrowLeft, Check, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import customerServiceRep from 'figma:asset/bf0b8e1121e258554f98cce7441d22a3f99dc7f9.png';
 
 interface FAQ {
   question: string;
@@ -18,6 +19,9 @@ export default function HelpPage() {
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
   const [breakpoint, setBreakpoint] = useState<'S' | 'M' | 'L' | 'XL' | 'HD'>('M');
   const [showContactForm, setShowContactForm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [submittedEmail, setSubmittedEmail] = useState('');
   
   // Form state
   const [formData, setFormData] = useState({
@@ -300,20 +304,23 @@ export default function HelpPage() {
     }
     
     // Submit form (demo - just console log)
+    setIsSubmitting(true);
     console.log('Form submitted:', formData);
-    alert('Thank you for contacting us! We\'ll get back to you within 1 business day.');
-    
-    // Reset form
-    setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      orderNumber: '',
-      message: ''
-    });
-    setFormErrors({});
-    setShowContactForm(false);
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setShowSuccess(true);
+      setSubmittedEmail(formData.email);
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        orderNumber: '',
+        message: ''
+      });
+      setFormErrors({});
+      setShowContactForm(false);
+    }, 2000);
   };
 
   const handleCancel = () => {
@@ -466,10 +473,10 @@ export default function HelpPage() {
       <div className="w-full bg-[#009296] px-[20px] md:px-[40px] py-[40px] md:py-[60px] lg:py-[80px]">
         <div className="w-full">
           <h1 className={`font-['STIX_Two_Text:Medium',serif] font-medium text-white ${headlineSize} leading-[1.1] ${headlineTracking} mb-[20px] md:mb-[24px]`}>
-            Contact us
+            We're here to <span className="text-[#48E1DC] not-italic" style={{ fontFamily: "'STIX Two Text', serif", fontStyle: 'italic', fontWeight: 500 }}>help</span>
           </h1>
           <p className="font-['Inter',sans-serif] text-[#D4F1F4] text-[20px] leading-[1.4] max-w-[1200px]">
-            We're here to help. Browse our FAQs below or reach out to our Vitamin Specialist team to get all the answers you need.
+            Browse our FAQs below or reach out to our Vitamin Specialist team to get all the answers you need.
           </p>
         </div>
       </div>
@@ -480,13 +487,13 @@ export default function HelpPage() {
           <div className="flex flex-col lg:flex-row gap-[40px] lg:gap-[80px] xl:gap-[100px]">
             {/* Left Side - FAQs or Contact Form */}
             <div className="flex-1">
-              {!showContactForm ? (
+              {!showContactForm && !showSuccess ? (
                 <>
                   {/* Topic Selector Callout */}
                   <div className="bg-[#F6F2EC] rounded-[10px] p-[24px] md:p-[28px] mb-[40px] md:mb-[48px]">
                     {/* Title */}
                     <h3 className="font-['Inter:Medium',sans-serif] font-medium text-[#003b3c] text-[20px] leading-[1.3] mb-[16px]">
-                      What can we help you with today?
+                      Select a topic for quick answers
                     </h3>
                     
                     {/* Topic Dropdown */}
@@ -568,7 +575,79 @@ export default function HelpPage() {
                       </motion.div>
                     </AnimatePresence>
                   </div>
+
+                  {/* Still Need Help Section */}
+                  <div className="mt-[60px] md:mt-[80px] mb-[40px] md:mb-[60px]">
+                    <div className="flex items-center gap-[20px] md:gap-[24px]">
+                      {/* Circular Image */}
+                      <div className="w-[48px] h-[48px] md:w-[60px] md:h-[60px] rounded-full overflow-hidden flex-shrink-0">
+                        <img 
+                          src={customerServiceRep}
+                          alt="Customer service representative"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      
+                      {/* Text */}
+                      <p className="font-['Inter',sans-serif] text-[#003b3c] text-[16px] md:text-[18px] leading-[1.5]">
+                        <span className="font-['Inter:Medium',sans-serif] font-medium">Still can't find answers to your questions?</span> <span className="text-[#009296] underline">Get personalized help</span> from our Vitamin Specialists!
+                      </p>
+                    </div>
+                  </div>
                 </>
+              ) : showSuccess ? (
+                /* Success State */
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="text-center py-[40px] md:py-[60px]"
+                >
+                  {/* Success Icon */}
+                  <motion.div 
+                    className="w-[80px] h-[80px] md:w-[96px] md:h-[96px] bg-[#009296] rounded-full flex items-center justify-center mx-auto mb-[24px] md:mb-[32px]"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ 
+                      type: "spring",
+                      stiffness: 200,
+                      damping: 15,
+                      delay: 0.1
+                    }}
+                  >
+                    <motion.div
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ 
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 12,
+                        delay: 0.3
+                      }}
+                    >
+                      <Check className="w-[40px] h-[40px] md:w-[48px] md:h-[48px] text-white" strokeWidth={3} />
+                    </motion.div>
+                  </motion.div>
+
+                  {/* Success Message */}
+                  <h2 className={`font-['Inter:Medium',sans-serif] font-medium text-[#003b3c] ${faqTitleSize} leading-[1.2] mb-[16px]`}>
+                    Message sent successfully!
+                  </h2>
+                  <p className="font-['Inter',sans-serif] text-[#406c6d] text-[16px] leading-[1.6] mb-[32px] md:mb-[40px] max-w-[600px] mx-auto">
+                    Thank you for contacting us. We'll get back to you within 1 business day at: <span className="font-['Inter:Medium',sans-serif] font-medium text-[#009296]">{submittedEmail}</span>
+                  </p>
+
+                  {/* Close Button */}
+                  <button
+                    onClick={() => {
+                      setShowSuccess(false);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="bg-[#009296] text-white rounded-full px-[32px] py-[14px] font-['Inter:Medium',sans-serif] font-medium text-[15px] md:text-[16px] hover:bg-[#00b4ae] transition-colors"
+                  >
+                    Close
+                  </button>
+                </motion.div>
               ) : (
                 /* Contact Form */
                 <motion.div
@@ -640,10 +719,25 @@ export default function HelpPage() {
                         type="submit"
                         className="flex-1 bg-[#009296] text-white rounded-full px-[24px] py-[14px] font-['Inter:Medium',sans-serif] font-medium text-[15px] md:text-[16px] hover:bg-[#00b4ae] transition-colors"
                       >
-                        Submit
+                        {isSubmitting ? 'Submitting...' : 'Submit'}
                       </button>
                     </div>
                   </form>
+
+                  {/* Success Message */}
+                  {showSuccess && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                      className="mt-[20px] bg-[#009296] text-white px-[24px] py-[14px] rounded-[8px] shadow-lg"
+                    >
+                      <p className="font-['Inter',sans-serif] text-[16px] leading-[1.6]">
+                        Thank you for contacting us! We\'ll get back to you within 1 business day at <strong>{submittedEmail}</strong>.
+                      </p>
+                    </motion.div>
+                  )}
                 </motion.div>
               )}
             </div>
