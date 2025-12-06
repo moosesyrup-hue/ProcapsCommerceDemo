@@ -90,21 +90,24 @@ function Reviews1({ svgPaths }: { svgPaths: any }) {
 }
 
 function Headline({ breakpoint }: { breakpoint: Breakpoint }) {
-  const headlineSize = breakpoint === 'HD' ? 'text-[72px]' : breakpoint === 'XL' ? 'text-[54px]' : 'text-[38px]';
-  const tracking = breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : 'tracking-[-0.76px]';
+  const headlineSize = breakpoint === 'S' ? 'text-[38px]' : breakpoint === 'HD' ? 'text-[72px]' : breakpoint === 'XL' ? 'text-[54px]' : 'text-[38px]';
+  const tracking = breakpoint === 'S' ? 'tracking-[-0.76px]' : breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : 'tracking-[-0.76px]';
   const subTextSize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]';
+  const nowrapClasses = breakpoint === 'S' ? '' : 'text-nowrap whitespace-pre';
 
   return (
-    <div className="content-stretch flex flex-col gap-[20px] items-center relative shrink-0 text-[#003b3c] text-center text-nowrap w-full whitespace-pre" data-name="headline">
+    <div className={`content-stretch flex flex-col gap-[20px] items-center relative shrink-0 text-[#003b3c] text-center ${nowrapClasses} w-full`} data-name="headline">
       <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[0px] ${headlineSize} ${tracking}`}>
         <span>
-          The supplement brand
-          <br aria-hidden="true" />
+          The supplement brand{breakpoint === 'S' ? ' ' : ''}
+          {breakpoint !== 'S' && <br aria-hidden="true" />}
         </span>
-        <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">trusted</span>
+        <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">{breakpoint === 'S' ? 'trusted' : ' trusted'}</span>
         <span>{` for over 45 years.`}</span>
       </p>
-      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 ${subTextSize}`}>Refresh your mind and mood with our revitalizing products!</p>
+      {breakpoint !== 'S' && (
+        <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 ${subTextSize}`}>Refresh your mind and mood with our revitalizing products!</p>
+      )}
     </div>
   );
 }
@@ -117,9 +120,12 @@ function Button() {
   );
 }
 
-function CarouselDots() {
+function CarouselDots({ breakpoint }: { breakpoint: Breakpoint }) {
+  const bottomPosition = breakpoint === 'S' ? 'bottom-[40px]' : 'bottom-[40.22px]';
+  const leftPosition = breakpoint === 'S' ? 'left-[40px]' : 'left-[42px]';
+
   return (
-    <div className="absolute bottom-[40.22px] h-[13px] left-[42px] w-[59px]" data-name="carousel dots">
+    <div className={`absolute ${bottomPosition} h-[13px] ${leftPosition} w-[59px]`} data-name="carousel dots">
       <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 59 13">
         <g id="carousel dots">
           <circle cx="6.5" cy="6.5" fill="var(--fill-0, #003B3C)" r="6.5" />
@@ -132,11 +138,26 @@ function CarouselDots() {
 }
 
 function CopyGroup({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
-  const width = breakpoint === 'HD' ? 'w-[800px]' : breakpoint === 'XL' ? 'w-[760px]' : 'w-[719px]';
-  const topPos = breakpoint === 'HD' ? 'top-[80px]' : breakpoint === 'XL' ? 'top-[70px]' : 'top-[58px]';
+  const width = breakpoint === 'S' 
+    ? 'w-full px-[30px]'
+    : breakpoint === 'HD' 
+    ? 'w-[800px]' 
+    : breakpoint === 'XL' 
+    ? 'w-[760px]' 
+    : 'w-[719px]';
+  const topPos = breakpoint === 'S' 
+    ? 'top-[40px]' 
+    : breakpoint === 'HD' 
+    ? 'top-[80px]' 
+    : breakpoint === 'XL' 
+    ? 'top-[70px]' 
+    : 'top-[58px]';
+  const horizontalPos = breakpoint === 'S'
+    ? 'left-0 translate-x-0'
+    : 'left-[calc(50%+5px)] translate-x-[-50%]';
 
   return (
-    <div className={`absolute content-stretch flex flex-col gap-[30px] items-center left-[calc(50%+5px)] ${topPos} translate-x-[-50%] ${width}`} data-name="copy GROUP">
+    <div className={`absolute content-stretch flex flex-col gap-[30px] items-center ${horizontalPos} ${topPos} ${width}`} data-name="copy GROUP">
       <Reviews1 svgPaths={svgPathsL} />
       <Headline breakpoint={breakpoint} />
       <Button />
@@ -153,7 +174,7 @@ function Banner({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: an
       <div className="relative shrink-0 w-full" data-name="banner">
         <img alt="" className="w-full h-auto block" src={bannerImage} />
         <div className="absolute inset-0 pointer-events-none">
-          <CarouselDots />
+          <CarouselDots breakpoint={breakpoint} />
           <CopyGroup breakpoint={breakpoint} svgPaths={svgPaths} />
         </div>
       </div>
@@ -164,7 +185,7 @@ function Banner({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: an
   return (
     <div className="relative shrink-0 w-full h-[47.5vw] max-h-[900px]" data-name="banner">
       <img alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" src={bannerImage} />
-      <CarouselDots />
+      <CarouselDots breakpoint={breakpoint} />
       <CopyGroup breakpoint={breakpoint} svgPaths={svgPaths} />
     </div>
   );
@@ -240,49 +261,99 @@ function TickerScroll() {
 }
 
 // 2-Up Module Cards
-function Button1() {
+function Button1({ breakpoint }: { breakpoint: Breakpoint }) {
+  const bottomPosition = breakpoint === 'S' ? 'bottom-[30px]' : 'bottom-[60.42px]';
+
   return (
-    <div className="absolute bg-[#009296] bottom-[60.42px] box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center left-[calc(50%+0.5px)] px-[39px] py-[15px] rounded-[999px] translate-x-[-50%]" data-name="button">
+    <div className={`absolute bg-[#009296] ${bottomPosition} box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center left-[calc(50%+0.5px)] px-[39px] py-[15px] rounded-[999px] translate-x-[-50%]`} data-name="button">
       <p className="font-['Inter:Medium',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[16px] text-center text-nowrap text-white tracking-[1.92px] uppercase whitespace-pre">SHOP OUR SPECIALS</p>
     </div>
   );
 }
 
 function Module({ breakpoint }: { breakpoint: Breakpoint }) {
-  const headlineSize = breakpoint === 'HD' ? 'text-[48px]' : 'text-[34px]';
-  const tracking = breakpoint === 'HD' ? 'tracking-[-0.96px]' : 'tracking-[-0.68px]';
-  const width = breakpoint === 'HD' ? 'w-[650px]' : 'w-[552px]';
+  const headlineSize = breakpoint === 'S'
+    ? 'text-[26px]'
+    : breakpoint === 'M'
+    ? 'text-[24px]'
+    : breakpoint === 'HD' 
+    ? 'text-[48px]' 
+    : 'text-[34px]';
+  const tracking = breakpoint === 'S'
+    ? 'tracking-[-0.52px]'
+    : breakpoint === 'M'
+    ? 'tracking-[-0.48px]'
+    : breakpoint === 'HD' 
+    ? 'tracking-[-0.96px]' 
+    : 'tracking-[-0.68px]';
+  const width = breakpoint === 'S'
+    ? 'w-full px-[30px]'
+    : breakpoint === 'M'
+    ? 'w-full px-[20px]'
+    : breakpoint === 'HD' 
+    ? 'w-[650px]' 
+    : 'w-[552px]';
+  const borderRadius = breakpoint === 'S' || breakpoint === 'M' ? 'rounded-[10px]' : 'rounded-[20px]';
+  const containerClass = breakpoint === 'S' || breakpoint === 'M'
+    ? `aspect-[670/700] w-full overflow-clip relative ${borderRadius} shrink-0`
+    : `aspect-[670/700] basis-0 grow min-h-px min-w-px overflow-clip relative ${borderRadius} shrink-0`;
+  const topPosition = breakpoint === 'S' ? 'top-[30px]' : 'top-[56px]';
 
   return (
-    <div className="aspect-[670/700] basis-0 grow min-h-px min-w-px overflow-clip relative rounded-[20px] shrink-0" data-name="module">
-      <img alt="" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none rounded-[20px] size-full" src={imgModule} />
-      <p className={`absolute font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] left-1/2 text-[#003b3c] text-[0px] ${headlineSize} text-center top-[56px] ${tracking} translate-x-[-50%] ${width}`}>
+    <div className={containerClass} data-name="module">
+      <img alt="" className={`absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none ${borderRadius} size-full`} src={imgModule} />
+      <p className={`absolute font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] left-1/2 text-[#003b3c] text-[0px] ${headlineSize} text-center ${topPosition} ${tracking} translate-x-[-50%] ${width}`}>
         <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">Mother Nature's</span>
         <span>{` most targeted protective molecules.`}</span>
       </p>
-      <Button1 />
+      <Button1 breakpoint={breakpoint} />
     </div>
   );
 }
 
-function Button2() {
+function Button2({ breakpoint }: { breakpoint: Breakpoint }) {
+  const bottomPosition = breakpoint === 'S' ? 'bottom-[30px]' : 'bottom-[60.42px]';
+
   return (
-    <div className="absolute bg-white bottom-[60.42px] box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center left-[calc(50%+1px)] px-[39px] py-[15px] rounded-[999px] translate-x-[-50%]" data-name="button">
+    <div className={`absolute bg-white ${bottomPosition} box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center left-[calc(50%+1px)] px-[39px] py-[15px] rounded-[999px] translate-x-[-50%]`} data-name="button">
       <p className="font-['Inter:Medium',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[#009296] text-[16px] text-center text-nowrap tracking-[1.92px] uppercase whitespace-pre">LEARN MORE</p>
     </div>
   );
 }
 
 function Module1({ breakpoint }: { breakpoint: Breakpoint }) {
-  const headlineSize = breakpoint === 'HD' ? 'text-[48px]' : 'text-[34px]';
-  const tracking = breakpoint === 'HD' ? 'tracking-[-0.96px]' : 'tracking-[-0.68px]';
-  const width = breakpoint === 'HD' ? 'w-[540px]' : 'w-[448px]';
+  const headlineSize = breakpoint === 'S'
+    ? 'text-[26px]'
+    : breakpoint === 'M'
+    ? 'text-[24px]'
+    : breakpoint === 'HD' 
+    ? 'text-[48px]' 
+    : 'text-[34px]';
+  const tracking = breakpoint === 'S'
+    ? 'tracking-[-0.52px]'
+    : breakpoint === 'M'
+    ? 'tracking-[-0.48px]'
+    : breakpoint === 'HD' 
+    ? 'tracking-[-0.96px]' 
+    : 'tracking-[-0.68px]';
+  const width = breakpoint === 'S'
+    ? 'w-full px-[30px]'
+    : breakpoint === 'M'
+    ? 'w-full px-[20px]'
+    : breakpoint === 'HD' 
+    ? 'w-[540px]' 
+    : 'w-[448px]';
+  const borderRadius = breakpoint === 'S' || breakpoint === 'M' ? 'rounded-[10px]' : 'rounded-[20px]';
+  const containerClass = breakpoint === 'S' || breakpoint === 'M'
+    ? `aspect-[670/700] w-full overflow-clip relative ${borderRadius} shrink-0`
+    : `aspect-[670/700] basis-0 grow min-h-px min-w-px overflow-clip relative ${borderRadius} shrink-0`;
+  const topPosition = breakpoint === 'S' ? 'top-[30px]' : 'top-[54.67px]';
 
   return (
-    <div className="aspect-[670/700] basis-0 grow min-h-px min-w-px overflow-clip relative rounded-[20px] shrink-0" data-name="module">
-      <img alt="" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none rounded-[20px] size-full" src={imgModule1} />
-      <Button2 />
-      <p className={`absolute font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] left-1/2 text-[0px] ${headlineSize} text-center text-white top-[54.67px] ${tracking} translate-x-[-50%] ${width}`}>
+    <div className={containerClass} data-name="module">
+      <img alt="" className={`absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none ${borderRadius} size-full`} src={imgModule1} />
+      <Button2 breakpoint={breakpoint} />
+      <p className={`absolute font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] left-1/2 text-[0px] ${headlineSize} text-center text-white ${topPosition} ${tracking} translate-x-[-50%] ${width}`}>
         <span>
           No false promises,
           <br aria-hidden="true" />
@@ -295,10 +366,14 @@ function Module1({ breakpoint }: { breakpoint: Breakpoint }) {
 }
 
 function Component2Up({ breakpoint }: { breakpoint: Breakpoint }) {
+  const flexDirection = breakpoint === 'S' || breakpoint === 'M' ? 'flex-col' : 'flex-row';
+  const padding = breakpoint === 'S' ? 'px-[20px]' : breakpoint === 'M' ? 'px-[30px]' : 'px-[40px]';
+  const gap = breakpoint === 'S' || breakpoint === 'M' ? 'gap-[20px]' : 'gap-[20px]';
+
   return (
     <div className="relative shrink-0 w-full" data-name="2-up">
       <div className="flex flex-row justify-center size-full">
-        <div className="box-border content-stretch flex gap-[20px] items-start justify-center px-[40px] py-0 relative w-full">
+        <div className={`box-border content-stretch flex ${flexDirection} ${gap} items-start justify-center ${padding} py-0 relative w-full`}>
           <Module breakpoint={breakpoint} />
           <Module1 breakpoint={breakpoint} />
         </div>
@@ -767,8 +842,10 @@ function ProcapsDifferenceVideo({ breakpoint, svgPaths }: { breakpoint: Breakpoi
 
 // Body Group
 function BodyGroup({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
+  const verticalSpacing = breakpoint === 'S' ? 'py-[60px] gap-[60px]' : 'py-[80px] gap-[80px]';
+
   return (
-    <div className="box-border content-stretch flex flex-col gap-[80px] items-center px-0 py-[80px] relative shrink-0 w-full" data-name="body group">
+    <div className={`box-border content-stretch flex flex-col items-center px-0 relative shrink-0 w-full ${verticalSpacing}`} data-name="body group">
       <TickerScroll />
       <Component2Up breakpoint={breakpoint} />
       <InformedChoice breakpoint={breakpoint} />

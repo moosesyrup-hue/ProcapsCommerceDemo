@@ -558,6 +558,14 @@
     top: 18px;
   }
 
+  .top-\[30px\] {
+    top: 30px;
+  }
+
+  .top-\[40px\] {
+    top: 40px;
+  }
+
   .top-\[54\.67px\] {
     top: 54.67px;
   }
@@ -642,8 +650,16 @@
     bottom: 13.49px;
   }
 
+  .bottom-\[30px\] {
+    bottom: 30px;
+  }
+
   .bottom-\[40\.22px\] {
     bottom: 40.22px;
+  }
+
+  .bottom-\[40px\] {
+    bottom: 40px;
   }
 
   .bottom-\[60\.42px\] {
@@ -676,6 +692,10 @@
 
   .left-\[16px\] {
     left: 16px;
+  }
+
+  .left-\[40px\] {
+    left: 40px;
   }
 
   .left-\[42px\] {
@@ -1737,6 +1757,11 @@
 
   .-translate-x-1\/2 {
     --tw-translate-x: calc(calc(1 / 2 * 100%) * -1);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+
+  .translate-x-0 {
+    --tw-translate-x: calc(var(--spacing) * 0);
     translate: var(--tw-translate-x) var(--tw-translate-y);
   }
 
@@ -3254,6 +3279,10 @@
     font-size: 24px;
   }
 
+  .text-\[26px\] {
+    font-size: 26px;
+  }
+
   .text-\[28px\] {
     font-size: 28px;
   }
@@ -3439,6 +3468,11 @@
   .tracking-\[-0\.48px\] {
     --tw-tracking: -.48px;
     letter-spacing: -.48px;
+  }
+
+  .tracking-\[-0\.52px\] {
+    --tw-tracking: -.52px;
+    letter-spacing: -.52px;
   }
 
   .tracking-\[-0\.56px\] {
