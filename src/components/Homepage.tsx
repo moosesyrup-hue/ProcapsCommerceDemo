@@ -51,84 +51,96 @@ export default function Homepage() {
   );
 }
 
-// Banner Section
-function Stars({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
-  const height = breakpoint === 'S' ? 'h-[24px]' : 'h-[30px]';
-  const width = breakpoint === 'S' ? 'w-[131px]' : 'w-[164.081px]';
+// Banner Section - Helper functions for consistent spacing
+function getBannerSpacing(breakpoint: Breakpoint) {
+  return {
+    contentTop: breakpoint === 'S' ? 'top-[40px]' : breakpoint === 'M' ? 'top-[58px]' : breakpoint === 'HD' ? 'top-[80px]' : breakpoint === 'XL' ? 'top-[70px]' : 'top-[58px]',
+    contentWidth: breakpoint === 'S' || breakpoint === 'M' ? 'w-full px-[40px]' : breakpoint === 'HD' ? 'w-[800px]' : breakpoint === 'XL' ? 'w-[760px]' : 'w-[719px]',
+    dotsBottom: 'bottom-[40px]',
+    dotsLeft: breakpoint === 'S' ? 'left-[40px]' : 'left-[42px]',
+  };
+}
+
+function getBannerTypography(breakpoint: Breakpoint) {
+  const isDesktop = breakpoint === 'HD' || breakpoint === 'XL';
+  return {
+    headlineSize: breakpoint === 'HD' ? 'text-[72px]' : breakpoint === 'XL' ? 'text-[54px]' : 'text-[38px]',
+    headlineTracking: breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : 'tracking-[-0.76px]',
+    subheadSize: isDesktop ? 'text-[20px]' : 'text-[16px]',
+    starsHeight: breakpoint === 'S' ? 'h-[24px]' : 'h-[30px]',
+    starsWidth: breakpoint === 'S' ? 'w-[131px]' : 'w-[164px]',
+  };
+}
+
+// Flattened 5-star rating display
+function FiveStarRating({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
+  const typography = getBannerTypography(breakpoint);
   
   return (
-    <div className={`[grid-area:1_/_1] ${height} ml-0 mt-0 relative ${width}`} data-name="stars">
-      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 165 30">
-        <g id="stars">
-          <path d={svgPaths.pde64000} fill="var(--fill-0, #F1A33A)" />
-          <path d={svgPaths.p7d06c80} fill="var(--fill-0, #F1A33A)" />
-          <path d={svgPaths.p10eff040} fill="var(--fill-0, #F1A33A)" />
-          <path d={svgPaths.p45c7b80} fill="var(--fill-0, #F1A33A)" />
-          <path d={svgPaths.p3b5a1e00} fill="var(--fill-0, #F1A33A)" />
-        </g>
-      </svg>
-    </div>
-  );
-}
-
-function Reviews({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
-  return (
-    <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0" data-name="reviews">
-      <div className="[grid-area:1_/_1] grid-cols-[max-content] grid-rows-[max-content] inline-grid ml-0 mt-0 place-items-start relative">
-        <div className="[grid-area:1_/_1] grid-cols-[max-content] grid-rows-[max-content] inline-grid ml-0 mt-0 place-items-start relative">
-          <Stars svgPaths={svgPaths} breakpoint={breakpoint} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Reviews1({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
-  return (
     <div className="content-stretch flex flex-col gap-[22px] items-center relative shrink-0 w-[250px]" data-name="reviews">
-      <Reviews svgPaths={svgPaths} breakpoint={breakpoint} />
-      <p className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic leading-[1.4] relative shrink-0 text-[#003b3c] text-[20px] text-center text-nowrap whitespace-pre">50,000+ verified 5-star reviews</p>
+      <div className={`${typography.starsHeight} relative ${typography.starsWidth}`}>
+        <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 165 30">
+          <g id="stars">
+            <path d={svgPaths.pde64000} fill="var(--fill-0, #F1A33A)" />
+            <path d={svgPaths.p7d06c80} fill="var(--fill-0, #F1A33A)" />
+            <path d={svgPaths.p10eff040} fill="var(--fill-0, #F1A33A)" />
+            <path d={svgPaths.p45c7b80} fill="var(--fill-0, #F1A33A)" />
+            <path d={svgPaths.p3b5a1e00} fill="var(--fill-0, #F1A33A)" />
+          </g>
+        </svg>
+      </div>
+      <p className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic leading-[1.4] relative shrink-0 text-[#003b3c] text-[20px] text-center text-nowrap whitespace-pre">
+        50,000+ verified 5-star reviews
+      </p>
     </div>
   );
 }
 
-function Headline({ breakpoint }: { breakpoint: Breakpoint }) {
-  const headlineSize = breakpoint === 'S' ? 'text-[38px]' : breakpoint === 'HD' ? 'text-[72px]' : breakpoint === 'XL' ? 'text-[54px]' : 'text-[38px]';
-  const tracking = breakpoint === 'S' ? 'tracking-[-0.76px]' : breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : 'tracking-[-0.76px]';
-  const subTextSize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]';
-  const nowrapClasses = breakpoint === 'S' ? '' : 'text-nowrap whitespace-pre';
+// Banner headline with responsive text
+function BannerHeadline({ breakpoint }: { breakpoint: Breakpoint }) {
+  const typography = getBannerTypography(breakpoint);
+  const isMobile = breakpoint === 'S';
+  const showSubtext = !isMobile;
+  const nowrapClasses = isMobile ? '' : 'text-nowrap whitespace-pre';
 
   return (
-    <div className={`content-stretch flex flex-col gap-[20px] items-center relative shrink-0 text-[#003b3c] text-center ${nowrapClasses} w-full`} data-name="headline">
-      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[0px] ${headlineSize} ${tracking}`}>
+    <div className={`content-stretch flex flex-col gap-[20px] items-center relative shrink-0 text-[#003b3c] text-center ${nowrapClasses} w-full`}>
+      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[0px] ${typography.headlineSize} ${typography.headlineTracking}`}>
         <span>
-          The supplement brand{breakpoint === 'S' ? ' ' : ''}
-          {breakpoint !== 'S' && <br aria-hidden="true" />}
+          The supplement brand{isMobile ? ' ' : ''}
+          {!isMobile && <br aria-hidden="true" />}
         </span>
-        <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">{breakpoint === 'S' ? 'trusted' : ' trusted'}</span>
+        <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">
+          {isMobile ? 'trusted' : ' trusted'}
+        </span>
         <span>{` for over 45 years.`}</span>
       </p>
-      {breakpoint !== 'S' && (
-        <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 ${subTextSize}`}>Refresh your mind and mood with our revitalizing products!</p>
+      {showSubtext && (
+        <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 ${typography.subheadSize}`}>
+          Refresh your mind and mood with our revitalizing products!
+        </p>
       )}
     </div>
   );
 }
 
-function Button() {
+// Reusable CTA button
+function BannerButton() {
   return (
-    <div className="bg-[#009296] box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center px-[39px] py-[15px] relative rounded-[999px] shrink-0" data-name="button">
-      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[16px] text-center text-nowrap text-white tracking-[1.92px] uppercase whitespace-pre">OUR STORY</p>
+    <div className="bg-[#009296] box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center px-[39px] py-[15px] relative rounded-[999px] shrink-0">
+      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[16px] text-center text-nowrap text-white tracking-[1.92px] uppercase whitespace-pre">
+        OUR STORY
+      </p>
     </div>
   );
 }
 
+// Carousel navigation dots
 function CarouselDots({ breakpoint }: { breakpoint: Breakpoint }) {
-  const bottomPosition = breakpoint === 'S' ? 'bottom-[40px]' : 'bottom-[40.22px]';
-  const leftPosition = breakpoint === 'S' ? 'left-[40px]' : 'left-[42px]';
+  const spacing = getBannerSpacing(breakpoint);
 
   return (
-    <div className={`absolute ${bottomPosition} h-[13px] ${leftPosition} w-[59px]`} data-name="carousel dots">
+    <div className={`absolute ${spacing.dotsBottom} h-[13px] ${spacing.dotsLeft} w-[59px]`} data-name="carousel dots">
       <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 59 13">
         <g id="carousel dots">
           <circle cx="6.5" cy="6.5" fill="var(--fill-0, #003B3C)" r="6.5" />
@@ -140,56 +152,45 @@ function CarouselDots({ breakpoint }: { breakpoint: Breakpoint }) {
   );
 }
 
-function CopyGroup({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
-  const width = breakpoint === 'S' 
-    ? 'w-full px-[40px]'
-    : breakpoint === 'HD' 
-    ? 'w-[800px]' 
-    : breakpoint === 'XL' 
-    ? 'w-[760px]' 
-    : 'w-[719px]';
-  const topPos = breakpoint === 'S' 
-    ? 'top-[40px]' 
-    : breakpoint === 'HD' 
-    ? 'top-[80px]' 
-    : breakpoint === 'XL' 
-    ? 'top-[70px]' 
-    : 'top-[58px]';
-  const horizontalPos = breakpoint === 'S'
-    ? 'left-0 translate-x-0'
-    : 'left-[calc(50%+5px)] translate-x-[-50%]';
+// Banner content overlay (reviews, headline, button)
+function BannerContent({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
+  const spacing = getBannerSpacing(breakpoint);
+  const isMobile = breakpoint === 'S';
+  // +5px offset to optically center content on desktop (accounts for visual weight)
+  const horizontalPos = isMobile ? 'left-0 translate-x-0' : 'left-[calc(50%+5px)] -translate-x-1/2';
 
   return (
-    <div className={`absolute content-stretch flex flex-col gap-[30px] items-center ${horizontalPos} ${topPos} ${width}`} data-name="copy GROUP">
-      <Reviews1 svgPaths={svgPathsL} breakpoint={breakpoint} />
-      <Headline breakpoint={breakpoint} />
-      <Button />
+    <div className={`absolute content-stretch flex flex-col gap-[30px] items-center ${horizontalPos} ${spacing.contentTop} ${spacing.contentWidth}`}>
+      <FiveStarRating svgPaths={svgPaths} breakpoint={breakpoint} />
+      <BannerHeadline breakpoint={breakpoint} />
+      <BannerButton />
     </div>
   );
 }
 
 function Banner({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
   const bannerImage = breakpoint === 'S' ? imgBannerMobile : breakpoint === 'M' ? imgBannerTablet : imgBanner;
+  const isMobileOrTablet = breakpoint === 'S' || breakpoint === 'M';
   
-  if (breakpoint === 'S' || breakpoint === 'M') {
+  if (isMobileOrTablet) {
     // Mobile and tablet: Show full image without cropping
     return (
       <div className="relative shrink-0 w-full" data-name="banner">
         <img alt="" className="w-full h-auto block" src={bannerImage} />
         <div className="absolute inset-0 pointer-events-none">
           {breakpoint !== 'S' && <CarouselDots breakpoint={breakpoint} />}
-          <CopyGroup breakpoint={breakpoint} svgPaths={svgPaths} />
+          <BannerContent breakpoint={breakpoint} svgPaths={svgPaths} />
         </div>
       </div>
     );
   }
   
-  // Desktop: Use existing proportional height approach
+  // Desktop: Use proportional height approach
   return (
     <div className="relative shrink-0 w-full h-[47.5vw] max-h-[900px]" data-name="banner">
       <img alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" src={bannerImage} />
       <CarouselDots breakpoint={breakpoint} />
-      <CopyGroup breakpoint={breakpoint} svgPaths={svgPaths} />
+      <BannerContent breakpoint={breakpoint} svgPaths={svgPaths} />
     </div>
   );
 }
@@ -263,112 +264,140 @@ function TickerScroll() {
   );
 }
 
-// 2-Up Module Cards
-function Button1({ breakpoint }: { breakpoint: Breakpoint }) {
-  const bottomPosition = breakpoint === 'S' ? 'bottom-[30px]' : breakpoint === 'M' ? 'bottom-[40px]' : 'bottom-[60.42px]';
+// 2-Up Module Cards - Helper functions for consistent spacing
+function getModuleSpacing(breakpoint: Breakpoint) {
+  // Tighter padding on mobile/tablet, more spacious on desktop
+  return {
+    top: breakpoint === 'S' ? 'top-[30px]' : breakpoint === 'M' ? 'top-[40px]' : 'top-[56px]',
+    bottom: breakpoint === 'S' ? 'bottom-[30px]' : breakpoint === 'M' ? 'bottom-[40px]' : 'bottom-[60px]',
+    horizontalPadding: breakpoint === 'S' ? 'px-[30px]' : breakpoint === 'M' ? 'px-[40px]' : '',
+    borderRadius: breakpoint === 'S' || breakpoint === 'M' ? 'rounded-[10px]' : 'rounded-[20px]',
+  };
+}
+
+function getModuleTypography(breakpoint: Breakpoint) {
+  return {
+    size: breakpoint === 'S' || breakpoint === 'M' ? 'text-[24px]' : breakpoint === 'HD' ? 'text-[48px]' : 'text-[34px]',
+    tracking: breakpoint === 'S' || breakpoint === 'M' ? 'tracking-[-0.48px]' : breakpoint === 'HD' ? 'tracking-[-0.96px]' : 'tracking-[-0.68px]',
+  };
+}
+
+// Unified module button component
+function ModuleButton({ 
+  breakpoint, 
+  variant, 
+  text 
+}: { 
+  breakpoint: Breakpoint; 
+  variant: 'primary' | 'secondary'; 
+  text: string;
+}) {
+  const spacing = getModuleSpacing(breakpoint);
+  const isPrimary = variant === 'primary';
+  const bgColor = isPrimary ? 'bg-[#009296]' : 'bg-white';
+  const textColor = isPrimary ? 'text-white' : 'text-[#009296]';
 
   return (
-    <div className={`absolute bg-[#009296] ${bottomPosition} box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center left-[calc(50%+0.5px)] px-[39px] py-[15px] rounded-[999px] translate-x-[-50%]`} data-name="button">
-      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[16px] text-center text-nowrap text-white tracking-[1.92px] uppercase whitespace-pre">SHOP OUR SPECIALS</p>
+    <div 
+      className={`absolute ${bgColor} ${spacing.bottom} box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center left-1/2 px-[39px] py-[15px] rounded-[999px] -translate-x-1/2`} 
+      data-name="button"
+    >
+      <p className={`font-['Inter:Medium',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 ${textColor} text-[16px] text-center text-nowrap tracking-[1.92px] uppercase whitespace-pre`}>
+        {text}
+      </p>
     </div>
   );
 }
 
-function Module({ breakpoint }: { breakpoint: Breakpoint }) {
-  const headlineSize = breakpoint === 'S'
-    ? 'text-[24px]'
-    : breakpoint === 'M'
-    ? 'text-[24px]'
-    : breakpoint === 'HD' 
-    ? 'text-[48px]' 
-    : 'text-[34px]';
-  const tracking = breakpoint === 'S'
-    ? 'tracking-[-0.48px]'
-    : breakpoint === 'M'
-    ? 'tracking-[-0.48px]'
-    : breakpoint === 'HD' 
-    ? 'tracking-[-0.96px]' 
-    : 'tracking-[-0.68px]';
-  const width = breakpoint === 'S'
-    ? 'w-full px-[30px]'
-    : breakpoint === 'M'
-    ? 'w-full px-[40px]'
-    : breakpoint === 'HD' 
-    ? 'w-[650px]' 
+// Unified module card component
+function ModuleCard({ 
+  breakpoint, 
+  image, 
+  title, 
+  buttonText, 
+  buttonVariant,
+  textColor = 'text-[#003b3c]',
+  maxWidth
+}: { 
+  breakpoint: Breakpoint;
+  image: string;
+  title: React.ReactNode;
+  buttonText: string;
+  buttonVariant: 'primary' | 'secondary';
+  textColor?: string;
+  maxWidth?: { hd: string; default: string };
+}) {
+  const spacing = getModuleSpacing(breakpoint);
+  const typography = getModuleTypography(breakpoint);
+  
+  // Width calculation: mobile/tablet use full width with padding, desktop uses max-width
+  const widthClass = breakpoint === 'S' || breakpoint === 'M'
+    ? `w-full ${spacing.horizontalPadding}`
+    : maxWidth
+    ? (breakpoint === 'HD' ? maxWidth.hd : maxWidth.default)
     : 'w-[552px]';
-  const borderRadius = breakpoint === 'S' || breakpoint === 'M' ? 'rounded-[10px]' : 'rounded-[20px]';
+
   const containerClass = breakpoint === 'S'
-    ? `aspect-[670/700] w-full overflow-clip relative ${borderRadius} shrink-0`
-    : breakpoint === 'M'
-    ? `aspect-[670/700] basis-0 grow min-h-px min-w-px overflow-clip relative ${borderRadius} shrink-0`
-    : `aspect-[670/700] basis-0 grow min-h-px min-w-px overflow-clip relative ${borderRadius} shrink-0`;
-  const topPosition = breakpoint === 'S' ? 'top-[30px]' : breakpoint === 'M' ? 'top-[40px]' : 'top-[56px]';
+    ? `aspect-[670/700] w-full overflow-clip relative ${spacing.borderRadius} shrink-0`
+    : `aspect-[670/700] basis-0 grow min-h-px min-w-px overflow-clip relative ${spacing.borderRadius} shrink-0`;
 
   return (
     <div className={containerClass} data-name="module">
-      <img alt="" className={`absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none ${borderRadius} size-full`} src={imgModule} />
-      <p className={`absolute font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] left-1/2 text-[#003b3c] text-[0px] ${headlineSize} text-center ${topPosition} ${tracking} translate-x-[-50%] ${width}`}>
-        <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">Mother Nature's</span>
-        <span>{` most targeted protective molecules.`}</span>
+      <img 
+        alt="" 
+        className={`absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none ${spacing.borderRadius} size-full`} 
+        src={image} 
+      />
+      <p 
+        className={`absolute font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] left-1/2 text-[0px] ${typography.size} text-center ${textColor} ${spacing.top} ${typography.tracking} -translate-x-1/2 ${widthClass}`}
+      >
+        {title}
       </p>
-      <Button1 breakpoint={breakpoint} />
+      <ModuleButton breakpoint={breakpoint} variant={buttonVariant} text={buttonText} />
     </div>
   );
 }
 
-function Button2({ breakpoint }: { breakpoint: Breakpoint }) {
-  const bottomPosition = breakpoint === 'S' ? 'bottom-[30px]' : breakpoint === 'M' ? 'bottom-[40px]' : 'bottom-[60.42px]';
-
+// Module 1: Mother Nature's
+function Module({ breakpoint }: { breakpoint: Breakpoint }) {
   return (
-    <div className={`absolute bg-white ${bottomPosition} box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center left-[calc(50%+1px)] px-[39px] py-[15px] rounded-[999px] translate-x-[-50%]`} data-name="button">
-      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[#009296] text-[16px] text-center text-nowrap tracking-[1.92px] uppercase whitespace-pre">LEARN MORE</p>
-    </div>
+    <ModuleCard
+      breakpoint={breakpoint}
+      image={imgModule}
+      buttonText="SHOP OUR SPECIALS"
+      buttonVariant="primary"
+      maxWidth={{ hd: 'w-[650px]', default: 'w-[552px]' }}
+      title={
+        <>
+          <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">Mother Nature's</span>
+          <span>{` most targeted protective molecules.`}</span>
+        </>
+      }
+    />
   );
 }
 
+// Module 2: No false promises
 function Module1({ breakpoint }: { breakpoint: Breakpoint }) {
-  const headlineSize = breakpoint === 'S'
-    ? 'text-[24px]'
-    : breakpoint === 'M'
-    ? 'text-[24px]'
-    : breakpoint === 'HD' 
-    ? 'text-[48px]' 
-    : 'text-[34px]';
-  const tracking = breakpoint === 'S'
-    ? 'tracking-[-0.48px]'
-    : breakpoint === 'M'
-    ? 'tracking-[-0.48px]'
-    : breakpoint === 'HD' 
-    ? 'tracking-[-0.96px]' 
-    : 'tracking-[-0.68px]';
-  const width = breakpoint === 'S'
-    ? 'w-full px-[30px]'
-    : breakpoint === 'M'
-    ? 'w-full px-[40px]'
-    : breakpoint === 'HD' 
-    ? 'w-[540px]' 
-    : 'w-[448px]';
-  const borderRadius = breakpoint === 'S' || breakpoint === 'M' ? 'rounded-[10px]' : 'rounded-[20px]';
-  const containerClass = breakpoint === 'S'
-    ? `aspect-[670/700] w-full overflow-clip relative ${borderRadius} shrink-0`
-    : breakpoint === 'M'
-    ? `aspect-[670/700] basis-0 grow min-h-px min-w-px overflow-clip relative ${borderRadius} shrink-0`
-    : `aspect-[670/700] basis-0 grow min-h-px min-w-px overflow-clip relative ${borderRadius} shrink-0`;
-  const topPosition = breakpoint === 'S' ? 'top-[30px]' : breakpoint === 'M' ? 'top-[40px]' : 'top-[54.67px]';
-
   return (
-    <div className={containerClass} data-name="module">
-      <img alt="" className={`absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none ${borderRadius} size-full`} src={imgModule1} />
-      <Button2 breakpoint={breakpoint} />
-      <p className={`absolute font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] left-1/2 text-[0px] ${headlineSize} text-center text-white ${topPosition} ${tracking} translate-x-[-50%] ${width}`}>
-        <span>
-          No false promises,
-          <br aria-hidden="true" />
-        </span>
-        <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#48e1dc]">truth</span>
-        <span>{` in every capsule.`}</span>
-      </p>
-    </div>
+    <ModuleCard
+      breakpoint={breakpoint}
+      image={imgModule1}
+      buttonText="LEARN MORE"
+      buttonVariant="secondary"
+      textColor="text-white"
+      maxWidth={{ hd: 'w-[540px]', default: 'w-[448px]' }}
+      title={
+        <>
+          <span>
+            No false promises,
+            <br aria-hidden="true" />
+          </span>
+          <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#48e1dc]">truth</span>
+          <span>{` in every capsule.`}</span>
+        </>
+      }
+    />
   );
 }
 
