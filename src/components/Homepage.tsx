@@ -153,7 +153,7 @@ function CarouselDots({ breakpoint }: { breakpoint: Breakpoint }) {
 }
 
 // Banner content overlay (reviews, headline, button)
-function BannerContent({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
+function BannerContent({ breakpoint }: { breakpoint: Breakpoint }) {
   const spacing = getBannerSpacing(breakpoint);
   const isMobile = breakpoint === 'S';
   // +5px offset to optically center content on desktop (accounts for visual weight)
@@ -161,7 +161,7 @@ function BannerContent({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPa
 
   return (
     <div className={`absolute content-stretch flex flex-col gap-[30px] items-center ${horizontalPos} ${spacing.contentTop} ${spacing.contentWidth}`}>
-      <FiveStarRating svgPaths={svgPaths} breakpoint={breakpoint} />
+      <FiveStarRating svgPaths={svgPathsL} breakpoint={breakpoint} />
       <BannerHeadline breakpoint={breakpoint} />
       <BannerButton />
     </div>
@@ -179,7 +179,7 @@ function Banner({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: an
         <img alt="" className="w-full h-auto block" src={bannerImage} />
         <div className="absolute inset-0 pointer-events-none">
           {breakpoint !== 'S' && <CarouselDots breakpoint={breakpoint} />}
-          <BannerContent breakpoint={breakpoint} svgPaths={svgPaths} />
+          <BannerContent breakpoint={breakpoint} />
         </div>
       </div>
     );
@@ -190,7 +190,7 @@ function Banner({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: an
     <div className="relative shrink-0 w-full h-[47.5vw] max-h-[900px]" data-name="banner">
       <img alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" src={bannerImage} />
       <CarouselDots breakpoint={breakpoint} />
-      <BannerContent breakpoint={breakpoint} svgPaths={svgPaths} />
+      <BannerContent breakpoint={breakpoint} />
     </div>
   );
 }
