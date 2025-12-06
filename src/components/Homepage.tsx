@@ -139,7 +139,7 @@ function CarouselDots({ breakpoint }: { breakpoint: Breakpoint }) {
 
 function CopyGroup({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
   const width = breakpoint === 'S' 
-    ? 'w-full px-[30px]'
+    ? 'w-full px-[40px]'
     : breakpoint === 'HD' 
     ? 'w-[800px]' 
     : breakpoint === 'XL' 
@@ -174,7 +174,7 @@ function Banner({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: an
       <div className="relative shrink-0 w-full" data-name="banner">
         <img alt="" className="w-full h-auto block" src={bannerImage} />
         <div className="absolute inset-0 pointer-events-none">
-          <CarouselDots breakpoint={breakpoint} />
+          {breakpoint !== 'S' && <CarouselDots breakpoint={breakpoint} />}
           <CopyGroup breakpoint={breakpoint} svgPaths={svgPaths} />
         </div>
       </div>
@@ -273,14 +273,14 @@ function Button1({ breakpoint }: { breakpoint: Breakpoint }) {
 
 function Module({ breakpoint }: { breakpoint: Breakpoint }) {
   const headlineSize = breakpoint === 'S'
-    ? 'text-[26px]'
+    ? 'text-[24px]'
     : breakpoint === 'M'
     ? 'text-[24px]'
     : breakpoint === 'HD' 
     ? 'text-[48px]' 
     : 'text-[34px]';
   const tracking = breakpoint === 'S'
-    ? 'tracking-[-0.52px]'
+    ? 'tracking-[-0.48px]'
     : breakpoint === 'M'
     ? 'tracking-[-0.48px]'
     : breakpoint === 'HD' 
@@ -323,14 +323,14 @@ function Button2({ breakpoint }: { breakpoint: Breakpoint }) {
 
 function Module1({ breakpoint }: { breakpoint: Breakpoint }) {
   const headlineSize = breakpoint === 'S'
-    ? 'text-[26px]'
+    ? 'text-[24px]'
     : breakpoint === 'M'
     ? 'text-[24px]'
     : breakpoint === 'HD' 
     ? 'text-[48px]' 
     : 'text-[34px]';
   const tracking = breakpoint === 'S'
-    ? 'tracking-[-0.52px]'
+    ? 'tracking-[-0.48px]'
     : breakpoint === 'M'
     ? 'tracking-[-0.48px]'
     : breakpoint === 'HD' 

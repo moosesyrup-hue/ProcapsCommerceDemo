@@ -3279,10 +3279,6 @@
     font-size: 24px;
   }
 
-  .text-\[26px\] {
-    font-size: 26px;
-  }
-
   .text-\[28px\] {
     font-size: 28px;
   }
@@ -3468,11 +3464,6 @@
   .tracking-\[-0\.48px\] {
     --tw-tracking: -.48px;
     letter-spacing: -.48px;
-  }
-
-  .tracking-\[-0\.52px\] {
-    --tw-tracking: -.52px;
-    letter-spacing: -.52px;
   }
 
   .tracking-\[-0\.56px\] {
