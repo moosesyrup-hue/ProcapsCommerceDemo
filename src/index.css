@@ -14,6 +14,7 @@
       --tw-rotate-z: rotateZ(0);
       --tw-skew-x: skewX(0);
       --tw-skew-y: skewY(0);
+      --tw-scroll-snap-strictness: proximity;
       --tw-space-y-reverse: 0;
       --tw-border-style: solid;
       --tw-gradient-position: initial;
@@ -1031,14 +1032,6 @@
     display: table;
   }
 
-  .aspect-\[210\/210\] {
-    aspect-ratio: 210 / 210;
-  }
-
-  .aspect-\[210\/278\] {
-    aspect-ratio: 210 / 278;
-  }
-
   .aspect-\[667\.333\/770\] {
     aspect-ratio: 667.333 / 770;
   }
@@ -1057,10 +1050,6 @@
 
   .aspect-\[1060\/658\] {
     aspect-ratio: 1060 / 658;
-  }
-
-  .aspect-\[1130\/278\] {
-    aspect-ratio: 1130 / 278;
   }
 
   .aspect-\[1146\/1146\] {
@@ -1463,6 +1452,10 @@
     width: 40px;
   }
 
+  .w-\[42\%\] {
+    width: 42%;
+  }
+
   .w-\[44px\] {
     width: 44px;
   }
@@ -1840,6 +1833,18 @@
 
   .resize-none {
     resize: none;
+  }
+
+  .snap-x {
+    scroll-snap-type: x var(--tw-scroll-snap-strictness);
+  }
+
+  .snap-mandatory {
+    --tw-scroll-snap-strictness: mandatory;
+  }
+
+  .snap-start {
+    scroll-snap-align: start;
   }
 
   .list-disc {
@@ -6131,6 +6136,12 @@ html {
   syntax: "*";
   inherits: false;
   initial-value: skewY(0);
+}
+
+@property --tw-scroll-snap-strictness {
+  syntax: "*";
+  inherits: false;
+  initial-value: proximity;
 }
 
 @property --tw-space-y-reverse {

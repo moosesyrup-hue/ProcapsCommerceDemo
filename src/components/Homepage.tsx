@@ -419,9 +419,17 @@ function Component2Up({ breakpoint }: { breakpoint: Breakpoint }) {
 }
 
 // Informed Choice Section
+const CATEGORY_ITEMS = [
+  { img: imgImage, label: "Product Category", id: "product-category" },
+  { img: imgImage1, label: "Body Part", id: "body-part" },
+  { img: imgImage2, label: "Body Function", id: "body-function" },
+  { img: imgImage3, label: "Health Issues", id: "health-issues" },
+  { img: imgImage4, label: "Ingredients", id: "ingredients" }
+];
+
 function CopyGroup1({ breakpoint }: { breakpoint: Breakpoint }) {
-  const headlineSize = breakpoint === 'HD' ? 'text-[72px]' : breakpoint === 'XL' ? 'text-[54px]' : 'text-[38px]';
-  const tracking = breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : 'tracking-[-0.76px]';
+  const headlineSize = breakpoint === 'S' || breakpoint === 'M' ? 'text-[34px]' : breakpoint === 'HD' ? 'text-[72px]' : breakpoint === 'XL' ? 'text-[54px]' : 'text-[38px]';
+  const tracking = breakpoint === 'S' || breakpoint === 'M' ? 'tracking-[-0.68px]' : breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : 'tracking-[-0.76px]';
   const subTextSize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]';
   const subTextTracking = breakpoint === 'HD' || breakpoint === 'XL' ? 'tracking-[-0.2px]' : 'tracking-[-0.16px]';
 
@@ -441,39 +449,75 @@ function CopyGroup1({ breakpoint }: { breakpoint: Breakpoint }) {
   );
 }
 
-function ComponentCircle({ img, label }: { img: string; label: string }) {
+function ComponentCircle({ img, label, breakpoint }: { img: string; label: string; breakpoint: Breakpoint }) {
+  const isMobile = breakpoint === 'S';
+  const isTablet = breakpoint === 'M';
+  const labelSize = isMobile || isTablet ? 'text-[16px]' : 'text-[20px]';
+  const labelTracking = isMobile || isTablet ? 'tracking-[-0.16px]' : 'tracking-[-0.2px]';
+  const gap = isMobile || isTablet ? 'gap-[20px]' : 'gap-[40px]';
+  
   return (
-    <div className="aspect-[210/278] basis-0 content-stretch flex flex-col gap-[40px] grow items-center min-h-px min-w-px relative shrink-0">
-      <div className="aspect-[210/210] relative shrink-0 w-full" data-name="image">
-        <img alt="" className="block max-w-none size-full" height="176" src={img} width="176" />
+    <div className={`content-stretch flex flex-col ${gap} items-center relative shrink-0 ${isMobile || isTablet ? '' : 'basis-0 grow min-h-px min-w-px'}`}>
+      <div className="aspect-square relative shrink-0 w-full" data-name="image">
+        <img alt="" className="block max-w-none size-full" src={img} />
       </div>
-      <p className="font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[#003b3c] text-[20px] text-center tracking-[-0.2px] w-full">{label}</p>
+      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[#003b3c] ${labelSize} text-center ${labelTracking} w-full`}>{label}</p>
     </div>
   );
 }
 
-function Columns() {
+function Columns({ breakpoint }: { breakpoint: Breakpoint }) {
+  const isMobile = breakpoint === 'S';
+  
+  if (isMobile) {
+    // Mobile: First item has pl-[20px], last item has pr-[20px] for symmetric gaps
+    return (
+      <div className="w-full" data-name="columns">
+        <div className="flex gap-[16px] overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+          {CATEGORY_ITEMS.map((item, index) => {
+            const isFirst = index === 0;
+            const isLast = index === CATEGORY_ITEMS.length - 1;
+            
+            return (
+              <div 
+                key={item.id} 
+                className={`snap-start flex-none w-[42%] ${isFirst ? 'pl-[20px]' : ''} ${isLast ? 'pr-[20px]' : ''}`}
+              >
+                <ComponentCircle img={item.img} label={item.label} breakpoint={breakpoint} />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+  
+  // Tablet and Desktop: single row of 5, centered
   return (
-    <div className="aspect-[1130/278] content-stretch flex gap-[20px] items-start relative shrink-0 w-full" data-name="columns">
-      <ComponentCircle img={imgImage} label="Product Category" />
-      <ComponentCircle img={imgImage1} label="Body Part" />
-      <ComponentCircle img={imgImage2} label="Body Function" />
-      <ComponentCircle img={imgImage3} label="Health Issues" />
-      <ComponentCircle img={imgImage4} label="Ingredients" />
+    <div className="flex justify-center w-full" data-name="columns">
+      <div className="content-stretch flex gap-[20px] items-start relative shrink-0 w-full max-w-[1200px]">
+        {CATEGORY_ITEMS.map(item => (
+          <ComponentCircle key={item.id} img={item.img} label={item.label} breakpoint={breakpoint} />
+        ))}
+      </div>
     </div>
   );
 }
 
 function InformedChoice({ breakpoint }: { breakpoint: Breakpoint }) {
-  const padding = breakpoint === 'HD' ? 'px-[200px]' : breakpoint === 'XL' ? 'px-[180px]' : 'px-[160px]';
+  const padding = breakpoint === 'S' ? 'px-0' : breakpoint === 'M' ? 'px-[40px]' : breakpoint === 'HD' ? 'px-[200px]' : breakpoint === 'XL' ? 'px-[180px]' : 'px-[160px]';
+  const textPadding = breakpoint === 'S' ? 'px-[20px]' : '';
+  const gap = breakpoint === 'S' || breakpoint === 'M' ? 'gap-[40px]' : 'gap-[60px]';
 
   return (
     <div className="relative shrink-0 w-full" data-name="Informed Choice">
       <div className="flex flex-col items-center size-full">
-        <div className={`box-border content-stretch flex flex-col gap-[60px] items-center ${padding} py-0 relative w-full`}>
-          <CopyGroup1 breakpoint={breakpoint} />
-          <Columns />
-          <div className="h-0 relative shrink-0 w-full" data-name="hori line">
+        <div className={`box-border content-stretch flex flex-col ${gap} items-center ${padding} py-0 relative w-full`}>
+          <div className={textPadding}>
+            <CopyGroup1 breakpoint={breakpoint} />
+          </div>
+          <Columns breakpoint={breakpoint} />
+          <div className={`h-0 relative shrink-0 w-full ${textPadding}`} data-name="hori line">
             <div className="absolute bottom-0 left-0 right-0 top-[-1px]">
               <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 960 1">
                 <line stroke="var(--stroke-0, #D9E2E2)" x2="960" y1="0.5" y2="0.5" />
