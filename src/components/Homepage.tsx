@@ -52,9 +52,12 @@ export default function Homepage() {
 }
 
 // Banner Section
-function Stars({ svgPaths }: { svgPaths: any }) {
+function Stars({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
+  const height = breakpoint === 'S' ? 'h-[24px]' : 'h-[30px]';
+  const width = breakpoint === 'S' ? 'w-[131px]' : 'w-[164.081px]';
+  
   return (
-    <div className="[grid-area:1_/_1] h-[30px] ml-0 mt-0 relative w-[164.081px]" data-name="stars">
+    <div className={`[grid-area:1_/_1] ${height} ml-0 mt-0 relative ${width}`} data-name="stars">
       <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 165 30">
         <g id="stars">
           <path d={svgPaths.pde64000} fill="var(--fill-0, #F1A33A)" />
@@ -68,22 +71,22 @@ function Stars({ svgPaths }: { svgPaths: any }) {
   );
 }
 
-function Reviews({ svgPaths }: { svgPaths: any }) {
+function Reviews({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0" data-name="reviews">
       <div className="[grid-area:1_/_1] grid-cols-[max-content] grid-rows-[max-content] inline-grid ml-0 mt-0 place-items-start relative">
         <div className="[grid-area:1_/_1] grid-cols-[max-content] grid-rows-[max-content] inline-grid ml-0 mt-0 place-items-start relative">
-          <Stars svgPaths={svgPaths} />
+          <Stars svgPaths={svgPaths} breakpoint={breakpoint} />
         </div>
       </div>
     </div>
   );
 }
 
-function Reviews1({ svgPaths }: { svgPaths: any }) {
+function Reviews1({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
   return (
     <div className="content-stretch flex flex-col gap-[22px] items-center relative shrink-0 w-[250px]" data-name="reviews">
-      <Reviews svgPaths={svgPaths} />
+      <Reviews svgPaths={svgPaths} breakpoint={breakpoint} />
       <p className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic leading-[1.4] relative shrink-0 text-[#003b3c] text-[20px] text-center text-nowrap whitespace-pre">50,000+ verified 5-star reviews</p>
     </div>
   );
@@ -158,7 +161,7 @@ function CopyGroup({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths:
 
   return (
     <div className={`absolute content-stretch flex flex-col gap-[30px] items-center ${horizontalPos} ${topPos} ${width}`} data-name="copy GROUP">
-      <Reviews1 svgPaths={svgPathsL} />
+      <Reviews1 svgPaths={svgPathsL} breakpoint={breakpoint} />
       <Headline breakpoint={breakpoint} />
       <Button />
     </div>
