@@ -265,7 +265,7 @@ function TickerScroll() {
 
 // 2-Up Module Cards
 function Button1({ breakpoint }: { breakpoint: Breakpoint }) {
-  const bottomPosition = breakpoint === 'S' ? 'bottom-[30px]' : 'bottom-[60.42px]';
+  const bottomPosition = breakpoint === 'S' ? 'bottom-[30px]' : breakpoint === 'M' ? 'bottom-[40px]' : 'bottom-[60.42px]';
 
   return (
     <div className={`absolute bg-[#009296] ${bottomPosition} box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center left-[calc(50%+0.5px)] px-[39px] py-[15px] rounded-[999px] translate-x-[-50%]`} data-name="button">
@@ -292,15 +292,17 @@ function Module({ breakpoint }: { breakpoint: Breakpoint }) {
   const width = breakpoint === 'S'
     ? 'w-full px-[30px]'
     : breakpoint === 'M'
-    ? 'w-full px-[20px]'
+    ? 'w-full px-[40px]'
     : breakpoint === 'HD' 
     ? 'w-[650px]' 
     : 'w-[552px]';
   const borderRadius = breakpoint === 'S' || breakpoint === 'M' ? 'rounded-[10px]' : 'rounded-[20px]';
-  const containerClass = breakpoint === 'S' || breakpoint === 'M'
+  const containerClass = breakpoint === 'S'
     ? `aspect-[670/700] w-full overflow-clip relative ${borderRadius} shrink-0`
+    : breakpoint === 'M'
+    ? `aspect-[670/700] basis-0 grow min-h-px min-w-px overflow-clip relative ${borderRadius} shrink-0`
     : `aspect-[670/700] basis-0 grow min-h-px min-w-px overflow-clip relative ${borderRadius} shrink-0`;
-  const topPosition = breakpoint === 'S' ? 'top-[30px]' : 'top-[56px]';
+  const topPosition = breakpoint === 'S' ? 'top-[30px]' : breakpoint === 'M' ? 'top-[40px]' : 'top-[56px]';
 
   return (
     <div className={containerClass} data-name="module">
@@ -315,7 +317,7 @@ function Module({ breakpoint }: { breakpoint: Breakpoint }) {
 }
 
 function Button2({ breakpoint }: { breakpoint: Breakpoint }) {
-  const bottomPosition = breakpoint === 'S' ? 'bottom-[30px]' : 'bottom-[60.42px]';
+  const bottomPosition = breakpoint === 'S' ? 'bottom-[30px]' : breakpoint === 'M' ? 'bottom-[40px]' : 'bottom-[60.42px]';
 
   return (
     <div className={`absolute bg-white ${bottomPosition} box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center left-[calc(50%+1px)] px-[39px] py-[15px] rounded-[999px] translate-x-[-50%]`} data-name="button">
@@ -342,15 +344,17 @@ function Module1({ breakpoint }: { breakpoint: Breakpoint }) {
   const width = breakpoint === 'S'
     ? 'w-full px-[30px]'
     : breakpoint === 'M'
-    ? 'w-full px-[20px]'
+    ? 'w-full px-[40px]'
     : breakpoint === 'HD' 
     ? 'w-[540px]' 
     : 'w-[448px]';
   const borderRadius = breakpoint === 'S' || breakpoint === 'M' ? 'rounded-[10px]' : 'rounded-[20px]';
-  const containerClass = breakpoint === 'S' || breakpoint === 'M'
+  const containerClass = breakpoint === 'S'
     ? `aspect-[670/700] w-full overflow-clip relative ${borderRadius} shrink-0`
+    : breakpoint === 'M'
+    ? `aspect-[670/700] basis-0 grow min-h-px min-w-px overflow-clip relative ${borderRadius} shrink-0`
     : `aspect-[670/700] basis-0 grow min-h-px min-w-px overflow-clip relative ${borderRadius} shrink-0`;
-  const topPosition = breakpoint === 'S' ? 'top-[30px]' : 'top-[54.67px]';
+  const topPosition = breakpoint === 'S' ? 'top-[30px]' : breakpoint === 'M' ? 'top-[40px]' : 'top-[54.67px]';
 
   return (
     <div className={containerClass} data-name="module">
@@ -369,7 +373,7 @@ function Module1({ breakpoint }: { breakpoint: Breakpoint }) {
 }
 
 function Component2Up({ breakpoint }: { breakpoint: Breakpoint }) {
-  const flexDirection = breakpoint === 'S' || breakpoint === 'M' ? 'flex-col' : 'flex-row';
+  const flexDirection = breakpoint === 'S' ? 'flex-col' : 'flex-row';
   const padding = breakpoint === 'S' ? 'px-[20px]' : breakpoint === 'M' ? 'px-[30px]' : 'px-[40px]';
   const gap = breakpoint === 'S' || breakpoint === 'M' ? 'gap-[20px]' : 'gap-[20px]';
 
