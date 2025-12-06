@@ -3,6 +3,8 @@ import svgPathsL from "../imports/svg-npcn6vymav";
 import svgPathsXl from "../imports/svg-ovhudlxac5";
 import svgPathsHd from "../imports/svg-sng3ceu5u2";
 import imgBanner from "figma:asset/be6b296809b899ffe49a39b24634e1a5d4abb146.png";
+import imgBannerMobile from "figma:asset/75fc2edc3d254e5f5f699438d8eaeb81a1ab5fd7.png";
+import imgBannerTablet from "figma:asset/84ce49373bbc690f8c23b2d25b68fd6aedbf8176.png";
 import imgModule from "figma:asset/4c2934de3dbf27b37b800c210c506dfc23cea7d9.png";
 import imgModule1 from "figma:asset/bb079113e4e52e6f124be3a8b4815c8ab2dbad6d.png";
 import imgImage from "figma:asset/2af175d1ace132d63709b5990887874d1e9098a5.png";
@@ -13,7 +15,7 @@ import imgImage4 from "figma:asset/ae9200ae275214fab21ea17e682459720b9ddfa8.png"
 import imgImage5 from "figma:asset/53da6d9ed35f82a7364b7a236e964b3d87a96086.png";
 import imgImage6 from "figma:asset/07a96391057ade3b14e0a1c61eff3099de640600.png";
 
-type Breakpoint = 'L' | 'XL' | 'HD';
+type Breakpoint = 'S' | 'M' | 'L' | 'XL' | 'HD';
 
 export default function Homepage() {
   const [breakpoint, setBreakpoint] = useState<Breakpoint>('XL');
@@ -25,8 +27,12 @@ export default function Homepage() {
         setBreakpoint('HD');
       } else if (width >= 1440) {
         setBreakpoint('XL');
-      } else {
+      } else if (width >= 1280) {
         setBreakpoint('L');
+      } else if (width >= 768) {
+        setBreakpoint('M');
+      } else {
+        setBreakpoint('S');
       }
     };
 
@@ -139,9 +145,25 @@ function CopyGroup({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths:
 }
 
 function Banner({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
+  const bannerImage = breakpoint === 'S' ? imgBannerMobile : breakpoint === 'M' ? imgBannerTablet : imgBanner;
+  
+  if (breakpoint === 'S' || breakpoint === 'M') {
+    // Mobile and tablet: Show full image without cropping
+    return (
+      <div className="relative shrink-0 w-full" data-name="banner">
+        <img alt="" className="w-full h-auto block" src={bannerImage} />
+        <div className="absolute inset-0 pointer-events-none">
+          <CarouselDots />
+          <CopyGroup breakpoint={breakpoint} svgPaths={svgPaths} />
+        </div>
+      </div>
+    );
+  }
+  
+  // Desktop: Use existing proportional height approach
   return (
     <div className="relative shrink-0 w-full h-[47.5vw] max-h-[900px]" data-name="banner">
-      <img alt="" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none size-full" src={imgBanner} />
+      <img alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" src={bannerImage} />
       <CarouselDots />
       <CopyGroup breakpoint={breakpoint} svgPaths={svgPaths} />
     </div>
