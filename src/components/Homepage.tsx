@@ -470,23 +470,18 @@ function Columns({ breakpoint }: { breakpoint: Breakpoint }) {
   const isMobile = breakpoint === 'S';
   
   if (isMobile) {
-    // Mobile: First item has pl-[20px], last item has pr-[20px] for symmetric gaps
+    // Mobile: Carousel container has 20px horizontal padding for symmetric edge gaps
     return (
       <div className="w-full" data-name="columns">
-        <div className="flex gap-[16px] overflow-x-auto snap-x snap-mandatory scrollbar-hide">
-          {CATEGORY_ITEMS.map((item, index) => {
-            const isFirst = index === 0;
-            const isLast = index === CATEGORY_ITEMS.length - 1;
-            
-            return (
-              <div 
-                key={item.id} 
-                className={`snap-start flex-none w-[42%] ${isFirst ? 'pl-[20px]' : ''} ${isLast ? 'pr-[20px]' : ''}`}
-              >
-                <ComponentCircle img={item.img} label={item.label} breakpoint={breakpoint} />
-              </div>
-            );
-          })}
+        <div className="flex gap-[16px] overflow-x-auto snap-x snap-mandatory scrollbar-hide px-[20px]">
+          {CATEGORY_ITEMS.map((item) => (
+            <div 
+              key={item.id} 
+              className="snap-start flex-none w-[42%]"
+            >
+              <ComponentCircle img={item.img} label={item.label} breakpoint={breakpoint} />
+            </div>
+          ))}
         </div>
       </div>
     );
