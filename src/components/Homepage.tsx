@@ -6,6 +6,7 @@ import svgPathsHd from "../imports/svg-sng3ceu5u2";
 import VitaminSpecialist from './VitaminSpecialistSection';
 import PhactSection from './PhactSection';
 import ProcapsDifferenceSection from './ProcapsDifferenceSection';
+import TickerTape from './TickerTape';
 import imgBanner from "figma:asset/be6b296809b899ffe49a39b24634e1a5d4abb146.png";
 import imgBannerMobile from "figma:asset/75fc2edc3d254e5f5f699438d8eaeb81a1ab5fd7.png";
 import imgBannerTablet from "figma:asset/84ce49373bbc690f8c23b2d25b68fd6aedbf8176.png";
@@ -798,7 +799,7 @@ function BodyGroup({ breakpoint, svgPaths, onIngredientsClick }: { breakpoint: B
 
   return (
     <div className={`box-border content-stretch flex flex-col items-center px-0 relative shrink-0 w-full ${verticalSpacing}`} data-name="body group">
-      <TickerScroll />
+      <TickerTape />
       <Component2Up breakpoint={breakpoint} />
       <InformedChoice breakpoint={breakpoint} onIngredientsClick={onIngredientsClick} />
       <VitaminSpecialist breakpoint={breakpoint} />
