@@ -450,6 +450,10 @@
     pointer-events: none;
   }
 
+  .collapse {
+    visibility: collapse;
+  }
+
   .invisible {
     visibility: hidden;
   }
@@ -6008,12 +6012,6 @@
   @media (width >= 768px) {
     .m\:block {
       display: block;
-    }
-  }
-
-  @media (width >= 768px) {
-    .m\:w-\[480px\] {
-      width: 480px;
     }
   }
 
