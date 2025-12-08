@@ -891,7 +891,7 @@ function BodyGroup({ breakpoint, svgPaths, onIngredientsClick }: { breakpoint: B
       <TickerScroll />
       <Component2Up breakpoint={breakpoint} />
       <InformedChoice breakpoint={breakpoint} onIngredientsClick={onIngredientsClick} />
-      <VitaminSpecialist breakpoint={breakpoint} svgPaths={svgPaths} />
+      <VitaminSpecialist breakpoint={breakpoint} />
       <VideoSection breakpoint={breakpoint} svgPaths={svgPaths} />
       <PhactSection breakpoint={breakpoint} svgPaths={svgPaths} />
       <ProcapsDifferenceVideo breakpoint={breakpoint} svgPaths={svgPaths} />

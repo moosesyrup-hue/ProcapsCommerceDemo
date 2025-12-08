@@ -1,7 +1,12 @@
+import svgPathsL from "../imports/svg-npcn6vymav";
+
 type Breakpoint = 'S' | 'M' | 'L' | 'XL' | 'HD';
 
 // Clean, production-ready Vitamin Specialist Badge component
-function VitaminSpecialistBadge({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
+// Note: Always uses svgPathsL because HD/XL svg files don't contain all badge paths
+function VitaminSpecialistBadge({ breakpoint }: { breakpoint: Breakpoint }) {
+  const svgPaths = svgPathsL; // Use L paths which contain all badge SVG data
+  
   // Responsive badge sizing
   const getSize = () => {
     switch (breakpoint) {
@@ -110,14 +115,14 @@ function Button3() {
   );
 }
 
-export default function VitaminSpecialist({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
+export default function VitaminSpecialist({ breakpoint }: { breakpoint: Breakpoint }) {
   const isMobile = breakpoint === 'S';
   const isTablet = breakpoint === 'M';
   const gap = isMobile || isTablet ? 'gap-[30px]' : 'gap-[40px]';
   
   return (
     <div className={`content-stretch flex flex-col ${gap} items-center relative shrink-0`} data-name="vitamin specialist">
-      <VitaminSpecialistBadge svgPaths={svgPaths} breakpoint={breakpoint} />
+      <VitaminSpecialistBadge breakpoint={breakpoint} />
       <CopyVitamin breakpoint={breakpoint} />
       <Button3 />
     </div>
