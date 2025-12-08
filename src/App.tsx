@@ -11,6 +11,7 @@ import ShippingReturnsPage from './components/ShippingReturnsPage';
 import HelpPage from './components/HelpPage';
 import IngredientsPage from './components/IngredientsPage';
 import IngredientCollectionPage from './components/IngredientCollectionPage';
+import OurStoryPage from './components/OurStoryPage';
 import GlobalHeader from './components/GlobalHeader';
 import GlobalFooter from './components/GlobalFooter';
 import MiniCart from './components/MiniCart';
@@ -21,7 +22,7 @@ import imgImage from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png";
 
 export default function App() {
   // Routing state
-  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'checkout' | 'order-confirmation' | 'find-supplements' | 'faq' | 'privacy-policy' | 'terms-of-use' | 'shipping-returns' | 'help' | 'ingredients' | 'ingredient-collection'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'checkout' | 'order-confirmation' | 'find-supplements' | 'faq' | 'privacy-policy' | 'terms-of-use' | 'shipping-returns' | 'help' | 'ingredients' | 'ingredient-collection' | 'our-story'>('home');
   const [selectedCategory, setSelectedCategory] = useState<string>('digestive-health');
   const [selectedIngredient, setSelectedIngredient] = useState<string>('Vitamin C');
   
@@ -148,6 +149,11 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
+  const handleOurStoryClick = () => {
+    setCurrentPage('our-story');
+    window.scrollTo(0, 0);
+  };
+
   // Cart handlers
   const handleUpdateQuantity = (id: string, quantity: number) => {
     if (quantity === 0) {
@@ -250,6 +256,7 @@ export default function App() {
           onFAQClick={handleFAQClick}
           onIngredientsClick={handleIngredientsClick}
           onHelpClick={handleHelpClick}
+          onOurStoryClick={handleOurStoryClick}
         />
       )}
 
@@ -263,6 +270,10 @@ export default function App() {
           setMobileMenuOpen(false);
         }}
         onIngredientsClick={handleIngredientsClick}
+        onOurStoryClick={() => {
+          handleOurStoryClick();
+          setMobileMenuOpen(false);
+        }}
       />
 
       {/* Account Tray */}
@@ -332,6 +343,8 @@ export default function App() {
           onContinueShopping={() => setCurrentPage('collection')}
           onPlaceOrder={handlePlaceOrder}
         />
+      ) : currentPage === 'our-story' ? (
+        <OurStoryPage />
       ) : (
         <OrderConfirmationPage 
           orderData={orderData}

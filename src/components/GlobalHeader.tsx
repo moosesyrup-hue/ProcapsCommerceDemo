@@ -119,7 +119,8 @@ export default function GlobalHeader({
   userFirstName,
   onFAQClick,
   onIngredientsClick,
-  onHelpClick
+  onHelpClick,
+  onOurStoryClick
 }: { 
   onMenuClick: () => void; 
   onCartClick: () => void;
@@ -132,6 +133,7 @@ export default function GlobalHeader({
   onFAQClick?: () => void;
   onIngredientsClick?: () => void;
   onHelpClick?: () => void;
+  onOurStoryClick?: () => void;
 }) {
   const [breakpoint, setBreakpoint] = useState<'S' | 'M' | 'L' | 'XL' | 'HD'>('M');
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
@@ -280,12 +282,13 @@ export default function GlobalHeader({
                   >
                     QUALITY
                   </p>
-                  <p 
+                  <button 
+                    onClick={onOurStoryClick}
                     className="cursor-pointer hover:opacity-80 transition-opacity"
                     onMouseEnter={handleOtherNavHover}
                   >
                     OUR STORY
-                  </p>
+                  </button>
                   <button 
                     onClick={onSpecialsClick} 
                     className="hover:opacity-80 transition-opacity"
