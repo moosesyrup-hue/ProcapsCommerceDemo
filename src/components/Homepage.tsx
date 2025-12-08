@@ -586,9 +586,13 @@ function InformedChoice({ breakpoint, onIngredientsClick }: { breakpoint: Breakp
 }
 
 // Vitamin Specialist Section
-function Layer({ svgPaths }: { svgPaths: any }) {
+function Layer({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
+  const isMobile = breakpoint === 'S';
+  const isTablet = breakpoint === 'M';
+  const badgeSize = isMobile ? 'h-[100px] w-[100.677px]' : isTablet ? 'h-[120px] w-[120.812px]' : 'h-[147.728px] w-[148.527px]';
+  
   return (
-    <div className="[grid-area:1_/_1] h-[147.728px] ml-0 mt-0 relative w-[148.527px]" data-name="Layer_1">
+    <div className={`[grid-area:1_/_1] ml-0 mt-0 relative ${badgeSize}`} data-name="Layer_1">
       <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 149 148">
         <g clipPath="url(#clip0_195_1807)" id="Layer_1">
           <path d={svgPaths.p31bcbd00} fill="var(--fill-0, #009296)" />
@@ -637,25 +641,33 @@ function Layer({ svgPaths }: { svgPaths: any }) {
   );
 }
 
-function Vitaminspecialistbadge({ svgPaths }: { svgPaths: any }) {
+function Vitaminspecialistbadge({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0" data-name="vitaminspecialistbadge">
-      <Layer svgPaths={svgPaths} />
+      <Layer svgPaths={svgPaths} breakpoint={breakpoint} />
     </div>
   );
 }
 
 function CopyVitamin({ breakpoint }: { breakpoint: Breakpoint }) {
-  const headlineSize = breakpoint === 'HD' ? 'text-[40px]' : breakpoint === 'XL' ? 'text-[38px]' : 'text-[34px]';
-  const tracking = breakpoint === 'HD' ? 'tracking-[-0.8px]' : breakpoint === 'XL' ? 'tracking-[-0.76px]' : 'tracking-[-0.68px]';
-  const width = breakpoint === 'HD' ? 'w-[600px]' : breakpoint === 'XL' ? 'w-[580px]' : 'w-[555px]';
-  const subTextSize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]';
-  const subTextTracking = breakpoint === 'HD' || breakpoint === 'XL' ? 'tracking-[-0.2px]' : 'tracking-[-0.16px]';
+  const isMobile = breakpoint === 'S';
+  const isTablet = breakpoint === 'M';
+  const headlineSize = isMobile || isTablet ? 'text-[24px]' : breakpoint === 'HD' ? 'text-[40px]' : breakpoint === 'XL' ? 'text-[38px]' : 'text-[34px]';
+  const tracking = isMobile || isTablet ? 'tracking-[-0.48px]' : breakpoint === 'HD' ? 'tracking-[-0.8px]' : breakpoint === 'XL' ? 'tracking-[-0.76px]' : 'tracking-[-0.68px]';
+  const subTextSize = isMobile || isTablet ? 'text-[16px]' : breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]';
+  const subTextTracking = isMobile || isTablet ? 'tracking-[-0.16px]' : breakpoint === 'HD' || breakpoint === 'XL' ? 'tracking-[-0.2px]' : 'tracking-[-0.16px]';
+  const padding = isMobile || isTablet ? 'px-[20px]' : '';
+  const gap = isMobile || isTablet ? 'gap-[20px]' : 'gap-[10px]';
+  const maxWidth = breakpoint === 'HD' ? 'max-w-[600px]' : breakpoint === 'XL' ? 'max-w-[580px]' : breakpoint === 'L' ? 'max-w-[555px]' : 'max-w-none';
 
   return (
-    <div className="content-stretch flex flex-col items-center leading-[1.8] relative shrink-0 text-center" data-name="copy">
-      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium relative shrink-0 text-[#009296] ${headlineSize} text-nowrap ${tracking} whitespace-pre`}>Need personalized assistance?</p>
-      <p className={`font-['Inter:Regular',sans-serif] font-normal h-[36px] not-italic relative shrink-0 text-[#003b3c] ${subTextSize} ${subTextTracking} ${width}`}>Talk to one of our knowledgeable, onsite Vitamin Specialists</p>
+    <div className={`content-stretch flex flex-col items-center ${gap} relative shrink-0 text-center w-full ${padding}`} data-name="copy">
+      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[#009296] ${headlineSize} ${tracking} w-full`}>
+        Need personalized assistance?
+      </p>
+      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] ${subTextSize} ${subTextTracking} w-full ${maxWidth}`}>
+        Talk to one of our knowledgeable, onsite Vitamin Specialists
+      </p>
     </div>
   );
 }
@@ -670,9 +682,13 @@ function Button3() {
 }
 
 function VitaminSpecialist({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
+  const isMobile = breakpoint === 'S';
+  const isTablet = breakpoint === 'M';
+  const gap = isMobile || isTablet ? 'gap-[30px]' : 'gap-[40px]';
+  
   return (
-    <div className="content-stretch flex flex-col gap-[40px] items-center relative shrink-0" data-name="vitamin specialist">
-      <Vitaminspecialistbadge svgPaths={svgPathsL} />
+    <div className={`content-stretch flex flex-col ${gap} items-center relative shrink-0`} data-name="vitamin specialist">
+      <Vitaminspecialistbadge svgPaths={svgPaths} breakpoint={breakpoint} />
       <CopyVitamin breakpoint={breakpoint} />
       <Button3 />
     </div>
