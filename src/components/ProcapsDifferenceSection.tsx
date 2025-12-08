@@ -1,4 +1,6 @@
 import { Button } from './ui/Button';
+import { useState } from 'react';
+import VideoModal from './VideoModal';
 
 type Breakpoint = 'S' | 'M' | 'L' | 'XL' | 'HD';
 
@@ -252,13 +254,22 @@ function Header({ breakpoint }: { breakpoint: Breakpoint }) {
 /**
  * Video play button SVG icon
  */
-function PlayButton({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
+function PlayButton({ 
+  svgPaths, 
+  breakpoint, 
+  onClick 
+}: { 
+  svgPaths: any; 
+  breakpoint: Breakpoint; 
+  onClick?: () => void;
+}) {
   const typography = getTypography(breakpoint);
 
   return (
     <button 
       className={`${typography.playButtonSize} cursor-pointer transition-opacity hover:opacity-80`}
       aria-label="Play video"
+      onClick={onClick}
     >
       <svg className="block size-full" fill="none" viewBox="0 0 91 91">
         <circle 
@@ -279,7 +290,15 @@ function PlayButton({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Break
 /**
  * Video player placeholder with play button overlay
  */
-function VideoPlayer({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
+function VideoPlayer({ 
+  svgPaths, 
+  breakpoint, 
+  onPlayClick 
+}: { 
+  svgPaths: any; 
+  breakpoint: Breakpoint; 
+  onPlayClick?: () => void;
+}) {
   const spacing = getSpacing(breakpoint);
 
   return (
@@ -294,9 +313,11 @@ function VideoPlayer({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Brea
         items-center 
         justify-center
         overflow-hidden
+        cursor-pointer
       `}
+      onClick={onPlayClick}
     >
-      <PlayButton svgPaths={svgPaths} breakpoint={breakpoint} />
+      <PlayButton svgPaths={svgPaths} breakpoint={breakpoint} onClick={onPlayClick} />
     </div>
   );
 }
@@ -318,6 +339,7 @@ export default function ProcapsDifferenceSection({
   svgPaths: any; 
 }) {
   const spacing = getSpacing(breakpoint);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <section 
@@ -326,8 +348,9 @@ export default function ProcapsDifferenceSection({
     >
       <div className={`flex flex-col items-center ${spacing.sectionGap} ${spacing.contentMaxWidth} w-full`}>
         <Header breakpoint={breakpoint} />
-        <VideoPlayer svgPaths={svgPaths} breakpoint={breakpoint} />
+        <VideoPlayer svgPaths={svgPaths} breakpoint={breakpoint} onPlayClick={() => setIsModalOpen(true)} />
       </div>
+      <VideoModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </section>
   );
 }
