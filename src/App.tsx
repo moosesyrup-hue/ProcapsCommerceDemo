@@ -278,7 +278,10 @@ export default function App() {
 
       {/* Page Content */}
       {currentPage === 'home' ? (
-        <Homepage onFindSupplementsClick={handleFindSupplementsClick} />
+        <Homepage 
+          onFindSupplementsClick={handleFindSupplementsClick}
+          onIngredientsClick={handleIngredientsClick}
+        />
       ) : currentPage === 'collection' ? (
         <CollectionPage 
           cartItems={cartItems}

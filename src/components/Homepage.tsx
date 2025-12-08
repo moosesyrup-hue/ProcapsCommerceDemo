@@ -17,7 +17,10 @@ import imgImage6 from "figma:asset/07a96391057ade3b14e0a1c61eff3099de640600.png"
 
 type Breakpoint = 'S' | 'M' | 'L' | 'XL' | 'HD';
 
-export default function Homepage() {
+export default function Homepage({ onFindSupplementsClick, onIngredientsClick }: { 
+  onFindSupplementsClick?: () => void;
+  onIngredientsClick?: () => void;
+}) {
   const [breakpoint, setBreakpoint] = useState<Breakpoint>('XL');
 
   useEffect(() => {
@@ -46,7 +49,11 @@ export default function Homepage() {
   return (
     <div className="bg-white content-stretch flex flex-col items-center overflow-x-hidden relative w-full">
       <Banner breakpoint={breakpoint} svgPaths={svgPaths} />
-      <BodyGroup breakpoint={breakpoint} svgPaths={svgPaths} />
+      <BodyGroup 
+        breakpoint={breakpoint} 
+        svgPaths={svgPaths} 
+        onIngredientsClick={onIngredientsClick}
+      />
     </div>
   );
 }
@@ -449,41 +456,78 @@ function CopyGroup1({ breakpoint }: { breakpoint: Breakpoint }) {
   );
 }
 
-function ComponentCircle({ img, label, breakpoint }: { img: string; label: string; breakpoint: Breakpoint }) {
+function ComponentCircle({ img, label, breakpoint, onClick }: { 
+  img: string; 
+  label: string; 
+  breakpoint: Breakpoint;
+  onClick?: () => void;
+}) {
   const isMobile = breakpoint === 'S';
   const isTablet = breakpoint === 'M';
   const labelSize = isMobile || isTablet ? 'text-[16px]' : 'text-[20px]';
   const labelTracking = isMobile || isTablet ? 'tracking-[-0.16px]' : 'tracking-[-0.2px]';
   const gap = isMobile || isTablet ? 'gap-[20px]' : 'gap-[40px]';
+  const isClickable = !!onClick;
+  
+  const content = (
+    <>
+      <div className="aspect-square relative shrink-0 w-full overflow-hidden rounded-full" data-name="image">
+        <img 
+          alt={label}
+          className={`block max-w-none size-full transition-transform duration-300 ease-out ${isClickable ? 'group-hover:scale-110' : ''}`}
+          src={img} 
+        />
+      </div>
+      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[#003b3c] ${labelSize} text-center ${labelTracking} w-full transition-colors duration-300 ease-out ${isClickable ? 'group-hover:text-[#009296]' : ''}`}>
+        {label}
+      </p>
+    </>
+  );
+  
+  if (isClickable) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={`View ${label}`}
+        className={`content-stretch flex flex-col ${gap} items-center relative shrink-0 ${isMobile ? '' : 'basis-0 grow min-h-px min-w-px'} group cursor-pointer bg-transparent border-0 p-0`}
+      >
+        {content}
+      </button>
+    );
+  }
   
   return (
     <div className={`content-stretch flex flex-col ${gap} items-center relative shrink-0 ${isMobile ? '' : 'basis-0 grow min-h-px min-w-px'}`}>
-      <div className="aspect-square relative shrink-0 w-full" data-name="image">
-        <img alt="" className="block max-w-none size-full" src={img} />
-      </div>
-      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[#003b3c] ${labelSize} text-center ${labelTracking} w-full`}>{label}</p>
+      {content}
     </div>
   );
 }
 
-function Columns({ breakpoint }: { breakpoint: Breakpoint }) {
+function Columns({ breakpoint, onIngredientsClick }: { breakpoint: Breakpoint; onIngredientsClick?: () => void }) {
   const isMobile = breakpoint === 'S';
   
   if (isMobile) {
-    // Mobile: First and last items get edge padding for symmetric 20px breathing room
+    // Mobile: First and last items get edge margin for symmetric 20px breathing room
     return (
       <div className="w-full" data-name="columns">
         <div className="flex gap-[16px] overflow-x-auto snap-x snap-mandatory scrollbar-hide">
           {CATEGORY_ITEMS.map((item, index) => {
             const isFirst = index === 0;
             const isLast = index === CATEGORY_ITEMS.length - 1;
+            const isIngredients = item.id === 'ingredients';
             
             return (
               <div 
                 key={item.id} 
-                className={`snap-start flex-none w-[42%] ${isFirst ? 'pl-[20px]' : ''} ${isLast ? 'pr-[20px]' : ''}`}
+                className={`snap-start flex-none w-[42%] ${isFirst ? 'ml-[20px]' : ''} ${isLast ? 'mr-[20px]' : ''}`}
               >
-                <ComponentCircle img={item.img} label={item.label} breakpoint={breakpoint} />
+                <ComponentCircle 
+                  img={item.img} 
+                  label={item.label} 
+                  breakpoint={breakpoint}
+                  onClick={isIngredients ? onIngredientsClick : undefined}
+                />
               </div>
             );
           })}
@@ -498,15 +542,24 @@ function Columns({ breakpoint }: { breakpoint: Breakpoint }) {
   return (
     <div className="flex justify-center w-full" data-name="columns">
       <div className={`content-stretch flex ${gap} items-start relative shrink-0 w-full max-w-[1200px]`}>
-        {CATEGORY_ITEMS.map(item => (
-          <ComponentCircle key={item.id} img={item.img} label={item.label} breakpoint={breakpoint} />
-        ))}
+        {CATEGORY_ITEMS.map(item => {
+          const isIngredients = item.id === 'ingredients';
+          return (
+            <ComponentCircle 
+              key={item.id} 
+              img={item.img} 
+              label={item.label} 
+              breakpoint={breakpoint}
+              onClick={isIngredients ? onIngredientsClick : undefined}
+            />
+          );
+        })}
       </div>
     </div>
   );
 }
 
-function InformedChoice({ breakpoint }: { breakpoint: Breakpoint }) {
+function InformedChoice({ breakpoint, onIngredientsClick }: { breakpoint: Breakpoint; onIngredientsClick?: () => void }) {
   const padding = breakpoint === 'S' ? 'px-0' : breakpoint === 'M' ? 'px-[30px]' : breakpoint === 'HD' ? 'px-[200px]' : breakpoint === 'XL' ? 'px-[180px]' : 'px-[160px]';
   const textPadding = breakpoint === 'S' ? 'px-[20px]' : '';
   const gap = breakpoint === 'S' || breakpoint === 'M' ? 'gap-[40px]' : 'gap-[60px]';
@@ -518,7 +571,7 @@ function InformedChoice({ breakpoint }: { breakpoint: Breakpoint }) {
           <div className={textPadding}>
             <CopyGroup1 breakpoint={breakpoint} />
           </div>
-          <Columns breakpoint={breakpoint} />
+          <Columns breakpoint={breakpoint} onIngredientsClick={onIngredientsClick} />
           <div className={`h-0 relative shrink-0 w-full ${textPadding}`} data-name="hori line">
             <div className="absolute bottom-0 left-0 right-0 top-[-1px]">
               <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 960 1">
@@ -923,14 +976,14 @@ function ProcapsDifferenceVideo({ breakpoint, svgPaths }: { breakpoint: Breakpoi
 }
 
 // Body Group
-function BodyGroup({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
+function BodyGroup({ breakpoint, svgPaths, onIngredientsClick }: { breakpoint: Breakpoint; svgPaths: any; onIngredientsClick?: () => void }) {
   const verticalSpacing = breakpoint === 'S' ? 'py-[60px] gap-[60px]' : 'py-[80px] gap-[80px]';
 
   return (
     <div className={`box-border content-stretch flex flex-col items-center px-0 relative shrink-0 w-full ${verticalSpacing}`} data-name="body group">
       <TickerScroll />
       <Component2Up breakpoint={breakpoint} />
-      <InformedChoice breakpoint={breakpoint} />
+      <InformedChoice breakpoint={breakpoint} onIngredientsClick={onIngredientsClick} />
       <VitaminSpecialist breakpoint={breakpoint} svgPaths={svgPaths} />
       <VideoSection breakpoint={breakpoint} svgPaths={svgPaths} />
       <PhactSection breakpoint={breakpoint} svgPaths={svgPaths} />
