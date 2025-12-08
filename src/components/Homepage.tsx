@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import svgPathsL from "../imports/svg-npcn6vymav";
 import svgPathsXl from "../imports/svg-ovhudlxac5";
 import svgPathsHd from "../imports/svg-sng3ceu5u2";
+import VitaminSpecialist from './VitaminSpecialistSection';
 import imgBanner from "figma:asset/be6b296809b899ffe49a39b24634e1a5d4abb146.png";
 import imgBannerMobile from "figma:asset/75fc2edc3d254e5f5f699438d8eaeb81a1ab5fd7.png";
 import imgBannerTablet from "figma:asset/84ce49373bbc690f8c23b2d25b68fd6aedbf8176.png";
@@ -581,116 +582,6 @@ function InformedChoice({ breakpoint, onIngredientsClick }: { breakpoint: Breakp
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-// Vitamin Specialist Section
-function Layer({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
-  const isMobile = breakpoint === 'S';
-  const isTablet = breakpoint === 'M';
-  const badgeSize = isMobile ? 'h-[100px] w-[100.677px]' : isTablet ? 'h-[120px] w-[120.812px]' : 'h-[147.728px] w-[148.527px]';
-  
-  return (
-    <div className={`[grid-area:1_/_1] ml-0 mt-0 relative ${badgeSize}`} data-name="Layer_1">
-      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 149 148">
-        <g clipPath="url(#clip0_195_1807)" id="Layer_1">
-          <path d={svgPaths.p31bcbd00} fill="var(--fill-0, #009296)" />
-          <g id="Group">
-            <path d={svgPaths.p2e7fb500} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p7928a00} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p1f920300} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p24ea2c0} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p338e96c0} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.pa752e70} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p21a97e00} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p205ac600} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p35640b00} fill="var(--fill-0, #009296)" />
-          </g>
-          <g id="Group_2">
-            <path d={svgPaths.pfa37580} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p13f29180} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p24692340} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p3b587800} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p32c93d80} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p3954c440} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p362c1300} fill="var(--fill-0, #009296)" />
-          </g>
-          <g id="Group_3">
-            <path d={svgPaths.p2a972f00} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p35caf500} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p18f46000} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p2c40a080} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p2ae01800} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p2794180} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p19635600} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p882ed00} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.p36ff4a00} fill="var(--fill-0, #009296)" />
-            <path d={svgPaths.pd3d2c00} fill="var(--fill-0, #009296)" />
-          </g>
-          <path d={svgPaths.pd03e680} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p3a429000} fill="var(--fill-0, #009296)" />
-        </g>
-        <defs>
-          <clipPath id="clip0_195_1807">
-            <rect fill="white" height="147.728" width="148.527" />
-          </clipPath>
-        </defs>
-      </svg>
-    </div>
-  );
-}
-
-function Vitaminspecialistbadge({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
-  return (
-    <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0" data-name="vitaminspecialistbadge">
-      <Layer svgPaths={svgPaths} breakpoint={breakpoint} />
-    </div>
-  );
-}
-
-function CopyVitamin({ breakpoint }: { breakpoint: Breakpoint }) {
-  const isMobile = breakpoint === 'S';
-  const isTablet = breakpoint === 'M';
-  const headlineSize = isMobile || isTablet ? 'text-[24px]' : breakpoint === 'HD' ? 'text-[40px]' : breakpoint === 'XL' ? 'text-[38px]' : 'text-[34px]';
-  const tracking = isMobile || isTablet ? 'tracking-[-0.48px]' : breakpoint === 'HD' ? 'tracking-[-0.8px]' : breakpoint === 'XL' ? 'tracking-[-0.76px]' : 'tracking-[-0.68px]';
-  const subTextSize = isMobile || isTablet ? 'text-[16px]' : breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]';
-  const subTextTracking = isMobile || isTablet ? 'tracking-[-0.16px]' : breakpoint === 'HD' || breakpoint === 'XL' ? 'tracking-[-0.2px]' : 'tracking-[-0.16px]';
-  const padding = isMobile || isTablet ? 'px-[20px]' : '';
-  const gap = isMobile || isTablet ? 'gap-[20px]' : 'gap-[10px]';
-  const maxWidth = breakpoint === 'HD' ? 'max-w-[600px]' : breakpoint === 'XL' ? 'max-w-[580px]' : breakpoint === 'L' ? 'max-w-[555px]' : 'max-w-none';
-
-  return (
-    <div className={`content-stretch flex flex-col items-center ${gap} relative shrink-0 text-center w-full ${padding}`} data-name="copy">
-      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.2] relative shrink-0 text-[#009296] ${headlineSize} ${tracking} w-full`}>
-        Need personalized assistance?
-      </p>
-      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] ${subTextSize} ${subTextTracking} w-full ${maxWidth}`}>
-        Talk to one of our knowledgeable, onsite Vitamin Specialists
-      </p>
-    </div>
-  );
-}
-
-function Button3() {
-  return (
-    <div className="box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center px-[39px] py-[15px] relative rounded-[999px] shrink-0" data-name="button">
-      <div aria-hidden="true" className="absolute border border-[#009296] border-solid inset-0 pointer-events-none rounded-[999px]" />
-      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[#009296] text-[16px] text-center text-nowrap tracking-[1.92px] uppercase whitespace-pre">CHAT NOW</p>
-    </div>
-  );
-}
-
-function VitaminSpecialist({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
-  const isMobile = breakpoint === 'S';
-  const isTablet = breakpoint === 'M';
-  const gap = isMobile || isTablet ? 'gap-[30px]' : 'gap-[40px]';
-  
-  return (
-    <div className={`content-stretch flex flex-col ${gap} items-center relative shrink-0`} data-name="vitamin specialist">
-      <Vitaminspecialistbadge svgPaths={svgPaths} breakpoint={breakpoint} />
-      <CopyVitamin breakpoint={breakpoint} />
-      <Button3 />
     </div>
   );
 }
