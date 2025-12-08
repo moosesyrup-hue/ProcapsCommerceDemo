@@ -749,9 +749,12 @@ function Image1() {
   );
 }
 
-function Icon1({ svgPaths }: { svgPaths: any }) {
+function Icon1({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
+  // Scale badge down at tablet/mobile for better fit
+  const iconSize = breakpoint === 'S' || breakpoint === 'M' ? 'size-[80px]' : 'size-[102.845px]';
+  
   return (
-    <div className="relative shrink-0 size-[102.845px]" data-name="icon">
+    <div className={`relative shrink-0 ${iconSize}`} data-name="icon">
       <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 103 103">
         <g id="icon">
           <path d={svgPaths.pb0384e0} fill="var(--fill-0, #009296)" />
@@ -785,18 +788,16 @@ function Icon1({ svgPaths }: { svgPaths: any }) {
 }
 
 function Copy1({ breakpoint }: { breakpoint: Breakpoint }) {
-  const headlineSize = breakpoint === 'HD' ? 'text-[54px]' : breakpoint === 'XL' ? 'text-[38px]' : 'text-[34px]';
-  const tracking = breakpoint === 'HD' ? 'tracking-[-1.08px]' : breakpoint === 'XL' ? 'tracking-[-0.76px]' : 'tracking-[-0.68px]';
-  const subTextSize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]';
-  const subTextTracking = breakpoint === 'HD' || breakpoint === 'XL' ? 'tracking-[-0.2px]' : 'tracking-[-0.16px]';
+  // More granular sizing for tablet M
+  const headlineSize = breakpoint === 'M' ? 'text-[28px]' : breakpoint === 'HD' ? 'text-[54px]' : breakpoint === 'XL' ? 'text-[38px]' : 'text-[34px]';
+  const tracking = breakpoint === 'M' ? 'tracking-[-0.56px]' : breakpoint === 'HD' ? 'tracking-[-1.08px]' : breakpoint === 'XL' ? 'tracking-[-0.76px]' : 'tracking-[-0.68px]';
+  const subTextSize = breakpoint === 'M' ? 'text-[14px]' : breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]';
+  const subTextTracking = breakpoint === 'M' ? 'tracking-[-0.14px]' : breakpoint === 'HD' || breakpoint === 'XL' ? 'tracking-[-0.2px]' : 'tracking-[-0.16px]';
 
   return (
     <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 text-[#003b3c] w-full" data-name="copy">
       <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[0px] ${headlineSize} ${tracking} w-full`}>
-        <span>
-          The most rigorously tested,
-          <br aria-hidden="true" />
-        </span>
+        <span>The most rigorously tested, </span>
         <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">all-in-one</span>
         <span>{` cleansing experience.`}</span>
       </p>
@@ -812,7 +813,7 @@ function Button4() {
 function CopyGroup3({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
   return (
     <div className="content-stretch flex flex-col gap-[40px] items-start justify-center relative shrink-0 w-full" data-name="copy Group">
-      <Icon1 svgPaths={svgPaths} />
+      <Icon1 svgPaths={svgPaths} breakpoint={breakpoint} />
       <Copy1 breakpoint={breakpoint} />
       <Button4 />
     </div>
@@ -820,7 +821,8 @@ function CopyGroup3({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths
 }
 
 function Right({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
-  const padding = breakpoint === 'HD' ? 'pl-[80px] pr-[130px] py-[100px]' : breakpoint === 'XL' ? 'pl-[70px] pr-[120px] py-[95px]' : 'pl-[60px] pr-[110px] py-[90px]';
+  // Optimized padding for each breakpoint - tablet M gets tighter padding to fit content
+  const padding = breakpoint === 'M' ? 'pl-[40px] pr-[80px] py-[70px]' : breakpoint === 'HD' ? 'pl-[80px] pr-[130px] py-[100px]' : breakpoint === 'XL' ? 'pl-[70px] pr-[120px] py-[95px]' : 'pl-[60px] pr-[110px] py-[90px]';
 
   return (
     <div className="aspect-[1146/1146] basis-0 bg-[#f6f2ec] grow min-h-px min-w-px relative shrink-0" data-name="right">

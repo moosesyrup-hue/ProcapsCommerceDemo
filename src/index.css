@@ -1109,6 +1109,11 @@
     height: 66px;
   }
 
+  .size-\[80px\] {
+    width: 80px;
+    height: 80px;
+  }
+
   .size-\[91px\] {
     width: 91px;
     height: 91px;
@@ -3002,6 +3007,10 @@
     padding-right: 48px;
   }
 
+  .pr-\[80px\] {
+    padding-right: 80px;
+  }
+
   .pr-\[110px\] {
     padding-right: 110px;
   }
@@ -3389,6 +3398,11 @@
   .tracking-\[-0\.8px\] {
     --tw-tracking: -.8px;
     letter-spacing: -.8px;
+  }
+
+  .tracking-\[-0\.14px\] {
+    --tw-tracking: -.14px;
+    letter-spacing: -.14px;
   }
 
   .tracking-\[-0\.16px\] {
