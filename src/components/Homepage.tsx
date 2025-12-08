@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Button } from './ui/Button';
 import svgPathsL from "../imports/svg-npcn6vymav";
 import svgPathsXl from "../imports/svg-ovhudlxac5";
 import svgPathsHd from "../imports/svg-sng3ceu5u2";
@@ -134,13 +135,7 @@ function BannerHeadline({ breakpoint }: { breakpoint: Breakpoint }) {
 
 // Reusable CTA button
 function BannerButton() {
-  return (
-    <div className="bg-[#009296] box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center px-[39px] py-[15px] relative rounded-[999px] shrink-0">
-      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[16px] text-center text-nowrap text-white tracking-[1.92px] uppercase whitespace-pre">
-        OUR STORY
-      </p>
-    </div>
-  );
+  return <Button variant="primary">Our Story</Button>;
 }
 
 // Carousel navigation dots
@@ -811,11 +806,7 @@ function Copy1({ breakpoint }: { breakpoint: Breakpoint }) {
 }
 
 function Button4() {
-  return (
-    <div className="bg-[#009296] box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center px-[39px] py-[15px] relative rounded-[999px] shrink-0" data-name="button">
-      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[16px] text-center text-nowrap text-white tracking-[1.92px] uppercase whitespace-pre">SHOP PHACT</p>
-    </div>
-  );
+  return <Button variant="primary">Shop PHACT</Button>;
 }
 
 function CopyGroup3({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
@@ -897,11 +888,7 @@ function ProcapsDifferenceVideo({ breakpoint, svgPaths }: { breakpoint: Breakpoi
           </div>
 
           {/* Button */}
-          <button className="flex items-center justify-center h-[50px] px-[39px] py-[15px] rounded-full border border-[#009296]">
-            <span className="font-['Inter:Medium',sans-serif] font-medium text-[#009296] text-[16px] tracking-[1.92px] uppercase">
-              LEARN MORE
-            </span>
-          </button>
+          <Button variant="outline">Learn More</Button>
         </div>
 
         {/* Video */}

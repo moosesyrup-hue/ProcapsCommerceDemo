@@ -47,6 +47,66 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* ============================================
+     ANDREW LESSMAN DESIGN SYSTEM
+     ============================================ */
+  
+  /* Brand Colors */
+  --color-teal-dark: #009296;
+  --color-teal-bright: #48E1DC;
+  --color-navy-dark: #003b3c;
+  --color-navy-medium: #406c6d;
+  --color-cream: #f6f2ec;
+  --color-gray-light: #D9E2E2;
+  --color-gray-medium: #C2CFCF;
+  --color-gold: #F1A33A;
+  --color-error: #D84315;
+  
+  /* Spacing Scale */
+  --spacing-xs: 20px;
+  --spacing-sm: 30px;
+  --spacing-md: 40px;
+  --spacing-lg: 60px;
+  --spacing-xl: 80px;
+  --spacing-2xl: 100px;
+  --spacing-3xl: 120px;
+  
+  /* Border Radius */
+  --radius-button: 999px;
+  --radius-card: 20px;
+  --radius-card-mobile: 10px;
+  --radius-input: 8px;
+  --radius-small: 4px;
+  
+  /* Typography - Headline Sizes */
+  --text-headline-hd: 72px;
+  --text-headline-xl: 54px;
+  --text-headline-lg: 38px;
+  --text-headline-md: 34px;
+  --text-headline-sm: 24px;
+  
+  /* Typography - Body Sizes */
+  --text-body-xl: 28px;
+  --text-body-lg: 20px;
+  --text-body-md: 16px;
+  --text-body-sm: 14px;
+  --text-body-xs: 12px;
+  
+  /* Typography - Letter Spacing */
+  --tracking-headline-hd: -1.44px;
+  --tracking-headline-xl: -1.08px;
+  --tracking-headline-lg: -0.76px;
+  --tracking-headline-md: -0.68px;
+  --tracking-headline-sm: -0.48px;
+  --tracking-body-xl: -0.4px;
+  --tracking-body-lg: -0.2px;
+  --tracking-body-md: -0.16px;
+  --tracking-button: 1.92px;
+  
+  /* Font Families */
+  --font-headline: 'STIX Two Text', serif;
+  --font-body: 'Inter', sans-serif;
 }
 
 .dark {
