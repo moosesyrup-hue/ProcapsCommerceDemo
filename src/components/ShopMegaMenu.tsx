@@ -328,6 +328,7 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
                           // Convert category name to slug (all categories go to collection page)
                           const categorySlug = item.name.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and');
                           onNavigate?.(categorySlug);
+                          onClose?.();
                         }}
                         className="relative flex items-center gap-[12px] w-full text-left font-['Inter',sans-serif] text-[16px] text-[#003b3c] px-[12px] py-[10px] rounded-[8px] transition-all duration-200 group bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
                       >
@@ -356,6 +357,7 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
                           // Convert category name to slug (all categories go to collection page)
                           const categorySlug = item.name.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and');
                           onNavigate?.(categorySlug);
+                          onClose?.();
                         }}
                         className="relative flex items-center gap-[12px] w-full text-left font-['Inter',sans-serif] text-[16px] text-[#003b3c] px-[12px] py-[10px] rounded-[8px] transition-all duration-200 group bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
                       >

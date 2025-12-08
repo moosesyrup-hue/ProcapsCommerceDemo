@@ -114,9 +114,7 @@ export default function GlobalHeader({
         <ShopMegaMenu 
           isOpen={isMegaMenuOpen && isDesktop}
           onNavigate={handleMegaMenuNavigate}
-          onClose={() => {
-            clearTimers();
-          }}
+          onClose={handleOtherNavHover}
         />
       </div>
     </div>
