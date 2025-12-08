@@ -1030,6 +1030,10 @@
     aspect-ratio: 667.333 / 770;
   }
 
+  .aspect-\[670\/500\] {
+    aspect-ratio: 670 / 500;
+  }
+
   .aspect-\[670\/700\] {
     aspect-ratio: 670 / 700;
   }
@@ -2212,10 +2216,6 @@
     border-radius: 999px;
   }
 
-  .rounded-\[inherit\] {
-    border-radius: inherit;
-  }
-
   .rounded-full {
     border-radius: 3.40282e38px;
   }
@@ -2243,6 +2243,11 @@
   .rounded-t-\[8px\] {
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
+  }
+
+  .rounded-t-\[10px\] {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
   }
 
   .rounded-tl-sm {

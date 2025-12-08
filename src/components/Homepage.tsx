@@ -4,6 +4,7 @@ import svgPathsL from "../imports/svg-npcn6vymav";
 import svgPathsXl from "../imports/svg-ovhudlxac5";
 import svgPathsHd from "../imports/svg-sng3ceu5u2";
 import VitaminSpecialist from './VitaminSpecialistSection';
+import PhactSection from './PhactSection';
 import imgBanner from "figma:asset/be6b296809b899ffe49a39b24634e1a5d4abb146.png";
 import imgBannerMobile from "figma:asset/75fc2edc3d254e5f5f699438d8eaeb81a1ab5fd7.png";
 import imgBannerTablet from "figma:asset/84ce49373bbc690f8c23b2d25b68fd6aedbf8176.png";
@@ -15,7 +16,6 @@ import imgImage2 from "figma:asset/843a93f0744d908e4670d5a4585c5f1c7432e6f0.png"
 import imgImage3 from "figma:asset/33d29cd45c53175dde8ab15537ea7417446bf54d.png";
 import imgImage4 from "figma:asset/ae9200ae275214fab21ea17e682459720b9ddfa8.png";
 import imgImage5 from "figma:asset/53da6d9ed35f82a7364b7a236e964b3d87a96086.png";
-import imgImage6 from "figma:asset/07a96391057ade3b14e0a1c61eff3099de640600.png";
 
 type Breakpoint = 'S' | 'M' | 'L' | 'XL' | 'HD';
 
@@ -734,122 +734,6 @@ function VideoSection({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPat
       <div className="flex flex-row items-center w-full">
         <div className={`box-border content-stretch flex items-center justify-between ${padding} relative w-full`}>
           <Columns1 breakpoint={breakpoint} svgPaths={svgPaths} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// PHACT Section
-function Image1() {
-  return (
-    <div className="aspect-[720/720] basis-0 grow min-h-px min-w-px relative shrink-0" data-name="image">
-      <img alt="" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none size-full" src={imgImage6} />
-    </div>
-  );
-}
-
-function Icon1({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
-  // Scale badge down at tablet/mobile for better fit
-  const iconSize = breakpoint === 'S' || breakpoint === 'M' ? 'size-[80px]' : 'size-[102.845px]';
-  
-  return (
-    <div className={`relative shrink-0 ${iconSize}`} data-name="icon">
-      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 103 103">
-        <g id="icon">
-          <path d={svgPaths.pb0384e0} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.pe853980} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p2184400} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p57e9500} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p71e2c00} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p23a6b780} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p2195d60} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p11791000} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p29d6cb80} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p3d5d01f0} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p23f80780} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p39635200} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p3470400} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p2af03300} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p13f8d600} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p2bbf2480} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p1ebe4c80} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p2a1ade00} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p16b8ef00} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p9f9480} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p3e352660} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p31238900} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p3e19e0f0} fill="var(--fill-0, #009296)" />
-          <path d={svgPaths.p32f10800} fill="var(--fill-0, #009296)" />
-        </g>
-      </svg>
-    </div>
-  );
-}
-
-function Copy1({ breakpoint }: { breakpoint: Breakpoint }) {
-  // More granular sizing for tablet M
-  const headlineSize = breakpoint === 'M' ? 'text-[28px]' : breakpoint === 'HD' ? 'text-[54px]' : breakpoint === 'XL' ? 'text-[38px]' : 'text-[34px]';
-  const tracking = breakpoint === 'M' ? 'tracking-[-0.56px]' : breakpoint === 'HD' ? 'tracking-[-1.08px]' : breakpoint === 'XL' ? 'tracking-[-0.76px]' : 'tracking-[-0.68px]';
-  const subTextSize = breakpoint === 'M' ? 'text-[14px]' : breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]';
-  const subTextTracking = breakpoint === 'M' ? 'tracking-[-0.14px]' : breakpoint === 'HD' || breakpoint === 'XL' ? 'tracking-[-0.2px]' : 'tracking-[-0.16px]';
-
-  return (
-    <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 text-[#003b3c] w-full" data-name="copy">
-      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[0px] ${headlineSize} ${tracking} w-full`}>
-        <span>The most rigorously tested, </span>
-        <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">all-in-one</span>
-        <span>{` cleansing experience.`}</span>
-      </p>
-      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 ${subTextSize} ${subTextTracking} w-full`}>Enjoy a rich, foamy lather that gently cleanses, moisturizes and does not damage your skin's natural protective barriers, all with just four gentle plant-based ingredients.</p>
-    </div>
-  );
-}
-
-function Button4() {
-  return <Button variant="primary">Shop PHACT</Button>;
-}
-
-function CopyGroup3({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
-  return (
-    <div className="content-stretch flex flex-col gap-[40px] items-start justify-center relative shrink-0 w-full" data-name="copy Group">
-      <Icon1 svgPaths={svgPaths} breakpoint={breakpoint} />
-      <Copy1 breakpoint={breakpoint} />
-      <Button4 />
-    </div>
-  );
-}
-
-function Right({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
-  // Optimized padding for each breakpoint - tablet M gets tighter padding to fit content
-  const padding = breakpoint === 'M' ? 'pl-[40px] pr-[80px] py-[70px]' : breakpoint === 'HD' ? 'pl-[80px] pr-[130px] py-[100px]' : breakpoint === 'XL' ? 'pl-[70px] pr-[120px] py-[95px]' : 'pl-[60px] pr-[110px] py-[90px]';
-
-  return (
-    <div className="aspect-[1146/1146] basis-0 bg-[#f6f2ec] grow min-h-px min-w-px relative shrink-0" data-name="right">
-      <div className="flex flex-col justify-center overflow-clip rounded-[inherit] size-full">
-        <div className={`aspect-[1146/1146] box-border content-stretch flex flex-col gap-[10px] items-start justify-center ${padding} relative size-full`}>
-          <CopyGroup3 breakpoint={breakpoint} svgPaths={svgPaths} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Frame3({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
-  return (
-    <div className="basis-0 content-stretch flex grow items-start justify-center min-h-px min-w-px overflow-clip relative rounded-[20px] self-stretch shrink-0">
-      <Image1 />
-      <Right breakpoint={breakpoint} svgPaths={svgPaths} />
-    </div>
-  );
-}
-
-function PhactSection({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
-  return (
-    <div className="relative shrink-0 w-full" data-name="phact 1920">
-      <div className="flex flex-row justify-center overflow-clip rounded-[inherit] size-full">
-        <div className="box-border content-stretch flex items-start justify-center px-[40px] py-0 relative w-full">
-          <Frame3 breakpoint={breakpoint} svgPaths={svgPaths} />
         </div>
       </div>
     </div>
