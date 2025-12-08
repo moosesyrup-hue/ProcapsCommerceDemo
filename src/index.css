@@ -980,8 +980,8 @@
     margin-bottom: 40px;
   }
 
-  .mb-\[80px\] {
-    margin-bottom: 80px;
+  .mb-\[160px\] {
+    margin-bottom: 160px;
   }
 
   .-ml-\[10px\] {
@@ -1379,6 +1379,10 @@
 
   .h-\[153\.212px\] {
     height: 153.212px;
+  }
+
+  .h-\[160px\] {
+    height: 160px;
   }
 
   .h-\[175px\] {
@@ -2309,6 +2313,10 @@
     row-gap: 20px;
   }
 
+  .self-start {
+    align-self: flex-start;
+  }
+
   .self-stretch {
     align-self: stretch;
   }
@@ -2325,6 +2333,10 @@
 
   .overflow-hidden {
     overflow: hidden;
+  }
+
+  .overflow-visible {
+    overflow: visible;
   }
 
   .overflow-x-auto {
@@ -3538,11 +3550,6 @@
 
   .text-\[120px\] {
     font-size: 120px;
-  }
-
-  .leading-\[0\] {
-    --tw-leading: 0;
-    line-height: 0;
   }
 
   .leading-\[1\.1\] {
