@@ -836,10 +836,6 @@
     margin-top: 16px;
   }
 
-  .mt-\[20px\] {
-    margin-top: 20px;
-  }
-
   .mt-\[24px\] {
     margin-top: 24px;
   }
@@ -4828,6 +4824,13 @@
   }
 
   @media (width >= 1440px) {
+    .xl\:tracking-\[-1\.44px\] {
+      --tw-tracking: -1.44px;
+      letter-spacing: -1.44px;
+    }
+  }
+
+  @media (width >= 1440px) {
     .xxl\:w-\[300px\] {
       width: 300px;
     }
@@ -5643,6 +5646,12 @@
   }
 
   @media (width >= 48rem) {
+    .md\:text-\[28px\] {
+      font-size: 28px;
+    }
+  }
+
+  @media (width >= 48rem) {
     .md\:text-\[32px\] {
       font-size: 32px;
     }
@@ -5651,6 +5660,12 @@
   @media (width >= 48rem) {
     .md\:text-\[38px\] {
       font-size: 38px;
+    }
+  }
+
+  @media (width >= 48rem) {
+    .md\:text-\[48px\] {
+      font-size: 48px;
     }
   }
 
@@ -5664,6 +5679,13 @@
     .md\:tracking-\[-0\.76px\] {
       --tw-tracking: -.76px;
       letter-spacing: -.76px;
+    }
+  }
+
+  @media (width >= 48rem) {
+    .md\:tracking-\[-0\.96px\] {
+      --tw-tracking: -.96px;
+      letter-spacing: -.96px;
     }
   }
 
@@ -5877,6 +5899,19 @@
   @media (width >= 1280px) {
     .lg\:text-\[20px\] {
       font-size: 20px;
+    }
+  }
+
+  @media (width >= 1280px) {
+    .lg\:text-\[54px\] {
+      font-size: 54px;
+    }
+  }
+
+  @media (width >= 1280px) {
+    .lg\:tracking-\[-1\.08px\] {
+      --tw-tracking: -1.08px;
+      letter-spacing: -1.08px;
     }
   }
 
