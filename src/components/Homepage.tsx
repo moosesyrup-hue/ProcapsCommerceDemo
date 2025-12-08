@@ -588,13 +588,16 @@ function InformedChoice({ breakpoint, onIngredientsClick }: { breakpoint: Breakp
 
 // Video Section
 function FrameVideoQuote({ breakpoint }: { breakpoint: Breakpoint }) {
-  const headlineSize = breakpoint === 'HD' ? 'text-[72px]' : breakpoint === 'XL' ? 'text-[54px]' : 'text-[38px]';
-  const tracking = breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : 'tracking-[-0.76px]';
-  const quoteSize = breakpoint === 'HD' ? 'text-[34px]' : breakpoint === 'XL' ? 'text-[34px]' : 'text-[24px]';
-  const quoteTracking = breakpoint === 'HD' ? 'tracking-[-0.68px]' : breakpoint === 'XL' ? 'tracking-[-0.68px]' : 'tracking-[-0.48px]';
+  const isMobile = breakpoint === 'S';
+  const isTablet = breakpoint === 'M';
+  const headlineSize = isMobile ? 'text-[34px]' : isTablet ? 'text-[34px]' : breakpoint === 'HD' ? 'text-[72px]' : breakpoint === 'XL' ? 'text-[54px]' : 'text-[38px]';
+  const tracking = isMobile ? 'tracking-[-0.68px]' : isTablet ? 'tracking-[-0.68px]' : breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : 'tracking-[-0.76px]';
+  const quoteSize = isMobile ? 'text-[20px]' : isTablet ? 'text-[18px]' : breakpoint === 'HD' ? 'text-[34px]' : breakpoint === 'XL' ? 'text-[34px]' : 'text-[24px]';
+  const quoteTracking = isMobile ? 'tracking-[-0.4px]' : isTablet ? 'tracking-[-0.36px]' : breakpoint === 'HD' ? 'tracking-[-0.68px]' : breakpoint === 'XL' ? 'tracking-[-0.68px]' : 'tracking-[-0.48px]';
+  const textAlign = 'text-left';
 
   return (
-    <div className="content-stretch flex flex-col gap-[30px] items-start relative shrink-0 text-[#003b3c] w-full">
+    <div className={`content-stretch flex flex-col gap-[30px] items-start relative shrink-0 text-[#003b3c] w-full ${textAlign}`}>
       <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[0px] ${headlineSize} ${tracking} w-full`}>
         <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">Passionate</span>
         <span>{` about your health and the planet.`}</span>
@@ -644,18 +647,27 @@ function AndrewSignatureNew({ svgPaths }: { svgPaths: any }) {
 function Frame1({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
   const textSize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]';
   const tracking = breakpoint === 'HD' || breakpoint === 'XL' ? 'tracking-[-0.2px]' : 'tracking-[-0.16px]';
+  const alignment = 'items-start';
+  const textAlign = 'text-left';
+  const width = breakpoint === 'S' ? 'w-full' : 'w-[322.972px]';
 
   return (
-    <div className="content-stretch flex flex-col gap-[30px] items-start relative shrink-0 w-[322.972px]">
+    <div className={`content-stretch flex flex-col gap-[30px] ${alignment} relative shrink-0 ${width}`}>
       <AndrewSignatureNew svgPaths={svgPaths} />
-      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] min-w-full not-italic relative shrink-0 text-[#003b3c] ${textSize} ${tracking} w-[min-content]`}>- Founder, Procaps Laboratories</p>
+      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] ${textSize} ${tracking} ${textAlign} w-full`}>- Founder, Procaps Laboratories</p>
     </div>
   );
 }
 
 function CopyGroup2({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
+  const isMobile = breakpoint === 'S';
+  const isTablet = breakpoint === 'M';
+  const gap = isMobile || isTablet ? 'gap-[40px]' : 'gap-[60px]';
+  const alignment = isMobile ? 'items-center' : 'items-start';
+  const width = isMobile ? 'w-full' : 'basis-0 grow min-h-px min-w-px';
+
   return (
-    <div className="basis-0 content-stretch flex flex-col gap-[60px] grow items-start min-h-px min-w-px relative shrink-0" data-name="copy GROUP">
+    <div className={`content-stretch flex flex-col ${gap} ${alignment} relative shrink-0 ${width}`} data-name="copy GROUP">
       <FrameVideoQuote breakpoint={breakpoint} />
       <Frame1 svgPaths={svgPaths} breakpoint={breakpoint} />
     </div>
@@ -675,28 +687,56 @@ function Play({ svgPaths }: { svgPaths: any }) {
   );
 }
 
-function ImageVideo({ svgPaths }: { svgPaths: any }) {
+function ImageVideo({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
+  const isMobile = breakpoint === 'S';
+  const isTablet = breakpoint === 'M';
+  const baseClasses = isMobile ? 'w-full' : 'basis-0 grow min-h-px min-w-px';
+  const borderRadius = isMobile ? 'rounded-[10px]' : 'rounded-[20px]';
+  
   return (
-    <div className="aspect-[667.333/770] basis-0 box-border content-stretch flex gap-[10px] grow items-center justify-center min-h-px min-w-px relative rounded-[20px] shrink-0" data-name="image">
-      <img alt="" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none rounded-[20px] size-full" src={imgImage5} />
+    <div className={`aspect-[667.333/770] box-border content-stretch flex gap-[10px] items-center justify-center relative ${borderRadius} shrink-0 ${baseClasses}`} data-name="image">
+      <img alt="" className={`absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none ${borderRadius} size-full`} src={imgImage5} />
       <Play svgPaths={svgPaths} />
     </div>
   );
 }
 
 function Columns1({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
-  const gap = breakpoint === 'HD' ? 'gap-[200px]' : breakpoint === 'XL' ? 'gap-[190px]' : 'gap-[180px]';
+  const isMobile = breakpoint === 'S';
+  const isTablet = breakpoint === 'M';
+  
+  if (isMobile) {
+    // Mobile: Stacked layout - Image, Headline, Quote, Signature
+    return (
+      <div className="content-stretch flex flex-col gap-[40px] items-center relative w-full px-[20px]" data-name="columns">
+        <ImageVideo svgPaths={svgPaths} breakpoint={breakpoint} />
+        <CopyGroup2 breakpoint={breakpoint} svgPaths={svgPaths} />
+      </div>
+    );
+  }
+  
+  // Tablet & Desktop: Side-by-side layout
+  const gap = isTablet ? 'gap-[60px]' : breakpoint === 'HD' ? 'gap-[200px]' : breakpoint === 'XL' ? 'gap-[190px]' : 'gap-[180px]';
+  const padding = isTablet ? 'px-[30px]' : '';
 
   return (
-    <div className={`basis-0 content-stretch flex ${gap} grow items-center min-h-px min-w-px relative shrink-0`} data-name="columns">
+    <div className={`basis-0 content-stretch flex ${gap} grow items-center min-h-px min-w-px relative shrink-0 ${padding}`} data-name="columns">
       <CopyGroup2 breakpoint={breakpoint} svgPaths={svgPaths} />
-      <ImageVideo svgPaths={svgPaths} />
+      <ImageVideo svgPaths={svgPaths} breakpoint={breakpoint} />
     </div>
   );
 }
 
 function VideoSection({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
-  const padding = breakpoint === 'HD' ? 'px-[40px] py-[80px]' : breakpoint === 'XL' ? 'px-[40px] py-[70px]' : 'px-[40px] py-[60px]';
+  const isMobile = breakpoint === 'S';
+  const isTablet = breakpoint === 'M';
+  const padding = isMobile || isTablet 
+    ? 'px-0 py-[60px]' 
+    : breakpoint === 'HD' 
+    ? 'px-[40px] py-[80px]' 
+    : breakpoint === 'XL' 
+    ? 'px-[40px] py-[70px]' 
+    : 'px-[40px] py-[60px]';
 
   return (
     <div className="bg-[#f6f2ec] relative shrink-0 w-full" data-name="video">

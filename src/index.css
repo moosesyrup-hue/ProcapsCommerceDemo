@@ -1552,10 +1552,6 @@
     width: 800px;
   }
 
-  .w-\[min-content\] {
-    width: min-content;
-  }
-
   .w-fit {
     width: fit-content;
   }
@@ -1678,10 +1674,6 @@
 
   .min-w-\[280px\] {
     min-width: 280px;
-  }
-
-  .min-w-full {
-    min-width: 100%;
   }
 
   .min-w-px {
@@ -3411,6 +3403,11 @@
   .tracking-\[-0\.34px\] {
     --tw-tracking: -.34px;
     letter-spacing: -.34px;
+  }
+
+  .tracking-\[-0\.36px\] {
+    --tw-tracking: -.36px;
+    letter-spacing: -.36px;
   }
 
   .tracking-\[-0\.48px\] {
