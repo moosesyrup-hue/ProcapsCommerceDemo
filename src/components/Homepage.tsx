@@ -644,32 +644,28 @@ function AndrewSignatureNew({ svgPaths }: { svgPaths: any }) {
   );
 }
 
-function Frame1({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
+function SignatureWithTitle({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
   const textSize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]';
   const tracking = breakpoint === 'HD' || breakpoint === 'XL' ? 'tracking-[-0.2px]' : 'tracking-[-0.16px]';
-  const alignment = 'items-start';
-  const textAlign = 'text-left';
   const width = breakpoint === 'S' ? 'w-full' : 'w-[322.972px]';
 
   return (
-    <div className={`content-stretch flex flex-col gap-[30px] ${alignment} relative shrink-0 ${width}`}>
+    <div className={`content-stretch flex flex-col gap-[30px] items-start relative shrink-0 ${width}`}>
       <AndrewSignatureNew svgPaths={svgPaths} />
-      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] ${textSize} ${tracking} ${textAlign} w-full`}>- Founder, Procaps Laboratories</p>
+      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] ${textSize} ${tracking} text-left w-full`}>- Founder, Procaps Laboratories</p>
     </div>
   );
 }
 
 function CopyGroup2({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
   const isMobile = breakpoint === 'S';
-  const isTablet = breakpoint === 'M';
-  const gap = isMobile || isTablet ? 'gap-[40px]' : 'gap-[60px]';
-  const alignment = isMobile ? 'items-center' : 'items-start';
+  const gap = isMobile ? 'gap-[40px]' : 'gap-[60px]';
   const width = isMobile ? 'w-full' : 'basis-0 grow min-h-px min-w-px';
 
   return (
-    <div className={`content-stretch flex flex-col ${gap} ${alignment} relative shrink-0 ${width}`} data-name="copy GROUP">
+    <div className={`content-stretch flex flex-col ${gap} items-start relative shrink-0 ${width}`} data-name="copy GROUP">
       <FrameVideoQuote breakpoint={breakpoint} />
-      <Frame1 svgPaths={svgPaths} breakpoint={breakpoint} />
+      <SignatureWithTitle svgPaths={svgPaths} breakpoint={breakpoint} />
     </div>
   );
 }
