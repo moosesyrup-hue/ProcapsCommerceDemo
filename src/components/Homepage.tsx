@@ -457,7 +457,7 @@ function ComponentCircle({ img, label, breakpoint }: { img: string; label: strin
   const gap = isMobile || isTablet ? 'gap-[20px]' : 'gap-[40px]';
   
   return (
-    <div className={`content-stretch flex flex-col ${gap} items-center relative shrink-0 ${isMobile || isTablet ? '' : 'basis-0 grow min-h-px min-w-px'}`}>
+    <div className={`content-stretch flex flex-col ${gap} items-center relative shrink-0 ${isMobile ? '' : 'basis-0 grow min-h-px min-w-px'}`}>
       <div className="aspect-square relative shrink-0 w-full" data-name="image">
         <img alt="" className="block max-w-none size-full" src={img} />
       </div>
@@ -470,27 +470,34 @@ function Columns({ breakpoint }: { breakpoint: Breakpoint }) {
   const isMobile = breakpoint === 'S';
   
   if (isMobile) {
-    // Mobile: Carousel container has 20px horizontal padding for symmetric edge gaps
+    // Mobile: First and last items get edge padding for symmetric 20px breathing room
     return (
       <div className="w-full" data-name="columns">
-        <div className="flex gap-[16px] overflow-x-auto snap-x snap-mandatory scrollbar-hide px-[20px]">
-          {CATEGORY_ITEMS.map((item) => (
-            <div 
-              key={item.id} 
-              className="snap-start flex-none w-[42%]"
-            >
-              <ComponentCircle img={item.img} label={item.label} breakpoint={breakpoint} />
-            </div>
-          ))}
+        <div className="flex gap-[16px] overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+          {CATEGORY_ITEMS.map((item, index) => {
+            const isFirst = index === 0;
+            const isLast = index === CATEGORY_ITEMS.length - 1;
+            
+            return (
+              <div 
+                key={item.id} 
+                className={`snap-start flex-none w-[42%] ${isFirst ? 'pl-[20px]' : ''} ${isLast ? 'pr-[20px]' : ''}`}
+              >
+                <ComponentCircle img={item.img} label={item.label} breakpoint={breakpoint} />
+              </div>
+            );
+          })}
         </div>
       </div>
     );
   }
   
   // Tablet and Desktop: single row of 5, centered
+  const gap = breakpoint === 'M' ? 'gap-[12px]' : 'gap-[20px]';
+  
   return (
     <div className="flex justify-center w-full" data-name="columns">
-      <div className="content-stretch flex gap-[20px] items-start relative shrink-0 w-full max-w-[1200px]">
+      <div className={`content-stretch flex ${gap} items-start relative shrink-0 w-full max-w-[1200px]`}>
         {CATEGORY_ITEMS.map(item => (
           <ComponentCircle key={item.id} img={item.img} label={item.label} breakpoint={breakpoint} />
         ))}
@@ -500,7 +507,7 @@ function Columns({ breakpoint }: { breakpoint: Breakpoint }) {
 }
 
 function InformedChoice({ breakpoint }: { breakpoint: Breakpoint }) {
-  const padding = breakpoint === 'S' ? 'px-0' : breakpoint === 'M' ? 'px-[40px]' : breakpoint === 'HD' ? 'px-[200px]' : breakpoint === 'XL' ? 'px-[180px]' : 'px-[160px]';
+  const padding = breakpoint === 'S' ? 'px-0' : breakpoint === 'M' ? 'px-[30px]' : breakpoint === 'HD' ? 'px-[200px]' : breakpoint === 'XL' ? 'px-[180px]' : 'px-[160px]';
   const textPadding = breakpoint === 'S' ? 'px-[20px]' : '';
   const gap = breakpoint === 'S' || breakpoint === 'M' ? 'gap-[40px]' : 'gap-[60px]';
 
