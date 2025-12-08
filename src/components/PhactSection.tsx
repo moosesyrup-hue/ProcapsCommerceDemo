@@ -86,10 +86,10 @@ function PhactImage({ breakpoint }: { breakpoint: Breakpoint }) {
   const spacing = getPhactSpacing(breakpoint);
   
   return (
-    <div className={`${isMobile ? 'w-full aspect-[670/500]' : 'aspect-[720/720] basis-0 grow min-h-px min-w-px'} relative shrink-0`}>
+    <div className={`${isMobile ? 'w-full' : 'aspect-[720/720] basis-0 grow min-h-px min-w-px'} relative shrink-0`}>
       <img 
         alt="PHACT Soap Product" 
-        className={`absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none size-full ${spacing.imageBorderRadius}`} 
+        className={`${isMobile ? 'w-full h-auto' : 'absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none size-full'} ${spacing.imageBorderRadius}`} 
         src={imgImage6} 
       />
     </div>
