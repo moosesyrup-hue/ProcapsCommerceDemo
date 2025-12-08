@@ -81,7 +81,7 @@ export default function HelpPage() {
     faqTitleSize = 'text-[20px]';
   } else {
     // L, XL, HD
-    faqTitleSize = 'text-[24px]';
+    faqTitleSize = 'text-[28px]';
   }
 
   // Global FAQs (shown by default)
@@ -518,7 +518,7 @@ export default function HelpPage() {
                   </div>
 
                   {/* FAQ Section Title */}
-                  <h2 className={`font-['Inter:Medium',sans-serif] font-medium text-[#003b3c] ${faqTitleSize} leading-[1.2] mb-[28px] md:mb-[32px]`}>
+                  <h2 className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium text-[#003b3c] ${faqTitleSize} leading-[1.2] mb-[28px] md:mb-[32px]`}>
                     {selectedTopic ? 'Is this what you are looking for?' : 'Most frequently asked...'}
                   </h2>
 
@@ -574,25 +574,6 @@ export default function HelpPage() {
                         ))}
                       </motion.div>
                     </AnimatePresence>
-                  </div>
-
-                  {/* Still Need Help Section */}
-                  <div className="mt-[60px] md:mt-[80px] mb-[40px] md:mb-[60px]">
-                    <div className="flex items-center gap-[20px] md:gap-[24px]">
-                      {/* Circular Image */}
-                      <div className="w-[48px] h-[48px] md:w-[60px] md:h-[60px] rounded-full overflow-hidden flex-shrink-0">
-                        <img 
-                          src={customerServiceRep}
-                          alt="Customer service representative"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      
-                      {/* Text */}
-                      <p className="font-['Inter',sans-serif] text-[#003b3c] text-[16px] leading-[1.4]">
-                        <span className="font-['Inter:Medium',sans-serif] font-medium">Still can't find answers to your questions?</span> <span className="text-[#009296] underline">Get personalized help</span> from our Vitamin Specialists!
-                      </p>
-                    </div>
                   </div>
                 </>
               ) : showSuccess ? (
