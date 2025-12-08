@@ -5,6 +5,7 @@ import svgPathsXl from "../imports/svg-ovhudlxac5";
 import svgPathsHd from "../imports/svg-sng3ceu5u2";
 import VitaminSpecialist from './VitaminSpecialistSection';
 import PhactSection from './PhactSection';
+import ProcapsDifferenceSection from './ProcapsDifferenceSection';
 import imgBanner from "figma:asset/be6b296809b899ffe49a39b24634e1a5d4abb146.png";
 import imgBannerMobile from "figma:asset/75fc2edc3d254e5f5f699438d8eaeb81a1ab5fd7.png";
 import imgBannerTablet from "figma:asset/84ce49373bbc690f8c23b2d25b68fd6aedbf8176.png";
@@ -803,7 +804,7 @@ function BodyGroup({ breakpoint, svgPaths, onIngredientsClick }: { breakpoint: B
       <VitaminSpecialist breakpoint={breakpoint} />
       <VideoSection breakpoint={breakpoint} svgPaths={svgPaths} />
       <PhactSection breakpoint={breakpoint} svgPaths={svgPaths} />
-      <ProcapsDifferenceVideo breakpoint={breakpoint} svgPaths={svgPaths} />
+      <ProcapsDifferenceSection breakpoint={breakpoint} svgPaths={svgPaths} />
     </div>
   );
 }
