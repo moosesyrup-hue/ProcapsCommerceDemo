@@ -4,6 +4,7 @@ import HeaderBanner from './header/HeaderBanner';
 import HeaderNavigation from './header/HeaderNavigation';
 import HeaderIcons from './header/HeaderIcons';
 import HeaderLogo from './icons/HeaderLogo';
+import HeaderContent from './header/HeaderContent';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 import { useMegaMenu } from '../hooks/useMegaMenu';
 import { useScrollDirection } from '../hooks/useScrollDirection';
@@ -77,67 +78,34 @@ export default function GlobalHeader({
       onNavigateToCollection?.(pathOrCategory);
     }
   };
-
-  // Shared styles
-  const sectionClasses = "bg-[#009296] px-[20px] md:px-[40px] pt-[15px]";
   
   // Only show sticky when scrolling UP after scrolling past threshold
   const showSticky = isDesktop && hasScrolledPast && scrollDirection === 'up';
+
+  // Shared props for both header instances
+  const headerContentProps = {
+    isMobileTablet,
+    isDesktop,
+    breakpoint,
+    isMegaMenuOpen,
+    onShopHover: handleShopHover,
+    onOtherNavHover: handleOtherNavHover,
+    onMegaMenuLeave: handleMegaMenuLeave,
+    onMegaMenuEnter: handleMegaMenuEnter,
+    onMegaMenuNavigate: handleMegaMenuNavigate,
+    onMenuClick,
+    onCartClick,
+    onLogoClick,
+    onSpecialsClick,
+    onAccountClick,
+    onOurStoryClick,
+  };
 
   return (
     <>
       {/* Static header - always in document flow, always visible */}
       <div className="relative">
-        {/* Free Shipping Banner */}
-        <div className={sectionClasses}>
-          <HeaderBanner isMobileTablet={isMobileTablet} isDesktop={isDesktop} />
-        </div>
-
-        {/* Navigation Section */}
-        <div className={`${sectionClasses} pb-[15px] -mb-[1px]`} onMouseLeave={handleMegaMenuLeave}>
-          <div className="h-[62px] relative">
-            {/* Mobile/Tablet Menu Button */}
-            {isMobileTablet && (
-              <button 
-                onClick={onMenuClick}
-                className="absolute left-0 top-1/2 -translate-y-1/2 text-white"
-              >
-                <Menu className="w-[26px] h-[26px]" />
-              </button>
-            )}
-
-            {/* Desktop Navigation */}
-            {isDesktop && (
-              <HeaderNavigation
-                isMegaMenuOpen={isMegaMenuOpen}
-                onShopHover={handleShopHover}
-                onOtherNavHover={handleOtherNavHover}
-                onSpecialsClick={onSpecialsClick}
-                onOurStoryClick={onOurStoryClick}
-              />
-            )}
-
-            {/* Logo */}
-            <HeaderLogo onClick={onLogoClick} />
-
-            {/* Icons */}
-            <HeaderIcons
-              breakpoint={breakpoint}
-              isDesktop={isDesktop}
-              onCartClick={onCartClick}
-              onAccountClick={onAccountClick}
-            />
-          </div>
-        </div>
-        
-        {/* Mega Menu - positioned relative to the full header wrapper */}
-        <div onMouseEnter={handleMegaMenuEnter}>
-          <ShopMegaMenu 
-            isOpen={isMegaMenuOpen && isDesktop}
-            onNavigate={handleMegaMenuNavigate}
-            onClose={handleOtherNavHover}
-          />
-        </div>
+        <HeaderContent {...headerContentProps} />
       </div>
 
       {/* Sticky header - Always rendered for smooth animation */}
@@ -148,58 +116,7 @@ export default function GlobalHeader({
             ${showSticky ? 'translate-y-0' : '-translate-y-full'}
           `}
         >
-          {/* Free Shipping Banner */}
-          <div className={sectionClasses}>
-            <HeaderBanner isMobileTablet={isMobileTablet} isDesktop={isDesktop} />
-          </div>
-
-          {/* Navigation Section */}
-          <div className={`${sectionClasses} pb-[15px] -mb-[1px]`}>
-            <div onMouseLeave={handleMegaMenuLeave}>
-              <div className="h-[62px] relative">
-                {/* Mobile/Tablet Menu Button */}
-                {isMobileTablet && (
-                  <button 
-                    onClick={onMenuClick}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 text-white"
-                  >
-                    <Menu className="w-[26px] h-[26px]" />
-                  </button>
-                )}
-
-                {/* Desktop Navigation */}
-                {isDesktop && (
-                  <HeaderNavigation
-                    isMegaMenuOpen={isMegaMenuOpen}
-                    onShopHover={handleShopHover}
-                    onOtherNavHover={handleOtherNavHover}
-                    onSpecialsClick={onSpecialsClick}
-                    onOurStoryClick={onOurStoryClick}
-                  />
-                )}
-
-                {/* Logo */}
-                <HeaderLogo onClick={onLogoClick} />
-
-                {/* Icons */}
-                <HeaderIcons
-                  breakpoint={breakpoint}
-                  isDesktop={isDesktop}
-                  onCartClick={onCartClick}
-                  onAccountClick={onAccountClick}
-                />
-              </div>
-              
-              {/* Mega Menu */}
-              <div onMouseEnter={handleMegaMenuEnter}>
-                <ShopMegaMenu 
-                  isOpen={isMegaMenuOpen && isDesktop}
-                  onNavigate={handleMegaMenuNavigate}
-                  onClose={handleOtherNavHover}
-                />
-              </div>
-            </div>
-          </div>
+          <HeaderContent {...headerContentProps} />
         </div>
       </div>
     </>
