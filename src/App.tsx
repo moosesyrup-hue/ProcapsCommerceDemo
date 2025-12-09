@@ -292,6 +292,7 @@ export default function App() {
         <Homepage 
           onFindSupplementsClick={handleFindSupplementsClick}
           onIngredientsClick={handleIngredientsClick}
+          onOurStoryClick={handleOurStoryClick}
         />
       ) : currentPage === 'collection' ? (
         <CollectionPage 

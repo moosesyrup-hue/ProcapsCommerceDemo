@@ -21,9 +21,10 @@ import imgImage5 from "figma:asset/53da6d9ed35f82a7364b7a236e964b3d87a96086.png"
 
 type Breakpoint = 'S' | 'M' | 'L' | 'XL' | 'HD';
 
-export default function Homepage({ onFindSupplementsClick, onIngredientsClick }: { 
+export default function Homepage({ onFindSupplementsClick, onIngredientsClick, onOurStoryClick }: { 
   onFindSupplementsClick?: () => void;
   onIngredientsClick?: () => void;
+  onOurStoryClick?: () => void;
 }) {
   const [breakpoint, setBreakpoint] = useState<Breakpoint>('XL');
 
@@ -52,7 +53,7 @@ export default function Homepage({ onFindSupplementsClick, onIngredientsClick }:
 
   return (
     <div className="bg-white content-stretch flex flex-col items-center overflow-x-hidden relative w-full">
-      <Banner breakpoint={breakpoint} svgPaths={svgPaths} />
+      <Banner breakpoint={breakpoint} svgPaths={svgPaths} onOurStoryClick={onOurStoryClick} />
       <BodyGroup 
         breakpoint={breakpoint} 
         svgPaths={svgPaths} 
@@ -136,8 +137,8 @@ function BannerHeadline({ breakpoint }: { breakpoint: Breakpoint }) {
 }
 
 // Reusable CTA button
-function BannerButton() {
-  return <Button variant="primary">Our Story</Button>;
+function BannerButton({ onClick }: { onClick?: () => void }) {
+  return <Button variant="primary" onClick={onClick}>Our Story</Button>;
 }
 
 // Carousel navigation dots
@@ -158,22 +159,24 @@ function CarouselDots({ breakpoint }: { breakpoint: Breakpoint }) {
 }
 
 // Banner content overlay (reviews, headline, button)
-function BannerContent({ breakpoint }: { breakpoint: Breakpoint }) {
+function BannerContent({ breakpoint, onOurStoryClick }: { breakpoint: Breakpoint; onOurStoryClick?: () => void }) {
   const spacing = getBannerSpacing(breakpoint);
   const isMobile = breakpoint === 'S';
   // +5px offset to optically center content on desktop (accounts for visual weight)
   const horizontalPos = isMobile ? 'left-0 translate-x-0' : 'left-[calc(50%+5px)] -translate-x-1/2';
 
   return (
-    <div className={`absolute content-stretch flex flex-col gap-[30px] items-center ${horizontalPos} ${spacing.contentTop} ${spacing.contentWidth}`}>
+    <div className={`absolute content-stretch flex flex-col gap-[30px] items-center ${horizontalPos} ${spacing.contentTop} ${spacing.contentWidth} pointer-events-none`}>
       <FiveStarRating svgPaths={svgPathsL} breakpoint={breakpoint} />
       <BannerHeadline breakpoint={breakpoint} />
-      <BannerButton />
+      <div className="pointer-events-auto">
+        <BannerButton onClick={onOurStoryClick} />
+      </div>
     </div>
   );
 }
 
-function Banner({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
+function Banner({ breakpoint, svgPaths, onOurStoryClick }: { breakpoint: Breakpoint; svgPaths: any; onOurStoryClick?: () => void }) {
   const bannerImage = breakpoint === 'S' ? imgBannerMobile : breakpoint === 'M' ? imgBannerTablet : imgBanner;
   const isMobileOrTablet = breakpoint === 'S' || breakpoint === 'M';
   
@@ -184,7 +187,7 @@ function Banner({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: an
         <img alt="" className="w-full h-auto block" src={bannerImage} />
         <div className="absolute inset-0 pointer-events-none">
           {breakpoint !== 'S' && <CarouselDots breakpoint={breakpoint} />}
-          <BannerContent breakpoint={breakpoint} />
+          <BannerContent breakpoint={breakpoint} onOurStoryClick={onOurStoryClick} />
         </div>
       </div>
     );
@@ -195,7 +198,7 @@ function Banner({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: an
     <div className="relative shrink-0 w-full h-[47.5vw] max-h-[900px]" data-name="banner">
       <img alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" src={bannerImage} />
       <CarouselDots breakpoint={breakpoint} />
-      <BannerContent breakpoint={breakpoint} />
+      <BannerContent breakpoint={breakpoint} onOurStoryClick={onOurStoryClick} />
     </div>
   );
 }
