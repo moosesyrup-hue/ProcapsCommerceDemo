@@ -7,9 +7,7 @@ import HeaderLogo from './icons/HeaderLogo';
 import HeaderContent from './header/HeaderContent';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 import { useMegaMenu } from '../hooks/useMegaMenu';
-import { useScrollDirection } from '../hooks/useScrollDirection';
 import { headerData } from '../data/headerData';
-import { useState, useEffect } from 'react';
 
 interface GlobalHeaderProps {
   onMenuClick: () => void;
@@ -37,8 +35,6 @@ export default function GlobalHeader({
   onOurStoryClick,
 }: GlobalHeaderProps) {
   const { breakpoint, isMobileTablet, isDesktop } = useBreakpoint(headerData.breakpoints);
-  const scrollDirection = useScrollDirection();
-  const [hasScrolledPast, setHasScrolledPast] = useState(false);
   
   const {
     isOpen: isMegaMenuOpen,
@@ -52,21 +48,6 @@ export default function GlobalHeader({
     closeDelay: headerData.megaMenu.closeDelay,
   });
 
-  // Track if user has scrolled past the header
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      
-      // Once user scrolls past threshold, keep it true
-      if (scrollY > 150) {
-        setHasScrolledPast(true);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const handleMegaMenuNavigate = (pathOrCategory: string) => {
     clearTimers();
     
@@ -78,11 +59,8 @@ export default function GlobalHeader({
       onNavigateToCollection?.(pathOrCategory);
     }
   };
-  
-  // Only show sticky when scrolling UP after scrolling past threshold
-  const showSticky = isDesktop && hasScrolledPast && scrollDirection === 'up';
 
-  // Shared props for both header instances
+  // Shared props for header
   const headerContentProps = {
     isMobileTablet,
     isDesktop,
@@ -102,23 +80,8 @@ export default function GlobalHeader({
   };
 
   return (
-    <>
-      {/* Static header - always in document flow, always visible */}
-      <div className="relative">
-        <HeaderContent {...headerContentProps} />
-      </div>
-
-      {/* Sticky header - Always rendered for smooth animation */}
-      <div className="fixed top-0 left-0 right-0 z-50 overflow-hidden">
-        <div 
-          className={`
-            transition-all duration-300 ease-in-out
-            ${showSticky ? 'translate-y-0' : '-translate-y-full'}
-          `}
-        >
-          <HeaderContent {...headerContentProps} />
-        </div>
-      </div>
-    </>
+    <div className="relative">
+      <HeaderContent {...headerContentProps} />
+    </div>
   );
 }
