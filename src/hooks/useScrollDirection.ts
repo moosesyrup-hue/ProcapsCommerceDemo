@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 
 export function useScrollDirection() {
-  const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
+  const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | null>(null);
   const [prevScrollY, setPrevScrollY] = useState(0);
 
   useEffect(() => {
+    // Initialize with current scroll position
+    setPrevScrollY(window.scrollY);
+    
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
@@ -13,11 +16,11 @@ export function useScrollDirection() {
         return;
       }
 
-      if (currentScrollY > prevScrollY && currentScrollY > 100) {
-        // Scrolling down and past threshold
+      if (currentScrollY > prevScrollY) {
+        // Scrolling down
         setScrollDirection('down');
       } else {
-        // Scrolling up or at top
+        // Scrolling up
         setScrollDirection('up');
       }
 
