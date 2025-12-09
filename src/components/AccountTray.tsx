@@ -225,7 +225,7 @@ export default function AccountTray({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/50 z-40"
+            className="fixed inset-0 bg-black/50 z-[60]"
             onClick={handleClose}
           />
 
@@ -235,7 +235,7 @@ export default function AccountTray({
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed right-0 top-0 bottom-0 w-full sm:w-[560px] sm:max-w-[560px] bg-white shadow-xl z-50 flex flex-col"
+            className="fixed right-0 top-0 bottom-0 w-full sm:w-[560px] sm:max-w-[560px] bg-white shadow-xl z-[70] flex flex-col"
           >
             {/* Header - minimal for logged in, standard for forms */}
             {isLoggedIn ? (

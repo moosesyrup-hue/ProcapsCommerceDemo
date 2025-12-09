@@ -746,6 +746,14 @@
     z-index: 50;
   }
 
+  .z-\[60\] {
+    z-index: 60;
+  }
+
+  .z-\[70\] {
+    z-index: 70;
+  }
+
   .order-1 {
     order: 1;
   }
@@ -802,6 +810,10 @@
 
   .mx-auto {
     margin-inline: auto;
+  }
+
+  .-mt-\[1px\] {
+    margin-top: -1px;
   }
 
   .mt-0\.5 {
@@ -882,6 +894,10 @@
 
   .mr-\[20px\] {
     margin-right: 20px;
+  }
+
+  .-mb-\[1px\] {
+    margin-bottom: -1px;
   }
 
   .mb-0 {
@@ -1874,6 +1890,16 @@
     translate: var(--tw-translate-x) var(--tw-translate-y);
   }
 
+  .-translate-y-full {
+    --tw-translate-y: -100%;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+
+  .translate-y-0 {
+    --tw-translate-y: calc(var(--spacing) * 0);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+
   .translate-y-0\.5 {
     --tw-translate-y: calc(var(--spacing) * .5);
     translate: var(--tw-translate-x) var(--tw-translate-y);
@@ -2765,16 +2791,6 @@
     }
   }
 
-  .bg-white\/95 {
-    background-color: #fffffff2;
-  }
-
-  @supports (color: color-mix(in lab, red, red)) {
-    .bg-white\/95 {
-      background-color: color-mix(in oklab, var(--color-white) 95%, transparent);
-    }
-  }
-
   .bg-gradient-to-b {
     --tw-gradient-position: to bottom in oklab;
     background-image: linear-gradient(var(--tw-gradient-stops));
@@ -3196,6 +3212,10 @@
     padding-top: 12px;
   }
 
+  .pt-\[15px\] {
+    padding-top: 15px;
+  }
+
   .pt-\[16px\] {
     padding-top: 16px;
   }
@@ -3282,6 +3302,10 @@
 
   .pb-\[10px\] {
     padding-bottom: 10px;
+  }
+
+  .pb-\[15px\] {
+    padding-bottom: 15px;
   }
 
   .pb-\[16px\] {
@@ -5526,12 +5550,6 @@
   }
 
   @media (width >= 48rem) {
-    .md\:py-\[20px\] {
-      padding-block: 20px;
-    }
-  }
-
-  @media (width >= 48rem) {
     .md\:py-\[24px\] {
       padding-block: 24px;
     }
@@ -5546,6 +5564,12 @@
   @media (width >= 48rem) {
     .md\:py-\[60px\] {
       padding-block: 60px;
+    }
+  }
+
+  @media (width >= 48rem) {
+    .md\:pt-\[24px\] {
+      padding-top: 24px;
     }
   }
 
@@ -5576,6 +5600,12 @@
   @media (width >= 48rem) {
     .md\:pb-\[20px\] {
       padding-bottom: 20px;
+    }
+  }
+
+  @media (width >= 48rem) {
+    .md\:pb-\[24px\] {
+      padding-bottom: 24px;
     }
   }
 
@@ -5713,8 +5743,8 @@
   }
 
   @media (width >= 1280px) {
-    .lg\:top-\[140px\] {
-      top: 140px;
+    .lg\:top-\[185px\] {
+      top: 185px;
     }
   }
 

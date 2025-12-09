@@ -88,8 +88,8 @@ export default function IngredientsPage({
       />
 
       {/* A-Z Navigation Menu */}
-      <div className="w-full bg-white/95 sticky top-0 z-10">
-        <div className="w-full py-[16px] md:py-[20px] pl-[20px] md:pl-[40px]">
+      <div className="w-full bg-white sticky top-0 z-40 -mt-[1px]">
+        <div className="w-full pt-[20px] md:pt-[24px] pb-[20px] md:pb-[24px] pl-[20px] md:pl-[40px]">
           <div className="flex items-center justify-start gap-[8px] md:gap-[10px] lg:gap-[12px] overflow-x-auto scrollbar-hide pr-[20px] md:pr-[40px]">
             {allLetters.map((letter) => {
               const hasIngredients = letter in placeholderIngredients;
@@ -158,7 +158,7 @@ export default function IngredientsPage({
 
           {/* Sticky Quality Box - 4th column on desktop */}
           <div className="lg:w-[320px] xl:w-[360px]">
-            <div className="lg:sticky lg:top-[140px]">
+            <div className="lg:sticky lg:top-[185px]">
               <div className="bg-[#009296] rounded-[12px] p-[32px] md:p-[40px]">
                 {/* Icon */}
                 <div className="w-[56px] h-[56px] bg-white/20 rounded-full flex items-center justify-center mb-[24px]">

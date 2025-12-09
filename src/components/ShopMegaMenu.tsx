@@ -12,21 +12,6 @@ interface ShopMegaMenuProps {
 export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMenuProps) {
   const [activeSubmenu, setActiveSubmenu] = useState<'categories' | 'body-part' | 'body-function' | 'health-issues'>('categories');
 
-  // Get header height for proper overlay positioning
-  useEffect(() => {
-    const updateHeaderHeight = () => {
-      const header = document.querySelector('[class*="bg-[#009296]"]') as HTMLElement;
-      if (header) {
-        const height = header.offsetHeight;
-        document.documentElement.style.setProperty('--header-height', `${height}px`);
-      }
-    };
-
-    updateHeaderHeight();
-    window.addEventListener('resize', updateHeaderHeight);
-    return () => window.removeEventListener('resize', updateHeaderHeight);
-  }, []);
-
   // Reset to 'categories' when menu closes
   useEffect(() => {
     if (!isOpen) {
@@ -228,12 +213,12 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
 
   return (
     <>
-      {/* Background Overlay */}
+      {/* Background Overlay - absolute positioning relative to parent, starting from mega menu */}
       <div 
-        className={`fixed left-0 right-0 bottom-0 bg-black/50 z-40 transition-opacity duration-300 ${
+        className={`absolute left-0 right-0 top-full bg-black/50 z-40 transition-opacity duration-300 ${
           isOpen ? 'opacity-100 cursor-pointer' : 'opacity-0 pointer-events-none'
         }`}
-        style={{ top: 'var(--header-height, 150px)' }}
+        style={{ height: 'calc(100vh - 100%)' }}
         onClick={onClose}
         aria-label="Close menu"
       />

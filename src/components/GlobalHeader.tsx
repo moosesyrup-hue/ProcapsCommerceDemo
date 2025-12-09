@@ -6,6 +6,7 @@ import HeaderIcons from './header/HeaderIcons';
 import HeaderLogo from './icons/HeaderLogo';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 import { useMegaMenu } from '../hooks/useMegaMenu';
+import { useScrollDirection } from '../hooks/useScrollDirection';
 import { headerData } from '../data/headerData';
 
 interface GlobalHeaderProps {
@@ -34,6 +35,8 @@ export default function GlobalHeader({
   onOurStoryClick,
 }: GlobalHeaderProps) {
   const { breakpoint, isMobileTablet, isDesktop } = useBreakpoint(headerData.breakpoints);
+  const scrollDirection = useScrollDirection();
+  
   const {
     isOpen: isMegaMenuOpen,
     handleOpen: handleShopHover,
@@ -47,7 +50,6 @@ export default function GlobalHeader({
   });
 
   const handleMegaMenuNavigate = (pathOrCategory: string) => {
-    console.log('Navigate to:', pathOrCategory);
     clearTimers();
     
     if (pathOrCategory === 'specials') {
@@ -55,68 +57,71 @@ export default function GlobalHeader({
     } else if (pathOrCategory === 'ingredients') {
       onIngredientsClick?.();
     } else {
-      // All other paths are category slugs that go to collection page
       onNavigateToCollection?.(pathOrCategory);
     }
   };
 
+  // Shared styles
+  const sectionClasses = "bg-[#009296] px-[20px] md:px-[40px] pt-[15px]";
+  const stickyClasses = isDesktop ? "sticky top-0 z-50" : "";
+  const hideClasses = isDesktop && scrollDirection === 'down' && !isMegaMenuOpen ? '-translate-y-full' : 'translate-y-0';
+
   return (
-    <div className="bg-[#009296] relative shrink-0 w-full">
-      <div className="flex flex-col items-center size-full">
-        <div className="box-border flex flex-col gap-[15px] items-center px-[20px] md:px-[40px] py-[15px] relative w-full">
-          {/* Free Shipping Banner */}
-          <HeaderBanner isMobileTablet={isMobileTablet} isDesktop={isDesktop} />
+    <>
+      {/* Free Shipping Banner - Not sticky */}
+      <div className={sectionClasses}>
+        <HeaderBanner isMobileTablet={isMobileTablet} isDesktop={isDesktop} />
+      </div>
 
-          {/* Navigation - wrapped with megamenu for hover detection */}
-          <div 
-            className="relative w-full"
-            onMouseLeave={handleMegaMenuLeave}
-          >
-            <div className="h-[62px] relative shrink-0 w-full">
-              {/* Mobile/Tablet Menu Button */}
-              {isMobileTablet && (
-                <button 
-                  onClick={onMenuClick}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 text-white"
-                >
-                  <Menu className="w-[26px] h-[26px]" />
-                </button>
-              )}
+      {/* Sticky Navigation Section - Desktop only */}
+      <div 
+        className={`${sectionClasses} pb-[15px] -mb-[1px] transition-transform duration-300 ${stickyClasses} ${hideClasses}`}
+      >
+        <div id="sticky-nav-section" onMouseLeave={handleMegaMenuLeave}>
+          <div className="h-[62px] relative">
+            {/* Mobile/Tablet Menu Button */}
+            {isMobileTablet && (
+              <button 
+                onClick={onMenuClick}
+                className="absolute left-0 top-1/2 -translate-y-1/2 text-white"
+              >
+                <Menu className="w-[26px] h-[26px]" />
+              </button>
+            )}
 
-              {/* Desktop Navigation */}
-              {isDesktop && (
-                <HeaderNavigation
-                  isMegaMenuOpen={isMegaMenuOpen}
-                  onShopHover={handleShopHover}
-                  onOtherNavHover={handleOtherNavHover}
-                  onSpecialsClick={onSpecialsClick}
-                  onOurStoryClick={onOurStoryClick}
-                />
-              )}
-
-              {/* Logo */}
-              <HeaderLogo onClick={onLogoClick} />
-
-              {/* Icons */}
-              <HeaderIcons
-                breakpoint={breakpoint}
-                isDesktop={isDesktop}
-                onCartClick={onCartClick}
-                onAccountClick={onAccountClick}
+            {/* Desktop Navigation */}
+            {isDesktop && (
+              <HeaderNavigation
+                isMegaMenuOpen={isMegaMenuOpen}
+                onShopHover={handleShopHover}
+                onOtherNavHover={handleOtherNavHover}
+                onSpecialsClick={onSpecialsClick}
+                onOurStoryClick={onOurStoryClick}
               />
-            </div>
+            )}
+
+            {/* Logo */}
+            <HeaderLogo onClick={onLogoClick} />
+
+            {/* Icons */}
+            <HeaderIcons
+              breakpoint={breakpoint}
+              isDesktop={isDesktop}
+              onCartClick={onCartClick}
+              onAccountClick={onAccountClick}
+            />
+          </div>
+          
+          {/* Mega Menu */}
+          <div onMouseEnter={handleMegaMenuEnter}>
+            <ShopMegaMenu 
+              isOpen={isMegaMenuOpen && isDesktop}
+              onNavigate={handleMegaMenuNavigate}
+              onClose={handleOtherNavHover}
+            />
           </div>
         </div>
       </div>
-      
-      {/* Mega Menu */}
-      <div onMouseEnter={handleMegaMenuEnter}>
-        <ShopMegaMenu 
-          isOpen={isMegaMenuOpen && isDesktop}
-          onNavigate={handleMegaMenuNavigate}
-          onClose={handleOtherNavHover}
-        />
-      </div>
-    </div>
+    </>
   );
 }
