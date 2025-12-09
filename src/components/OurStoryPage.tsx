@@ -1,10 +1,11 @@
 import svgPaths from "../imports/svg-dtsi8ijs14";
-import imgImage6 from "figma:asset/824e0153286d743295deed9bf24753e3f61b6757.png";
 import imgAndrewLessman from "figma:asset/57c0a2c73038ec880e929f319cc00673eadd1d96.png";
 import imgSolarPanels from "figma:asset/ef394230c09eec394da41c87196d663833c1283c.png";
+import imgPill from "figma:asset/51bfd1cd02e5e96025702f9020e2597cdefc893c.png";
 import { motion, useInView } from 'motion/react';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Sun, ShieldCheck, FlaskConical, Leaf } from 'lucide-react';
+import React from 'react';
 
 // ============================================================================
 // SHARED REUSABLE COMPONENTS
@@ -286,46 +287,132 @@ function LargePillImage() {
       initial={{ opacity: 0, y: 40, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 1, delay: 1, ease: "easeOut" }}
-      className="h-[421px] overflow-clip relative shrink-0 w-[790px]" 
+      className="relative w-[1000px] h-[528px]" 
       data-name="largepillimage"
     >
-      <div className="absolute h-[153.212px] right-[102.87px] top-[49.23px] w-[605.626px]">
-        <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 606 154">
-          <path d={svgPaths.p3b8f4700} fill="var(--fill-0, white)" id="Vector 41" />
-        </svg>
-      </div>
-      <div className="absolute left-[-295px] size-[1382px] top-[-571px]" data-name="image 6">
-        <img alt="" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none size-full" src={imgImage6} />
-      </div>
+      {/* Pill image */}
+      <img 
+        src={imgPill} 
+        alt="Golden supplement capsule" 
+        className="w-full h-full object-contain"
+      />
       
-      {/* Shimmer mask container - positioned exactly over the pill image */}
+      {/* SVG mask definition with feathered edges */}
+      <svg width="0" height="0" className="absolute">
+        <defs>
+          {/* Gaussian blur filter for feathered edges */}
+          <filter id="featherEdge">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
+          </filter>
+          
+          {/* Mask using exact Figma-traced pill shape */}
+          <mask id="pillCapsuleMask">
+            <path 
+              d="M183.189 1.6043C125.189 3.6043 79.3553 23.4376 63.6886 33.1043C35.6886 51.1041 -12.3114 105.104 3.68859 162.104C19.6886 219.104 88.1886 240.104 118.689 250.104C149.189 260.104 252.689 265.104 304.189 265.604C355.689 266.104 502.689 260.104 507.689 259.104C512.689 258.104 605.189 245.104 645.689 212.104C686.189 179.104 698.689 124.104 676.189 88.1045C653.689 52.1045 615.189 29.6045 582.189 17.6045C555.789 8.00449 487.855 2.93769 457.189 1.6043C390.022 0.770963 241.189 -0.395703 183.189 1.6043Z"
+              fill="white"
+              filter="url(#featherEdge)"
+            />
+          </mask>
+        </defs>
+      </svg>
+      
+      {/* Solar energy effects - ON TOP with blend mode and feathered mask */}
       <div 
-        className="absolute left-[-295px] size-[1382px] top-[-571px] pointer-events-none overflow-hidden"
+        className="absolute top-[13px] left-1/2 -translate-x-1/2 overflow-hidden"
         style={{
-          maskImage: `url(${imgImage6})`,
-          WebkitMaskImage: `url(${imgImage6})`,
-          maskSize: 'cover',
-          WebkitMaskSize: 'cover',
-          maskPosition: '50% 50%',
-          WebkitMaskPosition: '50% 50%',
+          width: '700px',
+          height: '267px',
+          mask: 'url(#pillCapsuleMask)',
+          WebkitMask: 'url(#pillCapsuleMask)',
+          mixBlendMode: 'overlay',
+          opacity: 0.7,
         }}
       >
-        {/* Shimmer gradient that animates inside the mask */}
+        {/* Flowing golden shimmer effect */}
         <motion.div
-          className="absolute inset-0 w-[200%]"
+          className="absolute inset-0"
           style={{
-            background: 'linear-gradient(90deg, transparent 0%, transparent 45%, rgba(255, 255, 255, 0.4) 50%, transparent 55%, transparent 100%)',
+            background: 'linear-gradient(120deg, transparent 0%, transparent 30%, rgba(255, 215, 0, 0.6) 40%, rgba(255, 180, 0, 0.8) 50%, rgba(255, 215, 0, 0.6) 60%, transparent 70%, transparent 100%)',
+            backgroundSize: '200% 200%',
           }}
           animate={{
-            x: ['-50%', '50%'],
+            backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        
+        {/* Flowing shimmer effect 2 (offset) */}
+        <motion.div
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(60deg, transparent 0%, transparent 35%, rgba(255, 200, 50, 0.5) 45%, rgba(255, 165, 0, 0.7) 50%, rgba(255, 200, 50, 0.5) 55%, transparent 65%, transparent 100%)',
+            backgroundSize: '200% 200%',
+          }}
+          animate={{
+            backgroundPosition: ['100% 50%', '0% 50%', '100% 50%'],
           }}
           transition={{
             duration: 5,
             repeat: Infinity,
-            repeatDelay: 2,
-            ease: 'easeInOut',
+            ease: "easeInOut",
           }}
         />
+
+        {/* Floating particles */}
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-[6px] h-[6px] rounded-full"
+            style={{
+              background: 'radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 215, 0, 0.6) 100%)',
+              left: `${20 + (i * 10)}%`,
+              top: `80%`,
+              filter: 'blur(1px)',
+            }}
+            animate={{
+              x: [0, Math.sin(i) * 20, 0],
+              y: [0, -100 - (i * 8), -200],
+              opacity: [0, 0.8, 0],
+              scale: [0.5, 1.2, 0.5],
+            }}
+            transition={{
+              duration: 3 + (i * 0.3),
+              repeat: Infinity,
+              delay: i * 0.4,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+        
+        {/* Additional smaller particles for depth */}
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={`small-${i}`}
+            className="absolute w-[3px] h-[3px] rounded-full"
+            style={{
+              background: 'radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 230, 100, 0.7) 100%)',
+              left: `${30 + (i * 12)}%`,
+              top: `85%`,
+              filter: 'blur(0.5px)',
+            }}
+            animate={{
+              x: [0, Math.cos(i) * 15, 0],
+              y: [0, -80 - (i * 6), -160],
+              opacity: [0, 0.9, 0],
+              scale: [0.3, 1, 0.3],
+            }}
+            transition={{
+              duration: 3.5 + (i * 0.4),
+              repeat: Infinity,
+              delay: i * 0.5 + 1.5,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
       </div>
     </motion.div>
   );
@@ -342,38 +429,36 @@ function HeroGroup() {
 function Hero() {
   return (
     <div className="relative shrink-0 w-full" data-name="hero">
-      {/* Solid teal background - matching header color */}
-      <div className="bg-[#009296] relative w-full" style={{ height: '700px' }}>
-        <HeroGroup />
-      </div>
-      
-      {/* White section with wave divider at top */}
-      <div className="relative bg-white" style={{ paddingTop: '300px' }}>
-        {/* Wavy divider - positioned at top of white section */}
-        <div className="absolute left-0 right-0 w-full pointer-events-none" style={{ top: '-1px', zIndex: 1 }}>
+      {/* Single gradient background spanning hero + wave */}
+      <div className="relative w-full" style={{ height: '1000px', background: 'linear-gradient(180deg, #009296 0%, #00C2BD 100%)' }}>
+        {/* Hero content */}
+        <div className="absolute top-0 left-0 right-0" style={{ height: '700px' }}>
+          <HeroGroup />
+        </div>
+        
+        {/* Pill image positioned to align with wave center - accounting for shadow in image */}
+        <div className="absolute left-1/2 -translate-x-1/2" style={{ top: '750px', zIndex: 20 }}>
+          <LargePillImage />
+        </div>
+        
+        {/* White wave overlay - fixed height to prevent gaps */}
+        <div className="absolute left-0 right-0 w-full pointer-events-none" style={{ top: '700px', height: '300px', zIndex: 1 }}>
           <svg 
-            className="w-full h-auto" 
+            className="w-full h-full block" 
             viewBox="0 0 1440 300" 
             fill="none" 
             preserveAspectRatio="none"
-            style={{ display: 'block' }}
           >
-            <path 
-              d="M0,0 L0,150 C360,60 480,60 720,150 C960,240 1080,240 1440,150 L1440,0 Z" 
-              fill="#009296"
-            />
             <path 
               d="M0,150 C360,60 480,60 720,150 C960,240 1080,240 1440,150 L1440,300 L0,300 Z" 
               fill="white"
             />
           </svg>
         </div>
-        
-        {/* Pill image - positioned to sit on top of the wave */}
-        <div className="absolute left-1/2 -translate-x-1/2" style={{ top: '50px', zIndex: 2 }}>
-          <LargePillImage />
-        </div>
       </div>
+      
+      {/* White background continuation to prevent any gap */}
+      <div className="bg-white w-full" style={{ marginTop: '-1px' }} />
     </div>
   );
 }
@@ -406,7 +491,7 @@ function FounderSection() {
 
   return (
     <TwoColumnSection
-      paddingTop="289px"
+      paddingTop="338px"
       leftContent={<StickyContent headline={headline} body={body} />}
       rightContent={
         <AnimatedImageColumn>
@@ -539,6 +624,105 @@ function ValuesSection() {
 // ENVIRONMENTAL SECTION
 // ============================================================================
 
+function ByTheNumbersSection() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  interface StatCardProps {
+    value: number;
+    suffix: string;
+    label: string;
+    delay: number;
+  }
+
+  function StatCard({ value, suffix, label, delay }: StatCardProps) {
+    const [count, setCount] = React.useState(0);
+
+    React.useEffect(() => {
+      if (!isInView) return;
+
+      const duration = 2000; // 2 seconds
+      const steps = 60;
+      const increment = value / steps;
+      const stepDuration = duration / steps;
+
+      let currentStep = 0;
+      const timer = setTimeout(() => {
+        const interval = setInterval(() => {
+          currentStep++;
+          if (currentStep >= steps) {
+            setCount(value);
+            clearInterval(interval);
+          } else {
+            setCount(Math.floor(increment * currentStep));
+          }
+        }, stepDuration);
+
+        return () => clearInterval(interval);
+      }, delay);
+
+      return () => clearTimeout(timer);
+    }, [isInView, value, delay]);
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+        transition={{ duration: 0.6, delay: delay / 1000 }}
+        className="content-stretch flex flex-col gap-[20px] items-center text-center relative shrink-0"
+      >
+        <div className="font-['STIX_Two_Text:Regular',sans-serif] font-normal text-[#009296] text-[80px] leading-[1] tracking-[-1.6px]">
+          {count.toLocaleString()}{suffix}
+        </div>
+        <div className="font-['Inter:Regular',sans-serif] font-normal text-[#003b3c] text-[20px] leading-[1.4] tracking-[-0.2px] max-w-[280px]">
+          {label}
+        </div>
+      </motion.div>
+    );
+  }
+
+  const stats = [
+    { value: 45, suffix: '+', label: 'Years in Business', delay: 0 },
+    { value: 500, suffix: 'M+', label: 'Supplements Manufactured', delay: 100 },
+    { value: 25, suffix: 'M+', label: 'kWh Solar Energy Generated', delay: 200 },
+    { value: 15, suffix: 'K+', label: 'Tons CO₂ Emissions Prevented', delay: 300 },
+  ];
+
+  return (
+    <div className="bg-white relative shrink-0 w-full" data-name="by-the-numbers-section">
+      <div className="size-full">
+        <div className="content-stretch flex flex-col items-start px-[176px] py-[120px] relative w-full">
+          <div ref={ref} className="content-stretch flex flex-col gap-[100px] items-center relative shrink-0 w-full">
+            <SectionHeadline 
+              eyebrow="BY THE NUMBERS"
+              headline={
+                <>
+                  Proven impact.
+                  <br aria-hidden="true" />
+                  Measurable results.
+                </>
+              }
+              align="center"
+              animated={true}
+            />
+            <div className="grid grid-cols-4 gap-[60px] w-full">
+              {stats.map((stat, index) => (
+                <StatCard
+                  key={index}
+                  value={stat.value}
+                  suffix={stat.suffix}
+                  label={stat.label}
+                  delay={stat.delay}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function EnvironmentalSection() {
   const headline = (
     <SectionHeadline 
@@ -593,7 +777,7 @@ function TimelineItem({ year, title, description, side, index, isLast }: Timelin
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <div ref={ref} className="relative flex items-center justify-center w-full mb-[160px] last:mb-0">
+    <div ref={ref} className="relative flex items-center justify-center w-full mb-[200px] last:mb-0">
       {/* Left content */}
       <div className="flex-1 flex justify-end pr-[60px]">
         {side === 'left' && (
@@ -619,7 +803,7 @@ function TimelineItem({ year, title, description, side, index, isLast }: Timelin
           initial={{ scale: 0, opacity: 0 }}
           animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
           transition={{ duration: 0.5, delay: index * 0.2 + 0.1 }}
-          className="w-[120px] h-[120px] rounded-full border-[2px] border-[#009296] bg-white flex items-center justify-center relative z-10"
+          className="w-[150px] h-[150px] rounded-full border-[2px] border-[#009296] bg-white flex items-center justify-center relative z-10"
         >
           <p className="font-['Inter:Medium',sans-serif] font-medium text-[20px] text-[#009296] tracking-[1px]">
             {year}
@@ -628,7 +812,7 @@ function TimelineItem({ year, title, description, side, index, isLast }: Timelin
 
         {/* Vertical line - only show if not the last item */}
         {!isLast && (
-          <div className="absolute left-1/2 top-[120px] w-[2px] h-[160px] -translate-x-1/2 overflow-hidden">
+          <div className="absolute left-1/2 top-[150px] w-[2px] h-[200px] -translate-x-1/2 overflow-hidden">
             <motion.div
               initial={{ scaleY: 0 }}
               animate={isInView ? { scaleY: 1 } : { scaleY: 0 }}
@@ -693,7 +877,7 @@ function TimelineSection() {
     <div className="bg-[#e8f9f9] relative shrink-0 w-full" data-name="timeline-section">
       <div className="size-full">
         <div className="content-stretch flex flex-col items-start px-[176px] py-[120px] relative w-full">
-          <div className="content-stretch flex flex-col items-center relative shrink-0 w-full">
+          <div className="content-stretch flex flex-col gap-[120px] items-center relative shrink-0 w-full">
             <SectionHeadline 
               eyebrow="OUR JOURNEY"
               headline={
@@ -706,7 +890,7 @@ function TimelineSection() {
               align="center"
               animated={true}
             />
-            <div className="relative w-full max-w-[1200px] mx-auto pt-[60px]">
+            <div className="relative w-full max-w-[1200px] mx-auto">
               {timelineData.map((item, index) => (
                 <TimelineItem
                   key={item.year}
@@ -774,6 +958,7 @@ export default function OurStoryPage() {
       <Hero />
       <FounderSection />
       <ValuesSection />
+      <ByTheNumbersSection />
       <EnvironmentalSection />
       <TimelineSection />
       <EducationSection />
