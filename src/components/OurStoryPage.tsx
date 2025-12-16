@@ -546,14 +546,14 @@ function ValueCardsRow({ cards }: { cards: Array<{ title: string; description: s
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <div ref={ref} className="content-stretch flex gap-[20px] items-start relative shrink-0 w-full" data-name="cards-row">
+    <div ref={ref} className="content-stretch flex gap-[20px] items-stretch relative shrink-0 w-full" data-name="cards-row">
       {cards.map((card, index) => (
         <motion.div
           key={card.title}
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
           transition={{ duration: 0.6, delay: index * 0.1 + 0.1 }}
-          className="basis-0 grow min-h-px min-w-px self-stretch shrink-0"
+          className="basis-0 grow min-h-px min-w-px shrink-0 flex"
         >
           <ValueCard {...card} />
         </motion.div>

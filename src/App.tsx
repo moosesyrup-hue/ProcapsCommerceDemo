@@ -12,19 +12,22 @@ import HelpPage from './components/HelpPage';
 import IngredientsPage from './components/IngredientsPage';
 import IngredientCollectionPage from './components/IngredientCollectionPage';
 import OurStoryPage from './components/OurStoryPage';
+import AccountDashboard from './components/account/AccountDashboard';
 import GlobalHeader from './components/GlobalHeader';
 import GlobalFooter from './components/GlobalFooter';
 import MiniCart from './components/MiniCart';
 import MobileMenu from './components/MobileMenu';
 import AccountTray from './components/AccountTray';
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from './components/ui/sheet';
+import { Toaster } from './components/ui/sonner';
 import imgImage from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png";
 
 export default function App() {
   // Routing state
-  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'checkout' | 'order-confirmation' | 'find-supplements' | 'faq' | 'privacy-policy' | 'terms-of-use' | 'shipping-returns' | 'help' | 'ingredients' | 'ingredient-collection' | 'our-story'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'checkout' | 'order-confirmation' | 'find-supplements' | 'faq' | 'privacy-policy' | 'terms-of-use' | 'shipping-returns' | 'help' | 'ingredients' | 'ingredient-collection' | 'our-story' | 'account'>('home');
   const [selectedCategory, setSelectedCategory] = useState<string>('digestive-health');
   const [selectedIngredient, setSelectedIngredient] = useState<string>('Vitamin C');
+  const [accountTab, setAccountTab] = useState<'overview' | 'orders' | 'profile' | 'autoship' | 'favorites'>('overview');
   
   // UI state
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -285,6 +288,15 @@ export default function App() {
         onLogin={handleLogin}
         onSignup={handleSignup}
         onLogout={handleLogout}
+        onNavigateToAccount={(tab = 'overview') => {
+          setAccountTab(tab);
+          setCurrentPage('account');
+          window.scrollTo(0, 0);
+        }}
+        onNavigateToHelp={() => {
+          setCurrentPage('help');
+          window.scrollTo(0, 0);
+        }}
       />
 
       {/* Page Content */}
@@ -346,6 +358,8 @@ export default function App() {
         />
       ) : currentPage === 'our-story' ? (
         <OurStoryPage />
+      ) : currentPage === 'account' ? (
+        <AccountDashboard userEmail={userData?.email || ''} initialTab={accountTab} />
       ) : (
         <OrderConfirmationPage 
           orderData={orderData}
@@ -381,6 +395,9 @@ export default function App() {
           />
         </SheetContent>
       </Sheet>
+
+      {/* Toaster */}
+      <Toaster />
     </div>
   );
 }

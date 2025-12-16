@@ -3,6 +3,18 @@ import { ImageWithFallback } from './figma/ImageWithFallback';
 import { useRef, useState, useEffect } from 'react';
 import svgPaths from "../imports/svg-vsxzdz3mbf";
 
+// Import category images
+import imgBeauty from "figma:asset/b0323d513080625cce18bebc3cb4445f4f73f1e7.png";
+import imgCardiovascular from "figma:asset/01d65120a81fbf5506a24e06565184ecbdfaabc0.png";
+import imgDigestive from "figma:asset/58c8dacdf71c3d35e7a6dd12b3982ff211175e7f.png";
+import imgVision from "figma:asset/a5123ef9b5a8aaa1c2c9555fdfd2970168bea173.png";
+import imgSleep from "figma:asset/f2eb8cb82f5806c6f883d332fd2e2d15f37fa7b8.png";
+import imgMeals from "figma:asset/1cbda3a1e7e570b1abc7a68a9706693c201cdd62.png";
+import imgWeightManagement from "figma:asset/a9fe83c2b56267b60452f4c16f68e1f735a3cb74.png";
+import imgStressMood from "figma:asset/923eecf2b24812333f9562fff178df23e5368ba1.png";
+import imgBrainHealth from "figma:asset/e24feb2f2ba186bdc59c2c2f406c369c314d8735.png";
+import imgJointHealth from "figma:asset/a73500931a5e725df77558da1e9193957469926c.png";
+
 interface CategoryCarouselProps {
   onNavigateToCategory: (category: string) => void;
 }
@@ -10,6 +22,7 @@ interface CategoryCarouselProps {
 interface Category {
   id: string;
   name: string;
+  image?: string;
 }
 
 export default function CategoryCarousel({ onNavigateToCategory }: CategoryCarouselProps) {
@@ -20,25 +33,25 @@ export default function CategoryCarousel({ onNavigateToCategory }: CategoryCarou
   // All 21 product categories
   const categories: Category[] = [
     { id: 'anti-aging', name: 'Anti-Aging' },
-    { id: 'beauty', name: 'Beauty' },
+    { id: 'beauty', name: 'Beauty', image: imgBeauty },
     { id: 'beverages', name: 'Beverages' },
     { id: 'bone-and-skeletal-health', name: 'Bone Health' },
-    { id: 'brain-health', name: 'Brain Health' },
-    { id: 'cardiovascular-health', name: 'Cardiovascular Health' },
+    { id: 'brain-health', name: 'Brain Health', image: imgBrainHealth },
+    { id: 'cardiovascular-health', name: 'Cardiovascular Health', image: imgCardiovascular },
     { id: 'circulation', name: 'Circulation' },
-    { id: 'digestive-health', name: 'Digestive Health' },
+    { id: 'digestive-health', name: 'Digestive Health', image: imgDigestive },
     { id: 'energy', name: 'Energy' },
     { id: 'immune-health', name: 'Immune Health' },
     { id: 'individual-vitamins-and-minerals', name: 'Vitamins & Minerals' },
-    { id: 'joint-health', name: 'Joint Health' },
-    { id: 'meals-and-proteins', name: 'Meals & Proteins' },
+    { id: 'joint-health', name: 'Joint Health', image: imgJointHealth },
+    { id: 'meals-and-proteins', name: 'Meals & Proteins', image: imgMeals },
     { id: 'multivitamins', name: 'Multivitamins' },
     { id: 'pet-products', name: 'Pet Products' },
-    { id: 'sleep-and-relaxation', name: 'Sleep & Relaxation' },
-    { id: 'stress-and-mood', name: 'Stress & Mood' },
+    { id: 'sleep-and-relaxation', name: 'Sleep & Relaxation', image: imgSleep },
+    { id: 'stress-and-mood', name: 'Stress & Mood', image: imgStressMood },
     { id: 'sweeteners', name: 'Sweeteners' },
-    { id: 'vision-health', name: 'Vision Health' },
-    { id: 'weight-management', name: 'Weight Management' },
+    { id: 'vision-health', name: 'Vision Health', image: imgVision },
+    { id: 'weight-management', name: 'Weight Management', image: imgWeightManagement },
     { id: 'other', name: 'Other' },
   ];
 
@@ -102,9 +115,17 @@ export default function CategoryCarousel({ onNavigateToCategory }: CategoryCarou
               >
                 {/* Circle Image with Placeholder */}
                 <div className="relative size-[100px] md:size-[120px] rounded-full overflow-hidden bg-[#e5ddd3] flex items-center justify-center group-hover:bg-[#d9cfc5] transition-colors">
-                  <svg className="block w-[25px] h-[25px] md:w-[30px] md:h-[30px]" fill="none" preserveAspectRatio="none" viewBox="0 0 66 66">
-                    <path d={svgPaths.pdc9e330} fill="#B9B1A8" />
-                  </svg>
+                  {category.image ? (
+                    <img
+                      src={category.image}
+                      alt={category.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <svg className="block w-[25px] h-[25px] md:w-[30px] md:h-[30px]" fill="none" preserveAspectRatio="none" viewBox="0 0 66 66">
+                      <path d={svgPaths.pdc9e330} fill="#B9B1A8" />
+                    </svg>
+                  )}
                 </div>
 
                 {/* Category Name */}

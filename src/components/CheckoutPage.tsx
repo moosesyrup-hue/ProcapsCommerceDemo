@@ -3131,7 +3131,7 @@ function OrderSummary({
               setPromoError('');
             }}
             disabled={promoApplied}
-            className="flex-1 h-[44px] px-[16px] border border-[#D9E2E2] rounded-[8px] font-['Inter',sans-serif] text-[14px] text-[#003b3c] placeholder:text-[#C2CFCF] focus:outline-none focus:border-[#009296] focus:ring-1 focus:ring-[#009296] transition-colors disabled:bg-[#F5F9F9] disabled:text-[#406c6d]"
+            className="flex-1 h-[44px] px-[16px] border border-[#D9E2E2] rounded-[8px] font-['Inter',sans-serif] text-[14px] text-[#003b3c] placeholder:text-[#C2CFCF] focus:outline-none focus:border-[#009296] transition-colors disabled:bg-[#F5F9F9] disabled:text-[#406c6d]"
           />
           <button
             type="button"

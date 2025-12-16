@@ -236,7 +236,7 @@ export default function QuickView({ product, onClose, onAddToCart, onViewDetails
                           Subscribe & Save 10% Extra
                         </p>
                         <p className="font-['Inter',sans-serif] text-[12px] text-[#406c6d]">
-                          Special price + 10% subscription discount
+                          Special price + 10% autoship discount
                         </p>
                       </div>
                     </div>

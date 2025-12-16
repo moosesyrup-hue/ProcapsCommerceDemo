@@ -41,7 +41,7 @@ export function Button({
     leading-normal
     transition-all duration-200 ease-out
     disabled:opacity-50 disabled:cursor-not-allowed
-    focus:outline-none focus:ring-2 focus:ring-offset-2
+    focus:outline-none
   `.replace(/\s+/g, ' ').trim();
 
   // Variant styles
@@ -49,27 +49,23 @@ export function Button({
     primary: `
       bg-[#009296] text-white
       hover:bg-[#007a7d]
-      focus:ring-[#009296]
     `.replace(/\s+/g, ' ').trim(),
     
     secondary: `
       bg-white text-[#009296]
       border border-[#009296]
       hover:bg-[#f6f2ec]
-      focus:ring-[#009296]
     `.replace(/\s+/g, ' ').trim(),
     
     outline: `
       bg-transparent text-[#009296]
       border border-[#009296]
       hover:bg-[#009296] hover:text-white
-      focus:ring-[#009296]
     `.replace(/\s+/g, ' ').trim(),
     
     ghost: `
       bg-transparent text-[#009296]
       hover:bg-[#f6f2ec]
-      focus:ring-[#009296]
     `.replace(/\s+/g, ' ').trim(),
   };
 
