@@ -17,13 +17,13 @@
 export interface MainMenuItem {
   id: string;
   label: string;
-  action?: 'shop' | 'learn' | 'about' | 'help' | 'specials';
+  action?: 'shop' | 'quality' | 'our-story' | 'help' | 'specials';
 }
 
 export const mainMenuItems: MainMenuItem[] = [
   { id: 'shop', label: 'Shop', action: 'shop' },
-  { id: 'learn', label: 'Learn', action: 'learn' },
-  { id: 'about', label: 'About', action: 'about' },
+  { id: 'quality', label: 'Quality', action: 'quality' },
+  { id: 'our-story', label: 'Our Story', action: 'our-story' },
   { id: 'help', label: 'Help', action: 'help' },
   { id: 'specials', label: 'Specials', action: 'specials' }
 ];

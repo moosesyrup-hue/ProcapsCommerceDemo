@@ -196,7 +196,7 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   
-  const isMobile = useBreakpoint();
+  const { breakpoint, isMobile } = useBreakpoint();
   
   // Calculate next delivery date based on frequency
   const calculateNextDelivery = (currentDate: string, frequency: string): string => {
@@ -578,8 +578,8 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
   const displaySubscriptions = isNewCustomer ? [] : subscriptions;
 
   // Get responsive headline sizing based on breakpoint
-  const headlineSize = isMobile ? 'text-[28px]' : 'text-[72px]';
-  const headlineTracking = isMobile ? 'tracking-[-0.56px]' : 'tracking-[-1.44px]';
+  const headlineSize = breakpoint === 'HD' ? 'text-[72px]' : breakpoint === 'XL' ? 'text-[54px]' : breakpoint === 'L' ? 'text-[38px]' : breakpoint === 'M' ? 'text-[34px]' : 'text-[28px]';
+  const headlineTracking = breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : breakpoint === 'L' ? 'tracking-[-0.76px]' : breakpoint === 'M' ? 'tracking-[-0.68px]' : 'tracking-[-0.56px]';
 
   return (
     <div>

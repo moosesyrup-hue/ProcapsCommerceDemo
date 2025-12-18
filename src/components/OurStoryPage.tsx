@@ -8,6 +8,12 @@ import { Sun, ShieldCheck, FlaskConical, Leaf } from 'lucide-react';
 import React from 'react';
 
 // ============================================================================
+// BREAKPOINT TYPE
+// ============================================================================
+
+type Breakpoint = 'S' | 'M' | 'L' | 'XL' | 'HD';
+
+// ============================================================================
 // SHARED REUSABLE COMPONENTS
 // ============================================================================
 
@@ -16,23 +22,30 @@ interface SectionHeadlineProps {
   headline: string | React.ReactNode;
   align?: 'left' | 'center';
   animated?: boolean;
+  breakpoint?: Breakpoint;
 }
 
-function SectionHeadline({ eyebrow, headline, align = 'center', animated = false }: SectionHeadlineProps) {
+function SectionHeadline({ eyebrow, headline, align = 'center', animated = false, breakpoint = 'XL' }: SectionHeadlineProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   
   const containerClass = align === 'center' 
-    ? "content-stretch flex flex-col gap-[40px] items-center relative shrink-0 w-[785px]"
-    : "content-stretch flex flex-col gap-[40px] items-start relative shrink-0 w-full";
+    ? breakpoint === 'S' 
+      ? "content-stretch flex flex-col gap-[40px] lg:gap-[30px] items-center relative shrink-0 w-full"
+      : "content-stretch flex flex-col gap-[40px] lg:gap-[30px] items-center relative shrink-0 w-[785px] lg:w-[650px]"
+    : "content-stretch flex flex-col gap-[40px] md:gap-[30px] lg:gap-[30px] items-start relative shrink-0 w-full";
   
   const headlineClass = align === 'center'
-    ? "font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] min-w-full relative shrink-0 text-[#003b3c] text-[92px] text-center tracking-[-1.84px] w-[min-content]"
-    : "font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] min-w-full relative shrink-0 text-[#003b3c] text-[58px] tracking-[-1.16px] w-[min-content]";
+    ? breakpoint === 'S'
+      ? "font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] relative shrink-0 text-[#003b3c] text-[44px] text-center tracking-[-0.88px] w-full"
+      : "font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] min-w-full relative shrink-0 text-[#003b3c] text-[72px] lg:text-[92px] text-center tracking-[-1.44px] lg:tracking-[-1.84px] w-[min-content]"
+    : "font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] min-w-full relative shrink-0 text-[#003b3c] text-[34px] m:text-[38px] lg:text-[48px] hd:text-[58px] tracking-[-1.16px] w-[min-content]";
   
   const eyebrowClass = align === 'center'
-    ? "font-['Inter:Medium',sans-serif] font-medium leading-[1.4] min-w-full not-italic relative shrink-0 text-[#009296] text-[20px] text-center tracking-[2px] w-[min-content]"
-    : "font-['Inter:Medium',sans-serif] font-medium leading-[1.4] min-w-full not-italic relative shrink-0 text-[#009296] text-[20px] tracking-[2px] w-[min-content]";
+    ? breakpoint === 'S'
+      ? "font-['Inter:Medium',sans-serif] font-medium leading-[1.4] not-italic relative shrink-0 text-[#009296] text-[20px] text-center tracking-[2px] w-full"
+      : "font-['Inter:Medium',sans-serif] font-medium leading-[1.4] min-w-full not-italic relative shrink-0 text-[#009296] text-[20px] text-center tracking-[2px] w-[min-content]"
+    : "font-['Inter:Medium',sans-serif] font-medium leading-[1.4] min-w-full not-italic relative shrink-0 text-[#009296] text-[20px] md:text-[16px] lg:text-[20px] tracking-[2px] md:tracking-[1.6px] lg:tracking-[2px] w-[min-content]";
 
   const content = (
     <div className={containerClass} data-name="headline group">
@@ -75,10 +88,10 @@ function QuoteBlock({ quote, author }: QuoteBlockProps) {
   return (
     <div className="bg-[#e8f9f9] relative rounded-[20px] shrink-0 w-full" data-name="quote">
       <div className="size-full">
-        <div className="content-stretch flex flex-col items-start px-[55px] py-[50px] relative w-full">
+        <div className="content-stretch flex flex-col items-start px-[40px] s:px-[55px] py-[40px] s:py-[50px] relative w-full">
           <div className="content-stretch flex flex-col font-['Inter:Regular',sans-serif] font-normal gap-[20px] items-start leading-[1.4] not-italic relative shrink-0 text-[#003b3c] w-full">
-            <p className="relative shrink-0 text-[28px] tracking-[-0.56px] w-full">{quote}</p>
-            <p className="relative shrink-0 text-[20px] tracking-[-0.2px] w-full">{author}</p>
+            <p className="relative shrink-0 text-[20px] s:text-[20px] m:text-[24px] lg:text-[28px] tracking-[-0.4px] s:tracking-[-0.4px] m:tracking-[-0.48px] lg:tracking-[-0.56px] w-full">{quote}</p>
+            <p className="relative shrink-0 text-[16px] s:text-[20px] tracking-[-0.16px] s:tracking-[-0.2px] w-full">{author}</p>
           </div>
         </div>
       </div>
@@ -108,11 +121,18 @@ function ImageBlock({ src, alt }: ImageBlockProps) {
 interface StickyContentProps {
   headline: React.ReactNode;
   body: React.ReactNode;
+  breakpoint?: Breakpoint;
 }
 
-function StickyContent({ headline, body }: StickyContentProps) {
+function StickyContent({ headline, body, breakpoint = 'XL' }: StickyContentProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  // Center align on S breakpoint
+  const alignmentClass = breakpoint === 'S' ? 'items-center text-center' : 'items-start';
+  const bodyAlignClass = breakpoint === 'S' ? 'text-center' : '';
+  const widthClass = breakpoint === 'S' ? 'w-full' : 'w-[431px] md:w-auto md:flex-1 lg:w-[431px]';
+  const paddingClass = breakpoint === 'S' ? 'px-[60px]' : '';
 
   return (
     <motion.div 
@@ -120,11 +140,11 @@ function StickyContent({ headline, body }: StickyContentProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       transition={{ duration: 0.6 }}
-      className="content-stretch flex flex-col gap-[60px] items-start sticky top-[120px] self-start shrink-0 w-[431px]" 
+      className={`content-stretch flex flex-col gap-[60px] md:gap-[40px] ${alignmentClass} relative self-start shrink-0 ${widthClass} ${paddingClass}`} 
       data-name="sticky-content"
     >
       {headline}
-      <div className="font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] text-[20px] tracking-[-0.4px] w-full">
+      <div className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] text-[16px] lg:text-[20px] tracking-[-0.32px] lg:tracking-[-0.4px] w-full xl:max-w-[540px] ${bodyAlignClass}`}>
         {body}
       </div>
     </motion.div>
@@ -133,11 +153,14 @@ function StickyContent({ headline, body }: StickyContentProps) {
 
 interface AnimatedImageColumnProps {
   children: React.ReactNode;
+  breakpoint?: Breakpoint;
 }
 
-function AnimatedImageColumn({ children }: AnimatedImageColumnProps) {
+function AnimatedImageColumn({ children, breakpoint = 'XL' }: AnimatedImageColumnProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  
+  const paddingClass = breakpoint === 'S' ? 'px-[20px]' : '';
 
   return (
     <motion.div 
@@ -145,7 +168,7 @@ function AnimatedImageColumn({ children }: AnimatedImageColumnProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       transition={{ duration: 0.6 }}
-      className="basis-0 content-stretch flex flex-col gap-[60px] grow items-start min-h-px min-w-px relative self-stretch shrink-0" 
+      className={`basis-0 content-stretch flex flex-col gap-[40px] grow items-start min-h-px min-w-px relative self-stretch shrink-0 ${paddingClass}`} 
       data-name="animated-image-column"
     >
       {children}
@@ -160,6 +183,7 @@ interface TwoColumnSectionProps {
   bgColor?: string;
   paddingTop?: string;
   paddingBottom?: string;
+  breakpoint?: Breakpoint;
 }
 
 function TwoColumnSection({ 
@@ -168,15 +192,30 @@ function TwoColumnSection({
   reverse = false, 
   bgColor = 'white',
   paddingTop = '120px',
-  paddingBottom = '120px'
+  paddingBottom = '120px',
+  breakpoint = 'XL'
 }: TwoColumnSectionProps) {
   const bgClass = bgColor === 'white' ? 'bg-white' : bgColor === 'beige' ? 'bg-[#f6f2ec]' : bgColor === 'teal' ? 'bg-[#e8f9f9]' : 'bg-white';
+  
+  // Stack on S breakpoint with larger gap
+  const layoutClass = breakpoint === 'S' 
+    ? 'flex flex-col gap-[80px]' 
+    : 'flex gap-[110px] md:gap-[40px] lg:gap-[40px]';
+  
+  // Responsive padding: no padding on S (handled by children), 40px on M, 120px on L+
+  const paddingX = breakpoint === 'S' ? '' : 'px-[176px] md:px-[40px] lg:px-[120px]';
   
   return (
     <div className={`${bgClass} relative shrink-0 w-full`} data-name="two-column-section">
       <div className="size-full">
-        <div className="content-stretch flex gap-[110px] items-start px-[176px] relative w-full" style={{ paddingTop, paddingBottom }}>
-          {reverse ? (
+        <div className={`content-stretch ${layoutClass} items-start ${paddingX} relative w-full`} style={{ paddingTop, paddingBottom }}>
+          {breakpoint === 'S' ? (
+            // Stacked layout for S breakpoint
+            <>
+              {leftContent}
+              {rightContent}
+            </>
+          ) : reverse ? (
             <>
               <div className="basis-0 flex flex-row grow items-center self-stretch shrink-0">
                 {leftContent}
@@ -199,14 +238,26 @@ function TwoColumnSection({
 // HERO SECTION COMPONENTS
 // ============================================================================
 
-function HeroCopy() {
+function HeroCopy({ breakpoint }: { breakpoint: Breakpoint }) {
+  // Headline font size: 44px on S, 72px on M+
+  const headlineFontSize = breakpoint === 'S' ? 'text-[44px]' : 'text-[72px] md:text-[72px] lg:text-[120px]';
+  const headlineTracking = breakpoint === 'S' ? 'tracking-[-0.76px]' : 'tracking-[-2.4px] md:tracking-[-1.44px] lg:tracking-[-2.4px]';
+  const headlineHeight = breakpoint === 'S' ? 'h-auto' : 'h-[233px] md:h-[140px] lg:h-[233px]';
+  
+  // Body font size: 16px on S, 20px on M+
+  const bodyFontSize = breakpoint === 'S' ? 'text-[16px]' : 'text-[20px]';
+  const bodyWidth = breakpoint === 'S' ? 'w-full max-w-[327px]' : 'w-[598px]';
+  
+  // Gap between headline and body: 40px on S, 46px on M+
+  const copyGap = breakpoint === 'S' ? 'gap-[40px]' : 'gap-[46px]';
+  
   return (
-    <div className="content-stretch flex flex-col gap-[46px] items-center relative shrink-0 text-center text-white w-full" data-name="copy">
+    <div className={`content-stretch flex flex-col ${copyGap} items-center relative shrink-0 text-center text-white w-full`} data-name="copy">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.4 }}
-        className="font-['STIX_Two_Text:Regular',sans-serif] font-normal h-[233px] leading-[1.1] relative shrink-0 text-[0px] text-[120px] tracking-[-2.4px] w-full"
+        className={`font-['STIX_Two_Text:Regular',sans-serif] font-normal ${headlineHeight} leading-[1.1] relative shrink-0 ${headlineFontSize} ${headlineTracking} w-full`}
       >
         <p className="mb-0">
           <span className="font-['STIX_Two_Text:Regular',sans-serif] font-normal">Made</span>
@@ -219,7 +270,7 @@ function HeroCopy() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.6 }}
-        className="font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[20px] w-[598px]"
+        className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 ${bodyFontSize} ${bodyWidth}`}
       >
         Founded by Andrew Lessman in 1979. Still owner-operated. The only facility in the world creating 100% pure, additive-free supplements powered entirely by solar energy.
       </motion.p>
@@ -241,7 +292,7 @@ function PillTabs() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.8 }}
-      className="content-stretch flex gap-[17px] items-center relative shrink-0" 
+      className="content-stretch flex flex-wrap gap-[17px] items-center justify-center relative shrink-0 w-full" 
       data-name="pill tabs"
     >
       <PillTab>Founded 1979</PillTab>
@@ -251,9 +302,12 @@ function PillTabs() {
   );
 }
 
-function HeroContentCopy() {
+function HeroContentCopy({ breakpoint }: { breakpoint: Breakpoint }) {
+  // Gap between HeroCopy and PillTabs: 40px on S, 64px on M+
+  const contentGap = breakpoint === 'S' ? 'gap-[40px]' : 'gap-[64px]';
+  
   return (
-    <div className="content-stretch flex flex-col gap-[64px] items-center relative shrink-0 w-full" data-name="hero content copy">
+    <div className={`content-stretch flex flex-col ${contentGap} items-center relative shrink-0 w-full`} data-name="hero content copy">
       <div className="flex h-[111px] items-center justify-center relative shrink-0 w-0 overflow-visible" style={{ "--transform-inner-width": "110.984375", "--transform-inner-height": "0" } as React.CSSProperties}>
         <div className="flex-none rotate-[90deg]">
           <div className="h-0 relative w-[111px]" data-name="vertical line">
@@ -275,7 +329,7 @@ function HeroContentCopy() {
           </div>
         </div>
       </div>
-      <HeroCopy />
+      <HeroCopy breakpoint={breakpoint} />
       <PillTabs />
     </div>
   );
@@ -287,7 +341,7 @@ function LargePillImage() {
       initial={{ opacity: 0, y: 40, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 1, delay: 1, ease: "easeOut" }}
-      className="relative w-[1000px] h-[528px]" 
+      className="relative w-[450px] h-[238px] md:w-[800px] md:h-[423px] lg:w-[1000px] lg:h-[528px]" 
       data-name="largepillimage"
     >
       {/* Pill image */}
@@ -297,37 +351,30 @@ function LargePillImage() {
         className="w-full h-full object-contain"
       />
       
-      {/* SVG mask definition with feathered edges */}
-      <svg width="0" height="0" className="absolute">
-        <defs>
-          {/* Gaussian blur filter for feathered edges */}
-          <filter id="featherEdge">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
-          </filter>
-          
-          {/* Mask using exact Figma-traced pill shape */}
-          <mask id="pillCapsuleMask">
-            <path 
-              d="M183.189 1.6043C125.189 3.6043 79.3553 23.4376 63.6886 33.1043C35.6886 51.1041 -12.3114 105.104 3.68859 162.104C19.6886 219.104 88.1886 240.104 118.689 250.104C149.189 260.104 252.689 265.104 304.189 265.604C355.689 266.104 502.689 260.104 507.689 259.104C512.689 258.104 605.189 245.104 645.689 212.104C686.189 179.104 698.689 124.104 676.189 88.1045C653.689 52.1045 615.189 29.6045 582.189 17.6045C555.789 8.00449 487.855 2.93769 457.189 1.6043C390.022 0.770963 241.189 -0.395703 183.189 1.6043Z"
-              fill="white"
-              filter="url(#featherEdge)"
-            />
-          </mask>
-        </defs>
-      </svg>
-      
-      {/* Solar energy effects - ON TOP with blend mode and feathered mask */}
+      {/* Solar energy effects - ON TOP with blend mode and clip-path - RESPONSIVE */}
       <div 
-        className="absolute top-[13px] left-1/2 -translate-x-1/2 overflow-hidden"
+        className="absolute top-[6px] md:top-[10px] lg:top-[13px] left-1/2 -translate-x-1/2 overflow-hidden w-[315px] h-[120px] md:w-[560px] md:h-[214px] lg:w-[700px] lg:h-[267px]"
         style={{
-          width: '700px',
-          height: '267px',
-          mask: 'url(#pillCapsuleMask)',
-          WebkitMask: 'url(#pillCapsuleMask)',
           mixBlendMode: 'overlay',
           opacity: 0.7,
+          clipPath: 'url(#pillShapeClip)',
         }}
       >
+        {/* SVG clip-path definition that scales with container */}
+        <svg className="absolute w-0 h-0">
+          <defs>
+            <clipPath id="pillShapeClip" clipPathUnits="objectBoundingBox">
+              <path 
+                d="M 0.262 0.006 C 0.179 0.014 0.113 0.088 0.091 0.124 C 0.051 0.191 -0.018 0.394 0.005 0.607 C 0.028 0.821 0.126 0.899 0.170 0.937 C 0.213 0.975 0.361 0.993 0.435 0.995 C 0.508 0.996 0.718 0.974 0.725 0.970 C 0.732 0.967 0.865 0.918 0.923 0.794 C 0.980 0.671 0.998 0.465 0.966 0.330 C 0.934 0.195 0.879 0.111 0.832 0.066 C 0.794 0.030 0.697 0.011 0.653 0.006 C 0.557 0.003 0.345 -0.001 0.262 0.006"
+                filter="url(#featherFilter)"
+              />
+            </clipPath>
+            <filter id="featherFilter">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="0.004" />
+            </filter>
+          </defs>
+        </svg>
+
         {/* Flowing golden shimmer effect */}
         <motion.div
           className="absolute inset-0"
@@ -418,31 +465,97 @@ function LargePillImage() {
   );
 }
 
-function HeroGroup() {
+function HeroGroup({ breakpoint, top }: { breakpoint: Breakpoint; top: string }) {
+  // Responsive width for hero group
+  const heroWidth = breakpoint === 'S' ? 'w-full px-[20px]' : 'w-[864px]';
+  
   return (
-    <div className="absolute content-stretch flex flex-col gap-[60px] items-center left-1/2 top-[34px] translate-x-[-50%] w-[864px]" data-name="hero group">
-      <HeroContentCopy />
+    <div className={`absolute content-stretch flex flex-col gap-[60px] items-center left-1/2 translate-x-[-50%] ${heroWidth}`} style={{ top }} data-name="hero group">
+      <HeroContentCopy breakpoint={breakpoint} />
     </div>
   );
 }
 
-function Hero() {
+function Hero({ breakpoint }: { breakpoint: Breakpoint }) {
+  if (breakpoint === 'S') {
+    // S breakpoint: completely simple stacked layout
+    return (
+      <div className="w-full" data-name="hero">
+        {/* Teal gradient background section - matches M+ */}
+        <div className="px-[20px] pt-[24px] pb-[60px]" style={{ background: 'linear-gradient(180deg, #009296 0%, #00C2BD 100%)' }}>
+          {/* Vertical line */}
+          <div className="flex h-[111px] items-center justify-center mb-[64px]">
+            <div className="rotate-[90deg]">
+              <svg width="111" height="1" viewBox="0 0 111 1" fill="none">
+                <motion.line 
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                  stroke="white" 
+                  x1="0" y1="0.5" 
+                  x2="111" y2="0.5" 
+                />
+              </svg>
+            </div>
+          </div>
+
+          <HeroCopy breakpoint={breakpoint} />
+
+          <div className={breakpoint === 'S' ? 'mt-[40px]' : 'mt-[64px]'}>
+            <PillTabs />
+          </div>
+        </div>
+
+        {/* White section with wave and pill */}
+        <div className="bg-white relative">
+          {/* Wave at top */}
+          <div className="w-full" style={{ height: '130px' }}>
+            <svg 
+              className="w-full h-full block" 
+              viewBox="0 0 768 150" 
+              fill="none" 
+              preserveAspectRatio="none"
+              style={{ marginTop: '-1px' }}
+            >
+              <path 
+                d="M0,75 C230,50 300,50 384,75 C468,100 540,100 768,75 L768,0 L0,0 Z" 
+                fill="#00C2BD"
+              />
+            </svg>
+          </div>
+
+          {/* Pill image - positioned to overlap wave like M+ */}
+          <div className="flex justify-center" style={{ marginTop: '-110px' }}>
+            <LargePillImage />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // M+ breakpoints: original absolute positioning layout
+  const heroHeight = 'h-[930px] lg:h-[1000px]';
+  const heroContentHeight = '700px';
+  const pillImageTop = 'top-[680px] lg:top-[750px]';
+  const waveTop = 'top-[630px] lg:top-[700px]';
+  const heroGroupTop = 'top-[34px]';
+  
   return (
     <div className="relative shrink-0 w-full" data-name="hero">
       {/* Single gradient background spanning hero + wave */}
-      <div className="relative w-full" style={{ height: '1000px', background: 'linear-gradient(180deg, #009296 0%, #00C2BD 100%)' }}>
+      <div className={`relative w-full ${heroHeight}`} style={{ background: 'linear-gradient(180deg, #009296 0%, #00C2BD 100%)' }}>
         {/* Hero content */}
-        <div className="absolute top-0 left-0 right-0" style={{ height: '700px' }}>
-          <HeroGroup />
+        <div className="absolute top-0 left-0 right-0" style={{ height: heroContentHeight }}>
+          <HeroGroup breakpoint={breakpoint} top={heroGroupTop} />
         </div>
         
         {/* Pill image positioned to align with wave center - accounting for shadow in image */}
-        <div className="absolute left-1/2 -translate-x-1/2" style={{ top: '750px', zIndex: 20 }}>
+        <div className={`absolute left-1/2 -translate-x-1/2 ${pillImageTop}`} style={{ zIndex: 20 }}>
           <LargePillImage />
         </div>
         
         {/* White wave overlay - fixed height to prevent gaps */}
-        <div className="absolute left-0 right-0 w-full pointer-events-none" style={{ top: '700px', height: '300px', zIndex: 1 }}>
+        <div className={`absolute left-0 right-0 w-full pointer-events-none ${waveTop}`} style={{ height: '300px', zIndex: 1 }}>
           <svg 
             className="w-full h-full block" 
             viewBox="0 0 1440 300" 
@@ -467,18 +580,31 @@ function Hero() {
 // FOUNDER SECTION
 // ============================================================================
 
-function FounderSection() {
+function FounderSection({ breakpoint }: { breakpoint: Breakpoint }) {
+  const fontSize = breakpoint === 'S' ? 'text-[44px]' : breakpoint === 'M' ? 'text-[38px]' : breakpoint === 'HD' ? 'text-[58px]' : 'text-[48px]';
+  
+  // Responsive paddingTop - smaller on M, standard on L/XL/HD
+  const paddingTop = breakpoint === 'M' ? '200px' : '338px';
+  
+  // Center align on S breakpoint
+  const alignClass = breakpoint === 'S' ? 'items-center' : 'items-start';
+  const textAlignClass = breakpoint === 'S' ? 'text-center' : '';
+  
   const headline = (
-    <SectionHeadline 
-      eyebrow="MEET ANDREW LESSMAN"
-      headline={
-        <div className="font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] relative shrink-0 text-[#003b3c] tracking-[-1.16px] w-full">
-          <p className="mb-0 text-[58px]">Founder owned.</p>
-          <p className="text-[#009296] text-[58px]">Always.</p>
+    <div className={`content-stretch flex flex-col gap-[40px] ${alignClass} relative shrink-0 w-full`} data-name="headline group">
+      <div className={`font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] relative shrink-0 text-[#003b3c] tracking-[-1.16px] w-full ${textAlignClass}`}>
+        <p className={`mb-0 ${fontSize}`}>Founder owned.</p>
+        <p className={`text-[#009296] ${fontSize}`}>Always.</p>
+      </div>
+      <div className="h-0 relative shrink-0 w-[50px]" data-name="line">
+        <div className="absolute bottom-0 left-0 right-0 top-[-1px]">
+          <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 50 1">
+            <line stroke="#009296" x2="50" y1="0.5" y2="0.5" />
+          </svg>
         </div>
-      }
-      align="left"
-    />
+      </div>
+      <p className={`font-['Inter:Medium',sans-serif] font-medium leading-[1.4] not-italic relative shrink-0 text-[#009296] text-[20px] tracking-[2px] w-full uppercase ${textAlignClass}`}>MEET ANDREW LESSMAN</p>
+    </div>
   );
 
   const body = (
@@ -489,12 +615,41 @@ function FounderSection() {
     </>
   );
 
+  if (breakpoint === 'S') {
+    // S breakpoint: simple stacked layout without StickyContent
+    return (
+      <div className="bg-white w-full" style={{ paddingTop: '40px', paddingBottom: '60px' }}>
+        <div className="flex flex-col gap-[80px]">
+          {/* Headline - 60px padding */}
+          <div className="px-[60px]">
+            <div className={`content-stretch flex flex-col gap-[40px] ${alignClass} relative shrink-0 w-full`}>
+              {headline}
+              <div className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] text-[16px] tracking-[-0.32px] w-full ${textAlignClass}`}>
+                {body}
+              </div>
+            </div>
+          </div>
+          
+          {/* Images - 20px padding only */}
+          <div className="flex flex-col gap-[20px] w-full px-[20px]">
+            <ImageBlock src={imgAndrewLessman} alt="Andrew Lessman" />
+            <QuoteBlock 
+              quote={`"I'd rather focus on prevention than illness."`}
+              author="- Andrew Lessman"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <TwoColumnSection
-      paddingTop="338px"
-      leftContent={<StickyContent headline={headline} body={body} />}
+      breakpoint={breakpoint}
+      paddingTop={paddingTop}
+      leftContent={<StickyContent headline={headline} body={body} breakpoint={breakpoint} />}
       rightContent={
-        <AnimatedImageColumn>
+        <AnimatedImageColumn breakpoint={breakpoint}>
           <ImageBlock src={imgAndrewLessman} alt="Andrew Lessman" />
           <QuoteBlock 
             quote={`"I'd rather focus on prevention than illness."`}
@@ -525,15 +680,18 @@ function CircleIcon({ icon }: { icon: 'shield' | 'sun' | 'flask' | 'leaf' }) {
   );
 }
 
-function ValueCard({ title, description, icon }: { title: string; description: string; icon: 'shield' | 'sun' | 'flask' | 'leaf' }) {
+function ValueCard({ title, description, icon, breakpoint }: { title: string; description: string; icon: 'shield' | 'sun' | 'flask' | 'leaf'; breakpoint: Breakpoint }) {
+  const titleSize = breakpoint === 'S' ? 'text-[24px]' : 'text-[28px]';
+  const titleTracking = breakpoint === 'S' ? 'tracking-[-0.48px]' : 'tracking-[-0.56px]';
+  
   return (
     <div className="basis-0 bg-white grow min-h-px min-w-px relative rounded-[20px] self-stretch shrink-0" data-name="card">
       <div className="size-full">
         <div className="content-stretch flex flex-col gap-[40px] items-start px-[40px] py-[60px] relative size-full">
           <CircleIcon icon={icon} />
           <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full" data-name="copy">
-            <p className="font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.8] relative shrink-0 text-[#009296] text-[28px] tracking-[-0.56px] w-full">{title}</p>
-            <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] text-[20px] tracking-[-0.2px] w-full">{description}</p>
+            <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.4] relative shrink-0 text-[#009296] ${titleSize} ${titleTracking} w-full`}>{title}</p>
+            <p className="font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] text-[16px] lg:text-[20px] tracking-[-0.32px] lg:tracking-[-0.4px] w-full">{description}</p>
           </div>
         </div>
       </div>
@@ -541,7 +699,7 @@ function ValueCard({ title, description, icon }: { title: string; description: s
   );
 }
 
-function ValueCardsRow({ cards }: { cards: Array<{ title: string; description: string; icon: 'shield' | 'sun' | 'flask' | 'leaf' }> }) {
+function ValueCardsRow({ cards, breakpoint }: { cards: Array<{ title: string; description: string; icon: 'shield' | 'sun' | 'flask' | 'leaf' }>; breakpoint: Breakpoint }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -555,14 +713,18 @@ function ValueCardsRow({ cards }: { cards: Array<{ title: string; description: s
           transition={{ duration: 0.6, delay: index * 0.1 + 0.1 }}
           className="basis-0 grow min-h-px min-w-px shrink-0 flex"
         >
-          <ValueCard {...card} />
+          <ValueCard {...card} breakpoint={breakpoint} />
         </motion.div>
       ))}
     </div>
   );
 }
 
-function ValuesSection() {
+function ValuesSection({ breakpoint }: { breakpoint: Breakpoint }) {
+  const paddingY = breakpoint === 'S' ? 'py-[60px]' : breakpoint === 'M' ? 'py-[100px]' : 'py-[120px]';
+  const paddingX = breakpoint === 'S' ? 'px-[20px]' : 'px-[176px] md:px-[40px] lg:px-[120px]';
+  const gapSize = breakpoint === 'S' ? 'gap-[60px]' : 'gap-[120px] lg:gap-[100px]';
+  
   const valuesData = {
     row1: [
       {
@@ -593,26 +755,55 @@ function ValuesSection() {
   return (
     <div className="bg-[#f6f2ec] relative shrink-0 w-full" data-name="values-section">
       <div className="size-full">
-        <div className="content-stretch flex flex-col items-start px-[176px] py-[120px] relative w-full">
-          <div className="content-stretch flex flex-col gap-[120px] items-center relative shrink-0 w-full">
+        <div className={`content-stretch flex flex-col items-start ${paddingX} ${paddingY} relative w-full`}>
+          <div className={`content-stretch flex flex-col ${gapSize} items-center relative shrink-0 w-full`}>
             <SectionHeadline 
               eyebrow="WHAT SETS US APART"
               headline={
-                <>
-                  <p className="font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] mb-0 text-[92px]">Changing times,</p>
-                  <p className="font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] text-[92px]">
-                    <span className="text-[#003b3c]">enduring</span>
-                    <span>{` values.`}</span>
-                  </p>
-                </>
+                breakpoint === 'S' ? (
+                  <>
+                    <p className="font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] mb-0 text-[44px] tracking-[-0.88px]">Changing times,</p>
+                    <p className="font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] text-[44px] tracking-[-0.88px]">
+                      <span className="text-[#003b3c]">enduring</span>
+                      <span>{` values.`}</span>
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] mb-0 text-[72px] lg:text-[92px] tracking-[-1.44px] lg:tracking-[-1.84px]">Changing times,</p>
+                    <p className="font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] text-[72px] lg:text-[92px] tracking-[-1.44px] lg:tracking-[-1.84px]">
+                      <span className="text-[#003b3c]">enduring</span>
+                      <span>{` values.`}</span>
+                    </p>
+                  </>
+                )
               }
               align="center"
               animated={true}
+              breakpoint={breakpoint}
             />
-            <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 w-full">
-              <ValueCardsRow cards={valuesData.row1} />
-              <ValueCardsRow cards={valuesData.row2} />
-            </div>
+            {breakpoint === 'S' ? (
+              // Stacked layout for S breakpoint
+              <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 w-full">
+                {[...valuesData.row1, ...valuesData.row2].map((card, index) => (
+                  <motion.div
+                    key={card.title}
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.1 + 0.1 }}
+                    className="w-full"
+                  >
+                    <ValueCard {...card} breakpoint={breakpoint} />
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              // Original grid layout for M+ breakpoints
+              <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 w-full">
+                <ValueCardsRow cards={valuesData.row1} breakpoint={breakpoint} />
+                <ValueCardsRow cards={valuesData.row2} breakpoint={breakpoint} />
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -624,9 +815,61 @@ function ValuesSection() {
 // ENVIRONMENTAL SECTION
 // ============================================================================
 
-function ByTheNumbersSection() {
+function ByTheNumbersSection({ breakpoint }: { breakpoint: Breakpoint }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  // Top padding remains the same, bottom padding adjusted for spacing between sections
+  const paddingTop = breakpoint === 'S' ? '60px' : breakpoint === 'M' ? '100px' : '120px';
+  const paddingBottom = breakpoint === 'S' ? '60px' : breakpoint === 'M' ? '60px' : '100px';
+
+  // Calculate stats font size based on breakpoint
+  const getStatsFontSize = () => {
+    switch (breakpoint) {
+      case 'S': return '34px';
+      case 'M': return '58px';
+      case 'L':
+      case 'XL':
+      case 'HD':
+      default: return '80px';
+    }
+  };
+
+  // Calculate letter spacing (proportional to font size)
+  const getStatsLetterSpacing = () => {
+    switch (breakpoint) {
+      case 'S': return '-0.68px'; // 34 * 0.02
+      case 'M': return '-1.16px'; // 58 * 0.02
+      case 'L':
+      case 'XL':
+      case 'HD':
+      default: return '-1.6px'; // 80 * 0.02
+    }
+  };
+
+  // Calculate label font size based on breakpoint
+  const getLabelFontSize = () => {
+    switch (breakpoint) {
+      case 'S':
+      case 'M': return '16px';
+      case 'L':
+      case 'XL':
+      case 'HD':
+      default: return '20px';
+    }
+  };
+
+  // Calculate label letter spacing
+  const getLabelLetterSpacing = () => {
+    switch (breakpoint) {
+      case 'S':
+      case 'M': return '-0.16px'; // 16 * 0.01
+      case 'L':
+      case 'XL':
+      case 'HD':
+      default: return '-0.2px'; // 20 * 0.01
+    }
+  };
 
   interface StatCardProps {
     value: number;
@@ -669,12 +912,24 @@ function ByTheNumbersSection() {
         initial={{ opacity: 0, y: 30 }}
         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
         transition={{ duration: 0.6, delay: delay / 1000 }}
-        className="content-stretch flex flex-col gap-[20px] items-center text-center relative shrink-0"
+        className={`content-stretch flex flex-col gap-[20px] items-center text-center relative shrink-0 ${breakpoint === 'S' ? 'bg-[#E6F7F7] rounded-[20px] p-[30px]' : ''}`}
       >
-        <div className="font-['STIX_Two_Text:Regular',sans-serif] font-normal text-[#009296] text-[80px] leading-[1] tracking-[-1.6px]">
+        <div 
+          className={`font-normal text-[#009296] leading-[1] ${breakpoint === 'S' ? "font-['Inter:Medium',sans-serif]" : "font-['STIX_Two_Text:Regular',sans-serif]"}`}
+          style={{ 
+            fontSize: getStatsFontSize(), 
+            letterSpacing: getStatsLetterSpacing() 
+          }}
+        >
           {count.toLocaleString()}{suffix}
         </div>
-        <div className="font-['Inter:Regular',sans-serif] font-normal text-[#003b3c] text-[20px] leading-[1.4] tracking-[-0.2px] max-w-[280px]">
+        <div 
+          className="font-['Inter:Regular',sans-serif] font-normal text-[#003b3c] leading-[1.4] max-w-[280px]"
+          style={{ 
+            fontSize: getLabelFontSize(), 
+            letterSpacing: getLabelLetterSpacing() 
+          }}
+        >
           {label}
         </div>
       </motion.div>
@@ -688,24 +943,31 @@ function ByTheNumbersSection() {
     { value: 15, suffix: 'K+', label: 'Tons CO₂ Emissions Prevented', delay: 300 },
   ];
 
+  // Responsive padding and grid
+  const paddingX = breakpoint === 'S' ? 'px-[20px]' : 'px-[176px] md:px-[40px] lg:px-[120px]';
+  const gridCols = breakpoint === 'S' ? 'grid-cols-2' : 'grid-cols-4';
+  const gapSize = breakpoint === 'S' ? 'gap-[10px]' : 'gap-[60px] lg:gap-[50px]';
+  const sectionGap = breakpoint === 'S' ? 'gap-[60px]' : 'gap-[100px] lg:gap-[80px]';
+
   return (
     <div className="bg-white relative shrink-0 w-full" data-name="by-the-numbers-section">
       <div className="size-full">
-        <div className="content-stretch flex flex-col items-start px-[176px] py-[120px] relative w-full">
-          <div ref={ref} className="content-stretch flex flex-col gap-[100px] items-center relative shrink-0 w-full">
+        <div className={`content-stretch flex flex-col items-start ${paddingX} relative w-full`} style={{ paddingTop, paddingBottom }}>
+          <div ref={ref} className={`content-stretch flex flex-col ${sectionGap} items-center relative shrink-0 w-full`}>
             <SectionHeadline 
               eyebrow="BY THE NUMBERS"
               headline={
                 <>
                   Proven impact.
                   <br aria-hidden="true" />
-                  Measurable results.
+                  <span className="whitespace-nowrap">Measurable results.</span>
                 </>
               }
               align="center"
               animated={true}
+              breakpoint={breakpoint}
             />
-            <div className="grid grid-cols-4 gap-[60px] w-full">
+            <div className={`grid ${gridCols} ${gapSize} w-full`}>
               {stats.map((stat, index) => (
                 <StatCard
                   key={index}
@@ -723,38 +985,86 @@ function ByTheNumbersSection() {
   );
 }
 
-function EnvironmentalSection() {
+function EnvironmentalSection({ breakpoint }: { breakpoint: Breakpoint }) {
+  const fontSize = breakpoint === 'S' ? 'text-[44px]' : breakpoint === 'M' ? 'text-[38px]' : breakpoint === 'HD' ? 'text-[58px]' : 'text-[48px]';
+  
+  // Top padding adjusted to match spacing between sections
+  const paddingTop = breakpoint === 'M' ? '60px' : '100px';
+  const paddingBottom = breakpoint === 'M' ? '100px' : '120px';
+  
+  // Center align on S breakpoint
+  const alignClass = breakpoint === 'S' ? 'items-center' : 'items-start';
+  const textAlignClass = breakpoint === 'S' ? 'text-center' : '';
+  
   const headline = (
-    <SectionHeadline 
-      eyebrow="ENVIRONMENTAL LEADERSHIP"
-      headline={
-        <p className="font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] min-w-full relative shrink-0 text-[#003b3c] text-[58px] tracking-[-1.16px] w-[min-content]">
-          <span>{`Supplements `}</span>
-          <span className="text-[#009296]">powered</span>
-          <span>{` by the sun.`}</span>
-        </p>
-      }
-      align="left"
-    />
+    <div className={`content-stretch flex flex-col gap-[40px] ${alignClass} relative shrink-0 w-full`} data-name="headline group">
+      <div className={`font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] relative shrink-0 text-[#003b3c] tracking-[-1.16px] w-full ${textAlignClass}`}>
+        <p className={`mb-0 ${fontSize}`}>Solar powered.</p>
+        <p className={`text-[#009296] ${fontSize}`}>Future focused.</p>
+      </div>
+      <div className="h-0 relative shrink-0 w-[50px]" data-name="line">
+        <div className="absolute bottom-0 left-0 right-0 top-[-1px]">
+          <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 50 1">
+            <line stroke="#009296" x2="50" y1="0.5" y2="0.5" />
+          </svg>
+        </div>
+      </div>
+      <p className={`font-['Inter:Medium',sans-serif] font-medium leading-[1.4] not-italic relative shrink-0 text-[#009296] text-[20px] tracking-[2px] w-full uppercase ${textAlignClass}`}>ENVIRONMENTAL LEADERSHIP</p>
+    </div>
   );
 
   const body = (
     <>
-      <p className="mb-0">One of the largest private solar energy installations in the world powers our entire facility—making us the only supplement manufacturer to do so.</p>
+      <p className="mb-0">Our Henderson, Nevada facility features one of the largest private solar installations in the world, generating over 25 million kWh of clean energy annually.</p>
       <p className="mb-0">&nbsp;</p>
-      <p>{`We're LEED Existing Building (EB) GOLD certified for green energy production, environmentally responsible upgrades, and an outstanding work environment.`}</p>
+      <p>LEED Gold certified for environmental excellence, our operations prevent over 15,000 tons of CO₂ emissions each year—equivalent to taking 3,000 cars off the road.</p>
     </>
   );
 
+  if (breakpoint === 'S') {
+    // S breakpoint: simple stacked layout without StickyContent
+    return (
+      <div className="bg-white w-full" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
+        <div className="flex flex-col gap-[80px]">
+          {/* Headline - 60px padding */}
+          <div className="px-[60px]">
+            <div className={`content-stretch flex flex-col gap-[40px] ${alignClass} relative shrink-0 w-full`}>
+              {headline}
+              <div className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] text-[16px] tracking-[-0.32px] w-full ${textAlignClass}`}>
+                {body}
+              </div>
+            </div>
+          </div>
+          
+          {/* Images - 20px padding only */}
+          <div className="flex flex-col gap-[20px] w-full px-[20px]">
+            <div className="aspect-[789/800] bg-[#ccd8d8] overflow-clip rounded-[20px] shrink-0 w-full" />
+            <QuoteBlock 
+              quote={`"We're not just making supplements. We're protecting the planet for future generations."`}
+              author="- Andrew Lessman"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <TwoColumnSection
-      leftContent={
-        <AnimatedImageColumn>
-          <ImageBlock src={imgSolarPanels} alt="Solar panels at ProCaps facility" />
+      breakpoint={breakpoint}
+      bgColor="white"
+      paddingTop={paddingTop}
+      paddingBottom={paddingBottom}
+      leftContent={<StickyContent headline={headline} body={body} breakpoint={breakpoint} />}
+      rightContent={
+        <AnimatedImageColumn breakpoint={breakpoint}>
+          <div className="aspect-[789/800] bg-[#ccd8d8] overflow-clip rounded-[20px] shrink-0 w-full" />
+          <QuoteBlock 
+            quote={`"We're not just making supplements. We're protecting the planet for future generations."`}
+            author="- Andrew Lessman"
+          />
         </AnimatedImageColumn>
       }
-      rightContent={<StickyContent headline={headline} body={body} />}
-      reverse={true}
     />
   );
 }
@@ -763,89 +1073,104 @@ function EnvironmentalSection() {
 // TIMELINE SECTION
 // ============================================================================
 
-interface TimelineItemProps {
-  year: string;
-  title: string;
-  description: string;
-  side: 'left' | 'right';
-  index: number;
-  isLast?: boolean;
-}
-
-function TimelineItem({ year, title, description, side, index, isLast }: TimelineItemProps) {
+function TimelineSection({ breakpoint }: { breakpoint: Breakpoint }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
-  return (
-    <div ref={ref} className="relative flex items-center justify-center w-full mb-[200px] last:mb-0">
-      {/* Left content */}
-      <div className="flex-1 flex justify-end pr-[60px]">
-        {side === 'left' && (
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
-            transition={{ duration: 0.6, delay: index * 0.2 }}
-            className="text-right max-w-[400px]"
-          >
-            <p className="font-['STIX_Two_Text:Medium',sans-serif] font-medium text-[28px] text-[#009296] mb-[10px] leading-[1.2]">
-              {title}
-            </p>
-            <p className="font-['Inter:Regular',sans-serif] text-[18px] text-[#003b3c] leading-[1.4]">
-              {description}
-            </p>
-          </motion.div>
-        )}
-      </div>
+  const paddingY = breakpoint === 'S' ? 'py-[60px]' : breakpoint === 'M' ? 'py-[100px]' : 'py-[120px]';
+  const paddingX = breakpoint === 'S' ? 'px-[20px]' : 'px-[176px] md:px-[40px] lg:px-[120px]';
+  const sectionGap = breakpoint === 'S' ? 'gap-[60px]' : 'gap-[80px]';
 
-      {/* Center circle with year */}
-      <div className="relative flex-shrink-0">
-        <motion.div
-          initial={{ scale: 0, opacity: 0 }}
-          animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
-          transition={{ duration: 0.5, delay: index * 0.2 + 0.1 }}
-          className="w-[150px] h-[150px] rounded-full border-[2px] border-[#009296] bg-white flex items-center justify-center relative z-10"
-        >
-          <p className="font-['Inter:Medium',sans-serif] font-medium text-[20px] text-[#009296] tracking-[1px]">
-            {year}
-          </p>
-        </motion.div>
+  interface TimelineItemProps {
+    year: string;
+    title: string;
+    description: string;
+    side: 'left' | 'right';
+    index: number;
+  }
 
-        {/* Vertical line - only show if not the last item */}
-        {!isLast && (
-          <div className="absolute left-1/2 top-[150px] w-[2px] h-[200px] -translate-x-1/2 overflow-hidden">
+  function TimelineItem({ year, title, description, side, index }: TimelineItemProps) {
+    const itemRef = useRef(null);
+    const itemInView = useInView(itemRef, { once: true, margin: "-100px" });
+
+    // Faster sequential animation within each item
+    const circleDelay = 0; // Circle appears immediately when in view
+    const contentDelay = 0.2; // Content appears 0.2s after circle
+    const lineDelay = 0.3; // Line starts growing 0.3s after circle appears
+
+    const isLastItem = index === 3;
+
+    return (
+      <div className="relative flex items-center justify-center w-full" style={{ minHeight: '340px' }}>
+        {/* Left content */}
+        <div className={`w-[calc(50%-80px)] flex ${side === 'left' ? 'justify-end' : 'justify-start'}`}>
+          {side === 'left' && (
             <motion.div
-              initial={{ scaleY: 0 }}
-              animate={isInView ? { scaleY: 1 } : { scaleY: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.2 + 0.3 }}
-              className="w-full h-full bg-[#009296] origin-top"
-            />
-          </div>
-        )}
-      </div>
+              initial={{ opacity: 0, x: -30 }}
+              animate={itemInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+              transition={{ duration: 0.6, delay: contentDelay }}
+              className="text-right pr-[40px] max-w-[400px]"
+            >
+              <h3 className="font-['STIX_Two_Text:Medium',sans-serif] font-medium text-[#009296] text-[28px] leading-[1.4] tracking-[-0.56px] mb-[10px]">
+                {title}
+              </h3>
+              <p className="font-['Inter:Regular',sans-serif] font-normal text-[#003b3c] text-[16px] lg:text-[20px] leading-[1.4] tracking-[-0.32px] lg:tracking-[-0.4px]">
+                {description}
+              </p>
+            </motion.div>
+          )}
+        </div>
 
-      {/* Right content */}
-      <div className="flex-1 flex justify-start pl-[60px]">
-        {side === 'right' && (
+        {/* Center timeline dot and line */}
+        <div className="relative flex flex-col items-center" style={{ width: '160px' }}>
+          {/* Circle with year */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
-            transition={{ duration: 0.6, delay: index * 0.2 }}
-            className="text-left max-w-[400px]"
+            ref={itemRef}
+            initial={{ scale: 0, opacity: 0 }}
+            animate={itemInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+            transition={{ duration: 0.5, delay: circleDelay, ease: "easeOut" }}
+            className="relative z-10 flex items-center justify-center w-[140px] h-[140px] rounded-full border-[2px] border-[#009296] bg-white"
           >
-            <p className="font-['STIX_Two_Text:Medium',sans-serif] font-medium text-[28px] text-[#009296] mb-[10px] leading-[1.2]">
-              {title}
-            </p>
-            <p className="font-['Inter:Regular',sans-serif] text-[18px] text-[#003b3c] leading-[1.4]">
-              {description}
-            </p>
+            <span className="font-['Inter:Medium',sans-serif] font-medium text-[#009296] text-[20px] tracking-[0.4px]">
+              {year}
+            </span>
           </motion.div>
-        )}
-      </div>
-    </div>
-  );
-}
 
-function TimelineSection() {
+          {/* Vertical line below - grows down from bottom of circle to top of next circle */}
+          {!isLastItem && (
+            <div className="absolute top-[140px] overflow-hidden w-[1.5px]" style={{ height: '200px' }}>
+              <motion.div
+                initial={{ height: 0 }}
+                animate={itemInView ? { height: '200px' } : { height: 0 }}
+                transition={{ duration: 0.6, delay: lineDelay, ease: "easeInOut" }}
+                className="w-full bg-[#009296] origin-top"
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Right content */}
+        <div className={`w-[calc(50%-80px)] flex ${side === 'right' ? 'justify-start' : 'justify-end'}`}>
+          {side === 'right' && (
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={itemInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
+              transition={{ duration: 0.6, delay: contentDelay }}
+              className="text-left pl-[40px] max-w-[400px]"
+            >
+              <h3 className="font-['STIX_Two_Text:Medium',sans-serif] font-medium text-[#009296] text-[28px] leading-[1.4] tracking-[-0.56px] mb-[10px]">
+                {title}
+              </h3>
+              <p className="font-['Inter:Regular',sans-serif] font-normal text-[#003b3c] text-[16px] lg:text-[20px] leading-[1.4] tracking-[-0.32px] lg:tracking-[-0.4px]">
+                {description}
+              </p>
+            </motion.div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   const timelineData = [
     {
       year: "1979",
@@ -873,36 +1198,83 @@ function TimelineSection() {
     }
   ];
 
+  // Mobile Timeline Item (vertical layout)
+  function MobileTimelineItem({ year, title, description, index }: { year: string; title: string; description: string; index: number }) {
+    const itemRef = useRef(null);
+    const itemInView = useInView(itemRef, { once: true, margin: "-100px" });
+    const isLastItem = index === 3;
+
+    return (
+      <motion.div
+        ref={itemRef}
+        initial={{ opacity: 0, y: 30 }}
+        animate={itemInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="relative flex items-start gap-[20px] w-full"
+      >
+        {/* Timeline line and circle */}
+        <div className="relative flex flex-col items-center shrink-0">
+          <div className="flex items-center justify-center w-[80px] h-[80px] rounded-full border-[2px] border-[#009296] bg-white shrink-0 z-10">
+            <span className="font-['Inter:Medium',sans-serif] font-medium text-[#009296] text-[16px] tracking-[0.32px]">
+              {year}
+            </span>
+          </div>
+          {!isLastItem && (
+            <div className="w-[2px] bg-[#009296] flex-1 min-h-[120px]" />
+          )}
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 pb-[40px]">
+          <h3 className="font-['STIX_Two_Text:Medium',sans-serif] font-medium text-[#009296] text-[24px] leading-[1.4] tracking-[-0.48px] mb-[10px]">
+            {title}
+          </h3>
+          <p className="font-['Inter:Regular',sans-serif] font-normal text-[#003b3c] text-[16px] leading-[1.4] tracking-[-0.32px]">
+            {description}
+          </p>
+        </div>
+      </motion.div>
+    );
+  }
+
   return (
     <div className="bg-[#e8f9f9] relative shrink-0 w-full" data-name="timeline-section">
       <div className="size-full">
-        <div className="content-stretch flex flex-col items-start px-[176px] py-[120px] relative w-full">
-          <div className="content-stretch flex flex-col gap-[120px] items-center relative shrink-0 w-full">
+        <div className={`content-stretch flex flex-col items-center ${paddingX} ${paddingY} relative w-full`}>
+          <div ref={ref} className={`content-stretch flex flex-col ${sectionGap} items-center relative shrink-0 w-full`}>
             <SectionHeadline 
               eyebrow="OUR JOURNEY"
               headline={
                 <>
-                  Four decades
-                  <br aria-hidden="true" />
+                  Four decades<br />
                   of excellence.
                 </>
               }
               align="center"
               animated={true}
+              breakpoint={breakpoint}
             />
-            <div className="relative w-full max-w-[1200px] mx-auto">
-              {timelineData.map((item, index) => (
-                <TimelineItem
-                  key={item.year}
-                  year={item.year}
-                  title={item.title}
-                  description={item.description}
-                  side={item.side}
-                  index={index}
-                  isLast={index === timelineData.length - 1}
-                />
-              ))}
-            </div>
+            {breakpoint === 'S' ? (
+              // Mobile vertical timeline
+              <div className="content-stretch flex flex-col items-start relative shrink-0 w-full">
+                {timelineData.map((item, index) => (
+                  <MobileTimelineItem 
+                    key={item.year} 
+                    year={item.year}
+                    title={item.title}
+                    description={item.description}
+                    index={index}
+                  />
+                ))}
+              </div>
+            ) : (
+              // Desktop horizontal timeline
+              <div className="content-stretch flex flex-col items-center relative shrink-0 w-full max-w-[1200px]">
+                {timelineData.map((item, index) => (
+                  <TimelineItem key={item.year} {...item} index={index} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -914,32 +1286,81 @@ function TimelineSection() {
 // EDUCATION SECTION
 // ============================================================================
 
-function EducationSection() {
+function EducationSection({ breakpoint }: { breakpoint: Breakpoint }) {
+  const fontSize = breakpoint === 'S' ? 'text-[44px]' : breakpoint === 'M' ? 'text-[38px]' : breakpoint === 'HD' ? 'text-[58px]' : 'text-[48px]';
+  
+  const paddingTop = breakpoint === 'M' ? '100px' : '120px';
+  const paddingBottom = breakpoint === 'M' ? '100px' : '120px';
+  
+  // Center align on S breakpoint
+  const alignClass = breakpoint === 'S' ? 'items-center' : 'items-start';
+  const textAlignClass = breakpoint === 'S' ? 'text-center' : '';
+  
   const headline = (
-    <SectionHeadline 
-      eyebrow="INNOVATION IN MARKETING"
-      headline={
-        <p className="font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] min-w-full relative shrink-0 text-[#003b3c] text-[58px] tracking-[-1.16px] w-[min-content]">
-          <span className="text-[#009296]">Education</span>
-          <span>{` over entertainment.`}</span>
-        </p>
-      }
-      align="left"
-    />
+    <div className={`content-stretch flex flex-col gap-[40px] ${alignClass} relative shrink-0 w-full`} data-name="headline group">
+      <div className={`font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] relative shrink-0 text-[#003b3c] tracking-[-1.16px] w-full ${textAlignClass}`}>
+        <p className={`mb-0 ${fontSize}`}>Knowledge is</p>
+        <p className={`text-[#009296] ${fontSize}`}>power.</p>
+      </div>
+      <div className="h-0 relative shrink-0 w-[50px]" data-name="line">
+        <div className="absolute bottom-0 left-0 right-0 top-[-1px]">
+          <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 50 1">
+            <line stroke="#009296" x2="50" y1="0.5" y2="0.5" />
+          </svg>
+        </div>
+      </div>
+      <p className={`font-['Inter:Medium',sans-serif] font-medium leading-[1.4] not-italic relative shrink-0 text-[#009296] text-[20px] tracking-[2px] w-full uppercase ${textAlignClass}`}>EDUCATION & TRANSPARENCY</p>
+    </div>
   );
 
   const body = (
-    <p>Andrew pioneered supplement sales on television in the late 1980s, presenting on QVC without celebrities or gimmicks—just honest, science-based education.</p>
+    <>
+      <p className="mb-0">Andrew personally hosts over 100 educational videos, explaining the science behind every product. No secrets. No hidden ingredients. Complete transparency.</p>
+      <p className="mb-0">&nbsp;</p>
+      <p>Every label lists every ingredient in plain English. Every product comes with Andrew's personal guarantee. Because when you understand what you're taking, you can make better decisions for your health.</p>
+    </>
   );
+
+  if (breakpoint === 'S') {
+    // S breakpoint: simple stacked layout without StickyContent
+    return (
+      <div className="bg-white w-full" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
+        <div className="flex flex-col gap-[80px]">
+          {/* Headline - 60px padding */}
+          <div className="px-[60px]">
+            <div className={`content-stretch flex flex-col gap-[40px] ${alignClass} relative shrink-0 w-full`}>
+              {headline}
+              <div className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] text-[16px] tracking-[-0.32px] w-full ${textAlignClass}`}>
+                {body}
+              </div>
+            </div>
+          </div>
+          
+          {/* Images - 20px padding only */}
+          <div className="flex flex-col gap-[20px] w-full px-[20px]">
+            <div className="aspect-[789/800] bg-[#ccd8d8] overflow-clip rounded-[20px] shrink-0 w-full" />
+            <QuoteBlock 
+              quote={`"I believe an informed customer is the best customer."`}
+              author="- Andrew Lessman"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <TwoColumnSection
-      leftContent={<StickyContent headline={headline} body={body} />}
+      breakpoint={breakpoint}
+      bgColor="white"
+      paddingTop={paddingTop}
+      paddingBottom={paddingBottom}
+      leftContent={<StickyContent headline={headline} body={body} breakpoint={breakpoint} />}
       rightContent={
-        <AnimatedImageColumn>
-          <ImageBlock alt="Andrew Lessman on QVC" />
+        <AnimatedImageColumn breakpoint={breakpoint}>
+          <div className="aspect-[789/800] bg-[#ccd8d8] overflow-clip rounded-[20px] shrink-0 w-full" />
           <QuoteBlock 
-            quote='"People will listen to an honest, respectful presentation without sensationalism."'
+            quote={`"I believe an informed customer is the best customer."`}
             author="- Andrew Lessman"
           />
         </AnimatedImageColumn>
@@ -953,15 +1374,38 @@ function EducationSection() {
 // ============================================================================
 
 export default function OurStoryPage() {
+  const [breakpoint, setBreakpoint] = useState<Breakpoint>('XL');
+
+  useEffect(() => {
+    const updateBreakpoint = () => {
+      const width = window.innerWidth;
+      if (width >= 1920) {
+        setBreakpoint('HD');
+      } else if (width >= 1440) {
+        setBreakpoint('XL');
+      } else if (width >= 1280) {
+        setBreakpoint('L');
+      } else if (width >= 768) {
+        setBreakpoint('M');
+      } else {
+        setBreakpoint('S');
+      }
+    };
+
+    updateBreakpoint();
+    window.addEventListener('resize', updateBreakpoint);
+    return () => window.removeEventListener('resize', updateBreakpoint);
+  }, []);
+
   return (
-    <div className="bg-white content-stretch flex flex-col items-start relative w-full" data-name="ourstory desktop">
-      <Hero />
-      <FounderSection />
-      <ValuesSection />
-      <ByTheNumbersSection />
-      <EnvironmentalSection />
-      <TimelineSection />
-      <EducationSection />
+    <div className="bg-white flex flex-col items-start relative w-full overflow-x-hidden" data-name="ourstory desktop">
+      <Hero breakpoint={breakpoint} />
+      <FounderSection breakpoint={breakpoint} />
+      <ValuesSection breakpoint={breakpoint} />
+      <ByTheNumbersSection breakpoint={breakpoint} />
+      <EnvironmentalSection breakpoint={breakpoint} />
+      <TimelineSection breakpoint={breakpoint} />
+      <EducationSection breakpoint={breakpoint} />
     </div>
   );
 }

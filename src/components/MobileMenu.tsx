@@ -107,7 +107,7 @@ export default function MobileMenu({
               {menuLevel === 'main' && (
                 <MobileMenuMain
                   onShopClick={handleShopClick}
-                  onAboutClick={onOurStoryClick}
+                  onOurStoryClick={onOurStoryClick}
                 />
               )}
 

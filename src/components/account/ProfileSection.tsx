@@ -60,11 +60,11 @@ export default function ProfileSection({ userEmail, isNewCustomer = false }: Pro
   const isDemoUser = userEmail === 'demo@andrewlessman.com';
   
   const userData = {
-    firstName: isDemoUser ? 'Andrew' : '',
-    lastName: isDemoUser ? 'Lessman' : '',
-    dateOfBirth: isDemoUser ? '1956-03-15' : '',
-    gender: isDemoUser ? 'male' : '',
-    phone: isDemoUser ? '(555) 123-4567' : '',
+    firstName: (isDemoUser && !isNewCustomer) ? 'Andrew' : '',
+    lastName: (isDemoUser && !isNewCustomer) ? 'Lessman' : '',
+    dateOfBirth: (isDemoUser && !isNewCustomer) ? '1956-03-15' : '',
+    gender: (isDemoUser && !isNewCustomer) ? 'male' : '',
+    phone: (isDemoUser && !isNewCustomer) ? '(555) 123-4567' : '',
   };
 
   // Check if profile has any data

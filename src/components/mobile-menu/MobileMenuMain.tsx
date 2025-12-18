@@ -10,12 +10,12 @@ import { mainMenuItems, animationConfig } from '../../data/mobileMenuData';
 
 interface MobileMenuMainProps {
   onShopClick: () => void;
-  onAboutClick?: () => void;
+  onOurStoryClick?: () => void;
 }
 
 export default function MobileMenuMain({ 
   onShopClick,
-  onAboutClick
+  onOurStoryClick
 }: MobileMenuMainProps) {
   // Animation variants for staggered menu items
   const itemVariants = {
@@ -36,8 +36,8 @@ export default function MobileMenuMain({
       case 'shop':
         onShopClick();
         break;
-      case 'about':
-        onAboutClick?.();
+      case 'our-story':
+        onOurStoryClick?.();
         break;
       // Add other actions as needed
       default:
