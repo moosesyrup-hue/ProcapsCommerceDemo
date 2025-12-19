@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from './ui/Button';
+import { Leaf } from 'lucide-react';
 import svgPathsL from "../imports/svg-npcn6vymav";
 import svgPathsXl from "../imports/svg-ovhudlxac5";
 import svgPathsHd from "../imports/svg-sng3ceu5u2";
@@ -7,9 +8,14 @@ import VitaminSpecialist from './VitaminSpecialistSection';
 import PhactSection from './PhactSection';
 import ProcapsDifferenceSection from './ProcapsDifferenceSection';
 import TickerTape from './TickerTape';
+import Slider from 'react-slick';
 import imgBanner from "figma:asset/be6b296809b899ffe49a39b24634e1a5d4abb146.png";
 import imgBannerMobile from "figma:asset/75fc2edc3d254e5f5f699438d8eaeb81a1ab5fd7.png";
 import imgBannerTablet from "figma:asset/84ce49373bbc690f8c23b2d25b68fd6aedbf8176.png";
+import imgPhactBanner from "figma:asset/5a5f96028d316f191aab6e45927bd4f65654ab16.png";
+import imgPhactBannerMobile from "figma:asset/d200b64011991f9d4d5cd6c122ce6fd49a8847bd.png";
+import imgVitaminsBanner from "figma:asset/c8d66f8a00fa97643f42ab2afa1531d42d26e4fb.png";
+import imgChocolateBanner from "figma:asset/206eaec0d4c50016e5ef2fb0ef60d883b8f31d16.png";
 import imgModule from "figma:asset/4c2934de3dbf27b37b800c210c506dfc23cea7d9.png";
 import imgModule1 from "figma:asset/bb079113e4e52e6f124be3a8b4815c8ab2dbad6d.png";
 import imgImage from "figma:asset/2af175d1ace132d63709b5990887874d1e9098a5.png";
@@ -108,7 +114,7 @@ function FiveStarRating({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: B
   );
 }
 
-// Banner headline with responsive text
+// Banner headline with responsive text - Slide 1 (Supplements)
 function BannerHeadline({ breakpoint }: { breakpoint: Breakpoint }) {
   const typography = getBannerTypography(breakpoint);
   const isMobile = breakpoint === 'S';
@@ -136,30 +142,134 @@ function BannerHeadline({ breakpoint }: { breakpoint: Breakpoint }) {
   );
 }
 
-// Reusable CTA button
-function BannerButton({ onClick }: { onClick?: () => void }) {
-  return <Button variant="primary" onClick={onClick}>Our Story</Button>;
-}
-
-// Carousel navigation dots
-function CarouselDots({ breakpoint }: { breakpoint: Breakpoint }) {
-  const spacing = getBannerSpacing(breakpoint);
+// Banner headline for Slide 2 (pHact Soap)
+function PhactBannerHeadline({ breakpoint }: { breakpoint: Breakpoint }) {
+  const typography = getBannerTypography(breakpoint);
+  const isMobile = breakpoint === 'S';
+  const nowrapClasses = isMobile ? '' : 'text-nowrap whitespace-pre';
+  const textAlign = isMobile ? 'text-center items-center' : 'text-left items-start';
+  const subTextSize = isMobile ? 'text-[16px]' : (breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]');
 
   return (
-    <div className={`absolute ${spacing.dotsBottom} h-[13px] ${spacing.dotsLeft} w-[59px]`} data-name="carousel dots">
-      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 59 13">
-        <g id="carousel dots">
-          <circle cx="6.5" cy="6.5" fill="var(--fill-0, #003B3C)" r="6.5" />
-          <circle cx="29.5" cy="6.5" r="6" stroke="var(--stroke-0, #003B3C)" />
-          <circle cx="52.5" cy="6.5" r="6" stroke="var(--stroke-0, #003B3C)" />
-        </g>
-      </svg>
+    <div className={`content-stretch flex flex-col gap-[20px] relative shrink-0 text-[#003b3c] ${textAlign} ${nowrapClasses} w-full`}>
+      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[0px] ${typography.headlineSize} ${typography.headlineTracking}`}>
+        <span>
+          The cleansing bar{isMobile ? ' ' : ''}
+          {!isMobile && <br aria-hidden="true" />}
+          {`that `}
+        </span>
+        <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">
+          redefines
+        </span>
+        <span>{` clean!`}</span>
+      </p>
+      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 ${subTextSize}`}>
+        Say hello to Hint of Cucumber.
+      </p>
     </div>
   );
 }
 
-// Banner content overlay (reviews, headline, button)
-function BannerContent({ breakpoint, onOurStoryClick }: { breakpoint: Breakpoint; onOurStoryClick?: () => void }) {
+// Banner headline for Slide 3 (Chocolate)
+function ChocolateBannerHeadline({ breakpoint }: { breakpoint: Breakpoint }) {
+  const typography = getBannerTypography(breakpoint);
+  const isMobile = breakpoint === 'S';;
+  const nowrapClasses = isMobile ? '' : 'text-nowrap whitespace-pre';
+  const textAlign = isMobile ? 'text-center items-center' : 'text-left items-start';
+  const subTextSize = isMobile ? 'text-[16px]' : (breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]');
+
+  return (
+    <div className={`content-stretch flex flex-col gap-[20px] relative shrink-0 text-[#003b3c] ${textAlign} ${nowrapClasses} w-full`}>
+      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[0px] ${typography.headlineSize} ${typography.headlineTracking}`}>
+        <span>
+          The healthiest way to{isMobile ? ' ' : ''}
+          {!isMobile && <br aria-hidden="true" />}
+        </span>
+        <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">
+          indulge
+        </span>
+        <span>{` this season!`}</span>
+      </p>
+      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 ${subTextSize}`}>
+        The world's best dark chocolate—also the healthiest.
+      </p>
+    </div>
+  );
+}
+
+// Reusable CTA button - modified to accept text
+function BannerButton({ onClick, children = "Our Story" }: { onClick?: () => void; children?: string }) {
+  return <Button variant="primary" onClick={onClick}>{children}</Button>;
+}
+
+// Carousel navigation dots - now functional
+function CarouselDots({ breakpoint, currentSlide, totalSlides, onDotClick }: { 
+  breakpoint: Breakpoint; 
+  currentSlide: number; 
+  totalSlides: number; 
+  onDotClick: (index: number) => void;
+}) {
+  const spacing = getBannerSpacing(breakpoint);
+
+  return (
+    <div className={`absolute ${spacing.dotsBottom} flex gap-[11px] ${spacing.dotsLeft} z-10`} data-name="carousel dots">
+      {Array.from({ length: totalSlides }).map((_, index) => (
+        <button
+          key={index}
+          onClick={() => onDotClick(index)}
+          aria-label={`Go to slide ${index + 1}`}
+          className="w-[13px] h-[13px] p-0 bg-transparent border-0 cursor-pointer"
+        >
+          {index === currentSlide ? (
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <circle cx="6.5" cy="6.5" r="6.5" fill="#003B3C" />
+            </svg>
+          ) : (
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <circle cx="6.5" cy="6.5" r="6" stroke="#003B3C" strokeWidth="1" />
+            </svg>
+          )}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// Small circular NEW badge for pHact banner
+function NewBadge({ breakpoint }: { breakpoint: Breakpoint }) {
+  const isMobile = breakpoint === 'S';
+  const size = isMobile ? 'w-[60px] h-[60px]' : 'w-[80px] h-[80px]';
+  const fontSize = isMobile ? 'text-[13px]' : 'text-[15px]';
+  
+  return (
+    <div className={`${size} rounded-full border-2 border-[#009296] bg-white flex items-center justify-center`}>
+      <p className={`font-['Inter:SemiBold',sans-serif] font-semibold leading-[1] text-[#009296] ${fontSize} tracking-[1px]`}>
+        NEW
+      </p>
+    </div>
+  );
+}
+
+// Monthly Special badge for chocolate banner
+function MonthlySpecialBadge({ breakpoint }: { breakpoint: Breakpoint }) {
+  const isMobile = breakpoint === 'S';
+  const size = isMobile ? 'w-[140px] h-[140px]' : 'w-[160px] h-[160px]';
+  const fontSize = isMobile ? 'text-[18px]' : 'text-[20px]';
+  
+  return (
+    <div className={`${size} rounded-full border-2 border-[#009296] bg-white flex flex-col items-center justify-center gap-[2px]`}>
+      <p className={`font-['Inter:SemiBold',sans-serif] font-semibold leading-[1] text-[#009296] ${fontSize} tracking-[1px]`}>
+        MONTHLY
+      </p>
+      <p className={`font-['Inter:SemiBold',sans-serif] font-semibold leading-[1] text-[#009296] ${fontSize} tracking-[1px]`}>
+        SPECIAL
+      </p>
+    </div>
+  );
+}
+
+// Banner content overlay for Slide 1 - Supplements
+function BannerContent1({ breakpoint, onOurStoryClick, isActive }: { breakpoint: Breakpoint; onOurStoryClick?: () => void; isActive: boolean }) {
   const spacing = getBannerSpacing(breakpoint);
   const isMobile = breakpoint === 'S';
   // +5px offset to optically center content on desktop (accounts for visual weight)
@@ -167,27 +277,209 @@ function BannerContent({ breakpoint, onOurStoryClick }: { breakpoint: Breakpoint
 
   return (
     <div className={`absolute content-stretch flex flex-col gap-[30px] items-center ${horizontalPos} ${spacing.contentTop} ${spacing.contentWidth} pointer-events-none`}>
-      <FiveStarRating svgPaths={svgPathsL} breakpoint={breakpoint} />
-      <BannerHeadline breakpoint={breakpoint} />
-      <div className="pointer-events-auto">
-        <BannerButton onClick={onOurStoryClick} />
+      <div className={isActive ? 'banner-animate-1' : 'opacity-0'}>
+        <FiveStarRating svgPaths={svgPathsL} breakpoint={breakpoint} />
+      </div>
+      <div className={isActive ? 'banner-animate-2' : 'opacity-0'}>
+        <BannerHeadline breakpoint={breakpoint} />
+      </div>
+      <div className={`${isActive ? 'banner-animate-3' : 'opacity-0'} pointer-events-auto`}>
+        <BannerButton onClick={onOurStoryClick}>Our Story</BannerButton>
       </div>
     </div>
   );
 }
 
-function Banner({ breakpoint, svgPaths, onOurStoryClick }: { breakpoint: Breakpoint; svgPaths: any; onOurStoryClick?: () => void }) {
-  const bannerImage = breakpoint === 'S' ? imgBannerMobile : breakpoint === 'M' ? imgBannerTablet : imgBanner;
+// Banner content overlay for Slide 2 - pHact Soap
+function BannerContent2({ breakpoint, isActive }: { breakpoint: Breakpoint; isActive: boolean }) {
+  const spacing = getBannerSpacing(breakpoint);
+  const isMobile = breakpoint === 'S';
+  
+  // Mobile: centered and top-aligned like vitamins banner
+  if (isMobile) {
+    return (
+      <div className={`absolute content-stretch flex flex-col gap-[30px] items-center left-0 translate-x-0 ${spacing.contentTop} ${spacing.contentWidth} pointer-events-none`}>
+        <div className={isActive ? 'banner-animate-2' : 'opacity-0'}>
+          <PhactBannerHeadline breakpoint={breakpoint} />
+        </div>
+        <div className={`${isActive ? 'banner-animate-3' : 'opacity-0'} pointer-events-auto`}>
+          <BannerButton>SHOP NOW</BannerButton>
+        </div>
+      </div>
+    );
+  }
+  
+  // Desktop/Tablet: left-aligned and vertically centered
+  return (
+    <div className={`absolute content-stretch flex flex-col gap-[30px] items-start left-0 top-1/2 -translate-y-1/2 pl-[40px] pointer-events-none`}>
+      <div className={isActive ? 'banner-animate-2' : 'opacity-0'}>
+        <PhactBannerHeadline breakpoint={breakpoint} />
+      </div>
+      <div className={`${isActive ? 'banner-animate-3' : 'opacity-0'} pointer-events-auto`}>
+        <BannerButton>SHOP NOW</BannerButton>
+      </div>
+    </div>
+  );
+}
+
+// Banner content overlay for Slide 3 - Chocolate
+function BannerContent3({ breakpoint, isActive }: { breakpoint: Breakpoint; isActive: boolean }) {
+  const spacing = getBannerSpacing(breakpoint);
+  const isMobile = breakpoint === 'S';
+  const benefitSize = breakpoint === 'HD' ? 'text-[20px]' : 'text-[16px]';
+  const benefitTracking = breakpoint === 'HD' ? 'tracking-[-0.2px]' : 'tracking-[-0.16px]';
+  const badgePosition = isMobile ? 'top-[25%] right-[15%]' : 'top-[32%] right-[8%]';
+  
+  // Mobile: centered and top-aligned like vitamins banner
+  if (isMobile) {
+    return (
+      <>
+        {/* Monthly Special Badge - top right */}
+        <div className={`absolute ${badgePosition} pointer-events-none z-10`}>
+          <div className={isActive ? 'banner-animate-1' : 'opacity-0'}>
+            <MonthlySpecialBadge breakpoint={breakpoint} />
+          </div>
+        </div>
+        
+        <div className={`absolute content-stretch flex flex-col gap-[30px] items-center left-0 translate-x-0 ${spacing.contentTop} ${spacing.contentWidth} pointer-events-none`}>
+          <div className={isActive ? 'banner-animate-2' : 'opacity-0'}>
+            <ChocolateBannerHeadline breakpoint={breakpoint} />
+          </div>
+          <div className={`${isActive ? 'banner-animate-3' : 'opacity-0'} pointer-events-auto`}>
+            <BannerButton>SHOP NOW</BannerButton>
+          </div>
+        </div>
+        {/* Benefits below image on right - mobile centered at bottom */}
+        <div className={`absolute bottom-[40px] left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none`}>
+          <div className={isActive ? 'banner-animate-4' : 'opacity-0'}>
+            <div className={`flex items-center gap-[10px] text-[#009296] font-['Inter:Regular',sans-serif] font-normal leading-[1.4] ${benefitSize} ${benefitTracking}`}>
+              <Leaf className="w-[18px] h-[18px] text-[#009296] shrink-0" strokeWidth={2.5} />
+              <span>Heart-healthy plant sterols in a delicious dark chocolate.</span>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+  
+  // Desktop/Tablet: left-aligned and vertically centered
+  return (
+    <>
+      {/* Monthly Special Badge - top right */}
+      <div className={`absolute ${badgePosition} pointer-events-none z-10`}>
+        <div className={isActive ? 'banner-animate-1' : 'opacity-0'}>
+          <MonthlySpecialBadge breakpoint={breakpoint} />
+        </div>
+      </div>
+      
+      <div className={`absolute content-stretch flex flex-col gap-[30px] items-start left-0 top-1/2 -translate-y-1/2 pl-[40px] pointer-events-none`}>
+        <div className={isActive ? 'banner-animate-2' : 'opacity-0'}>
+          <ChocolateBannerHeadline breakpoint={breakpoint} />
+        </div>
+        <div className={`${isActive ? 'banner-animate-3' : 'opacity-0'} pointer-events-auto`}>
+          <BannerButton>SHOP NOW</BannerButton>
+        </div>
+      </div>
+      {/* Benefits below product collage on right - centered */}
+      <div className={`absolute bottom-[60px] right-[15%] flex items-center pointer-events-none`}>
+        <div className={isActive ? 'banner-animate-4' : 'opacity-0'}>
+          <div className={`flex items-center gap-[10px] text-[#009296] font-['Inter:Regular',sans-serif] font-normal leading-[1.4] ${benefitSize} ${benefitTracking}`}>
+            <Leaf className="w-[18px] h-[18px] text-[#009296] shrink-0" strokeWidth={2.5} />
+            <span>Heart-healthy plant sterols in a delicious dark chocolate.</span>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// Subtle snow animation - only animates when active
+function SnowAnimation({ isActive }: { isActive: boolean }) {
+  if (!isActive) return null;
+  
+  // Create 80 snowflakes with varying sizes, positions, and animation durations
+  const snowflakes = Array.from({ length: 80 }, (_, i) => ({
+    id: i,
+    left: `${Math.random() * 100}%`,
+    size: 3 + Math.random() * 7, // 3-10px
+    duration: 6 + Math.random() * 9, // 6-15 seconds
+    delay: Math.random() * 8, // 0-8 seconds
+    drift: -30 + Math.random() * 60, // -30px to 30px horizontal drift
+    blur: 1 + Math.random() * 2, // 1-3px blur for soft edges
+  }));
+
+  return (
+    <>
+      <style>{`
+        ${snowflakes.map((flake) => `
+          @keyframes snowfall-${flake.id} {
+            0% {
+              transform: translateY(-10px) translateX(0px);
+              opacity: 0;
+            }
+            10% {
+              opacity: 0.85;
+            }
+            90% {
+              opacity: 0.85;
+            }
+            100% {
+              transform: translateY(100vh) translateX(${flake.drift}px);
+              opacity: 0;
+            }
+          }
+        `).join('\n')}
+      `}</style>
+      <div 
+        className="absolute inset-0 pointer-events-none overflow-hidden" 
+        style={{ 
+          clipPath: 'polygon(0 0, 100% 0, 100% 55%, 0 55%)', // Clip to top 55% (blue sky area)
+        }}
+      >
+        {snowflakes.map((flake) => (
+          <div
+            key={flake.id}
+            className="absolute rounded-full bg-white"
+            style={{
+              left: flake.left,
+              top: '-10px',
+              width: `${flake.size}px`,
+              height: `${flake.size}px`,
+              filter: `blur(${flake.blur}px)`,
+              opacity: 0.85,
+              animationName: `snowfall-${flake.id}`,
+              animationDuration: `${flake.duration}s`,
+              animationTimingFunction: 'linear',
+              animationDelay: `${flake.delay}s`,
+              animationIterationCount: 'infinite',
+            }}
+          />
+        ))}
+      </div>
+    </>
+  );
+}
+
+// Single slide component
+function BannerSlide({ 
+  image, 
+  content, 
+  breakpoint,
+  showSnow = false
+}: { 
+  image: string; 
+  content: React.ReactNode; 
+  breakpoint: Breakpoint;
+  showSnow?: boolean;
+}) {
   const isMobileOrTablet = breakpoint === 'S' || breakpoint === 'M';
   
   if (isMobileOrTablet) {
-    // Mobile and tablet: Show full image without cropping
     return (
-      <div className="relative shrink-0 w-full" data-name="banner">
-        <img alt="" className="w-full h-auto block" src={bannerImage} />
+      <div className="relative shrink-0 w-full" data-name="banner-slide">
+        <img alt="" className="w-full h-auto block" src={image} />
         <div className="absolute inset-0 pointer-events-none">
-          {breakpoint !== 'S' && <CarouselDots breakpoint={breakpoint} />}
-          <BannerContent breakpoint={breakpoint} onOurStoryClick={onOurStoryClick} />
+          {content}
         </div>
       </div>
     );
@@ -195,10 +487,78 @@ function Banner({ breakpoint, svgPaths, onOurStoryClick }: { breakpoint: Breakpo
   
   // Desktop: Use proportional height approach
   return (
-    <div className="relative shrink-0 w-full h-[47.5vw] max-h-[900px]" data-name="banner">
-      <img alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" src={bannerImage} />
-      <CarouselDots breakpoint={breakpoint} />
-      <BannerContent breakpoint={breakpoint} onOurStoryClick={onOurStoryClick} />
+    <div className="relative shrink-0 w-full h-[43.06vw]" data-name="banner-slide">
+      <img alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" src={image} />
+      {showSnow && <SnowAnimation isActive={true} />}
+      {content}
+    </div>
+  );
+}
+
+function Banner({ breakpoint, svgPaths, onOurStoryClick }: { breakpoint: Breakpoint; svgPaths: any; onOurStoryClick?: () => void }) {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  let sliderRef: Slider | null = null;
+  
+  // Image selection based on breakpoint
+  const vitaminsImage = breakpoint === 'S' ? imgBannerMobile : breakpoint === 'M' ? imgBannerTablet : imgVitaminsBanner;
+  const soapImage = breakpoint === 'S' ? imgPhactBannerMobile : breakpoint === 'M' ? imgBannerTablet : imgPhactBanner;
+  const chocolateImage = breakpoint === 'S' ? imgBannerMobile : breakpoint === 'M' ? imgBannerTablet : imgChocolateBanner;
+  
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 800,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: false,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    fade: true,
+    cssEase: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    beforeChange: (_current: number, next: number) => setCurrentSlide(next),
+  };
+  
+  const handleDotClick = (index: number) => {
+    if (sliderRef) {
+      sliderRef.slickGoTo(index);
+    }
+  };
+  
+  return (
+    <div className="relative w-full" data-name="banner">
+      <Slider ref={(slider) => { sliderRef = slider; }} {...settings}>
+        {/* Slide 1: Supplements */}
+        <BannerSlide
+          image={vitaminsImage}
+          breakpoint={breakpoint}
+          content={<BannerContent1 breakpoint={breakpoint} onOurStoryClick={onOurStoryClick} isActive={currentSlide === 0} />}
+        />
+        
+        {/* Slide 2: Chocolate */}
+        <BannerSlide
+          image={chocolateImage}
+          breakpoint={breakpoint}
+          content={<BannerContent3 breakpoint={breakpoint} isActive={currentSlide === 1} />}
+          showSnow={true}
+        />
+        
+        {/* Slide 3: pHact Soap */}
+        <BannerSlide
+          image={soapImage}
+          breakpoint={breakpoint}
+          content={<BannerContent2 breakpoint={breakpoint} isActive={currentSlide === 2} />}
+        />
+      </Slider>
+      
+      {/* Carousel dots - only show on M breakpoint and above */}
+      {breakpoint !== 'S' && (
+        <CarouselDots
+          breakpoint={breakpoint}
+          currentSlide={currentSlide}
+          totalSlides={3}
+          onDotClick={handleDotClick}
+        />
+      )}
     </div>
   );
 }
@@ -449,7 +809,9 @@ function CopyGroup1({ breakpoint }: { breakpoint: Breakpoint }) {
           <br aria-hidden="true" />
           {`to an `}
         </span>
-        <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">informed</span>
+        <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">
+          informed
+        </span>
         <span>{` choice.`}</span>
       </p>
       <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 ${subTextSize} ${subTextTracking} w-full`}>Start by selecting an area to explore and discover more about our products and their benefits.</p>

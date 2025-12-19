@@ -405,48 +405,118 @@ html {
   scrollbar-width: none;
 }
 
-/* Fade in animation for megamenu content switching */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+/* React Slick Carousel Styles */
+.slick-slider {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  user-select: none;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.animate-fadeIn {
-  animation: fadeIn 0.2s ease-in;
+.slick-list {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 
-/* Slide up animation for modals */
-@keyframes slideUp {
-  from {
+.slick-list:focus {
+  outline: none;
+}
+
+.slick-list.dragging {
+  cursor: pointer;
+  cursor: hand;
+}
+
+.slick-slider .slick-track,
+.slick-slider .slick-list {
+  transform: translate3d(0, 0, 0);
+}
+
+.slick-track {
+  position: relative;
+  top: 0;
+  left: 0;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.slick-track:before,
+.slick-track:after {
+  display: table;
+  content: '';
+}
+
+.slick-track:after {
+  clear: both;
+}
+
+.slick-loading .slick-track {
+  visibility: hidden;
+}
+
+.slick-slide {
+  display: none;
+  float: left;
+  height: 100%;
+  min-height: 1px;
+}
+
+.slick-slide img {
+  display: block;
+}
+
+.slick-slide.slick-loading img {
+  display: none;
+}
+
+.slick-slide.dragging img {
+  pointer-events: none;
+}
+
+.slick-initialized .slick-slide {
+  display: block;
+}
+
+.slick-loading .slick-slide {
+  visibility: hidden;
+}
+
+.slick-vertical .slick-slide {
+  display: block;
+  height: auto;
+  border: 1px solid transparent;
+}
+
+/* Banner Carousel Animations */
+@keyframes bannerFadeUp {
+  0% {
     opacity: 0;
     transform: translateY(20px);
   }
-  to {
+  100% {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.animate-slideUp {
-  animation: slideUp 0.3s ease-out;
+.banner-animate-1 {
+  animation: bannerFadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
 }
 
-/* Slide in animation for undo banner */
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.banner-animate-2 {
+  animation: bannerFadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.25s both;
 }
 
-.animate-slideIn {
-  animation: slideIn 0.3s ease-out;
+.banner-animate-3 {
+  animation: bannerFadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both;
+}
+
+.banner-animate-4 {
+  animation: bannerFadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.55s both;
 }

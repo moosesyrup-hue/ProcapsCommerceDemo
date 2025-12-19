@@ -239,8 +239,8 @@ function TwoColumnSection({
 // ============================================================================
 
 function HeroCopy({ breakpoint }: { breakpoint: Breakpoint }) {
-  // Headline font size: 44px on S, 72px on M+
-  const headlineFontSize = breakpoint === 'S' ? 'text-[44px]' : 'text-[72px] md:text-[72px] lg:text-[120px]';
+  // Headline font size: 48px on S, 72px on M+
+  const headlineFontSize = breakpoint === 'S' ? 'text-[48px]' : 'text-[72px] md:text-[72px] lg:text-[120px]';
   const headlineTracking = breakpoint === 'S' ? 'tracking-[-0.76px]' : 'tracking-[-2.4px] md:tracking-[-1.44px] lg:tracking-[-2.4px]';
   const headlineHeight = breakpoint === 'S' ? 'h-auto' : 'h-[233px] md:h-[140px] lg:h-[233px]';
   
@@ -408,58 +408,6 @@ function LargePillImage() {
             ease: "easeInOut",
           }}
         />
-
-        {/* Floating particles */}
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-[6px] h-[6px] rounded-full"
-            style={{
-              background: 'radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 215, 0, 0.6) 100%)',
-              left: `${20 + (i * 10)}%`,
-              top: `80%`,
-              filter: 'blur(1px)',
-            }}
-            animate={{
-              x: [0, Math.sin(i) * 20, 0],
-              y: [0, -100 - (i * 8), -200],
-              opacity: [0, 0.8, 0],
-              scale: [0.5, 1.2, 0.5],
-            }}
-            transition={{
-              duration: 3 + (i * 0.3),
-              repeat: Infinity,
-              delay: i * 0.4,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-        
-        {/* Additional smaller particles for depth */}
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={`small-${i}`}
-            className="absolute w-[3px] h-[3px] rounded-full"
-            style={{
-              background: 'radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 230, 100, 0.7) 100%)',
-              left: `${30 + (i * 12)}%`,
-              top: `85%`,
-              filter: 'blur(0.5px)',
-            }}
-            animate={{
-              x: [0, Math.cos(i) * 15, 0],
-              y: [0, -80 - (i * 6), -160],
-              opacity: [0, 0.9, 0],
-              scale: [0.3, 1, 0.3],
-            }}
-            transition={{
-              duration: 3.5 + (i * 0.4),
-              repeat: Infinity,
-              delay: i * 0.5 + 1.5,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
       </div>
     </motion.div>
   );
