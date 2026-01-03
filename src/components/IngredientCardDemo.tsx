@@ -138,12 +138,12 @@ export function IngredientCardDemo() {
                 {/* Evidence Badge */}
                 <div className="absolute top-3 right-3">
                   {ingredient.evidence === 'gold' && (
-                    <div className="px-2 py-1 rounded-full bg-[#ffd700] text-white text-[10px] font-bold shadow-lg flex items-center gap-1">
+                    <div className="px-2 py-1 rounded-full bg-[#ffd700] text-white text-tiny font-bold shadow-lg flex items-center gap-1">
                       <span>🥇</span> Gold
                     </div>
                   )}
                   {ingredient.evidence === 'silver' && (
-                    <div className="px-2 py-1 rounded-full bg-[#c0c0c0] text-white text-[10px] font-bold shadow-lg flex items-center gap-1">
+                    <div className="px-2 py-1 rounded-full bg-[#c0c0c0] text-white text-tiny font-bold shadow-lg flex items-center gap-1">
                       <span>🥈</span> Silver
                     </div>
                   )}
@@ -151,7 +151,7 @@ export function IngredientCardDemo() {
 
                 {/* Name Overlay */}
                 <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <h3 className="font-['Inter',sans-serif] font-bold text-[17px] text-white drop-shadow-lg">
+                  <h3 className="font-['Inter',sans-serif] font-bold text-base text-white drop-shadow-lg">
                     {ingredient.name}
                   </h3>
                 </div>
@@ -171,7 +171,7 @@ export function IngredientCardDemo() {
                   {ingredient.commonUses.map((use, j) => (
                     <span 
                       key={j} 
-                      className="px-2 py-1 rounded-[4px] bg-[#efe8de] font-['Inter',sans-serif] text-[10px] text-[#003b3c]"
+                      className="px-2 py-1 rounded-[4px] bg-[#efe8de] font-['Inter',sans-serif] text-tiny text-[#003b3c]"
                     >
                       {use}
                     </span>
@@ -179,13 +179,13 @@ export function IngredientCardDemo() {
                 </div>
 
                 {/* Image Note */}
-                <p className="text-[10px] text-[#003b3c]/50 font-['Inter',sans-serif] mb-3 line-clamp-2 min-h-[32px]">
+                <p className="text-tiny text-[#003b3c]/50 font-['Inter',sans-serif] mb-3 line-clamp-2 min-h-[32px]">
                   💡 {ingredient.notes}
                 </p>
 
                 {/* CTA */}
                 <div className="pt-3 border-t border-[#003b3c]/10">
-                  <span className="font-['Inter',sans-serif] text-[12px] text-[#009296] group-hover:underline flex items-center gap-1 font-medium">
+                  <span className="font-['Inter',sans-serif] text-xs text-[#009296] group-hover:underline flex items-center gap-1 font-medium">
                     View products <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                   </span>
                 </div>

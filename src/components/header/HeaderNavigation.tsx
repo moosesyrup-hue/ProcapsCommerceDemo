@@ -48,7 +48,7 @@ export default function HeaderNavigation({
               isShop && isMegaMenuOpen 
                 ? 'after:absolute after:bottom-[-4px] after:left-0 after:right-0 after:h-[2px] after:bg-white' 
                 : 'transition-opacity'
-            }`}
+            } ${isClickable ? 'font-medium' : ''}`}
             onMouseEnter={() => handleNavHover(item)}
             onClick={isClickable ? () => handleNavClick(item) : undefined}
           >

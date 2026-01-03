@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import Homepage from './components/Homepage';
 import CheckoutPage from './components/CheckoutPage';
+import CartPage from './components/CartPage';
 import OrderConfirmationPage from './components/OrderConfirmationPage';
 import FindMySupplementsPage from './components/FindMySupplementsPage';
 import CollectionPage from './components/CollectionPage';
+import ProductDetailPage from './components/ProductDetailPage';
 import FAQPage from './components/FAQPage';
 import PrivacyPolicyPage from './components/PrivacyPolicyPage';
 import TermsOfUsePage from './components/TermsOfUsePage';
@@ -24,9 +26,10 @@ import imgImage from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png";
 
 export default function App() {
   // Routing state
-  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'checkout' | 'order-confirmation' | 'find-supplements' | 'faq' | 'privacy-policy' | 'terms-of-use' | 'shipping-returns' | 'help' | 'ingredients' | 'ingredient-collection' | 'our-story' | 'account'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'product' | 'cart' | 'checkout' | 'order-confirmation' | 'find-supplements' | 'faq' | 'privacy-policy' | 'terms-of-use' | 'shipping-returns' | 'help' | 'ingredients' | 'ingredient-collection' | 'our-story' | 'account'>('home');
   const [selectedCategory, setSelectedCategory] = useState<string>('digestive-health');
   const [selectedIngredient, setSelectedIngredient] = useState<string>('Vitamin C');
+  const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [accountTab, setAccountTab] = useState<'overview' | 'orders' | 'profile' | 'autoship' | 'favorites'>('overview');
   
   // UI state
@@ -60,12 +63,18 @@ export default function App() {
     totals: any;
     items: Array<{
       id: string;
+      productId?: string;
       name: string;
       count: string;
       price: number;
       originalPrice?: number;
       quantity: number;
       image: string;
+      purchaseType?: 'one-time' | 'autoship' | 'flexpay';
+      deliveryFrequency?: number;
+      autoshipDiscount?: number;
+      flexPayInstallments?: number;
+      flexPayAmount?: number;
       frequency?: string;
     }>;
   } | null>(null);
@@ -73,34 +82,20 @@ export default function App() {
   // Cart state
   const [cartItems, setCartItems] = useState<Array<{
     id: string;
+    productId?: string;
     name: string;
     count: string;
     price: number;
     originalPrice?: number;
     quantity: number;
     image: string;
+    purchaseType?: 'one-time' | 'autoship' | 'flexpay';
+    deliveryFrequency?: number;
+    autoshipDiscount?: number;
+    flexPayInstallments?: number;
+    flexPayAmount?: number;
     frequency?: string;
-  }>>([ 
-    {
-      id: '1',
-      name: 'Fibermucil',
-      count: 'Count: 60 capsules',
-      price: 19.95,
-      originalPrice: 24.90,
-      quantity: 1,
-      image: imgImage
-    },
-    {
-      id: '2',
-      name: 'Ultimate Anti-Oxidant',
-      count: 'Count: 180 capsules',
-      price: 35.96,
-      originalPrice: 39.95,
-      quantity: 1,
-      image: imgImage,
-      frequency: 'Every 30 days'
-    }
-  ]);
+  }>>([]);
 
   // Navigation handlers
   const handleLogoClick = () => {
@@ -110,6 +105,12 @@ export default function App() {
   const handleSpecialsClick = () => {
     setSelectedCategory('specials');
     setCurrentPage('collection');
+  };
+
+  const handleCategoryClick = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    setCurrentPage('collection');
+    window.scrollTo(0, 0);
   };
 
   const handleCheckoutClick = () => {
@@ -172,7 +173,8 @@ export default function App() {
 
   const handleViewCart = () => {
     setCartOpen(false);
-    console.log('Navigate to full cart page');
+    setCurrentPage('cart');
+    window.scrollTo(0, 0);
   };
 
   const handleCheckout = () => {
@@ -277,6 +279,19 @@ export default function App() {
           handleOurStoryClick();
           setMobileMenuOpen(false);
         }}
+        isLoggedIn={isLoggedIn}
+        userData={userData}
+        onAccountClick={() => {
+          if (isLoggedIn) {
+            // Navigate to account dashboard
+            setAccountTab('overview');
+            setCurrentPage('account');
+            window.scrollTo(0, 0);
+          } else {
+            // Open account tray for sign in
+            setAccountTrayOpen(true);
+          }
+        }}
       />
 
       {/* Account Tray */}
@@ -305,6 +320,7 @@ export default function App() {
           onFindSupplementsClick={handleFindSupplementsClick}
           onIngredientsClick={handleIngredientsClick}
           onOurStoryClick={handleOurStoryClick}
+          onCategoryClick={handleCategoryClick}
         />
       ) : currentPage === 'collection' ? (
         <CollectionPage 
@@ -314,6 +330,23 @@ export default function App() {
           category={selectedCategory}
           onNavigateToCategory={(category) => {
             setSelectedCategory(category);
+            window.scrollTo(0, 0);
+          }}
+          onNavigateToProduct={(productId) => {
+            setSelectedProductId(productId);
+            setCurrentPage('product');
+            window.scrollTo(0, 0);
+          }}
+        />
+      ) : currentPage === 'product' ? (
+        <ProductDetailPage 
+          cartItems={cartItems}
+          setCartItems={setCartItems}
+          onOpenCart={() => setCartOpen(true)}
+          productId={selectedProductId}
+          onNavigateToCategory={(category) => {
+            setSelectedCategory(category);
+            setCurrentPage('collection');
             window.scrollTo(0, 0);
           }}
         />
@@ -346,6 +379,25 @@ export default function App() {
           onNavigateToCategory={(category) => {
             setSelectedCategory(category);
             setCurrentPage('collection');
+            window.scrollTo(0, 0);
+          }}
+        />
+      ) : currentPage === 'cart' ? (
+        <CartPage
+          cartItems={cartItems}
+          setCartItems={setCartItems}
+          onContinueShopping={() => {
+            setCurrentPage('collection');
+            window.scrollTo(0, 0);
+          }}
+          onProceedToCheckout={() => {
+            setCurrentPage('checkout');
+            window.scrollTo(0, 0);
+          }}
+          onEditItem={(productId) => {
+            // Navigate back to product detail page for editing
+            setSelectedProductId(productId);
+            setCurrentPage('product');
             window.scrollTo(0, 0);
           }}
         />

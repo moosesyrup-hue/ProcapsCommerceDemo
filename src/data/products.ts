@@ -3,6 +3,7 @@ export interface Product {
   id: string;
   name: string;
   description: string;
+  longDescription?: string; // Detailed product description for PDP
   price: number;
   salePrice?: number;
   image?: string;
@@ -35,6 +36,7 @@ export const products: Product[] = [
     id: 'sleep-support-mag',
     name: 'Sleep Support Formula',
     description: 'Magnesium Glycinate with L-Theanine and Glycine',
+    longDescription: 'A comprehensive sleep support formula combining highly bioavailable Magnesium Glycinate with synergistic L-Theanine and Glycine to naturally promote relaxation, support healthy sleep patterns, and help you wake refreshed. This gentle, non-habit forming formula works with your body\'s natural sleep mechanisms to support both falling asleep and staying asleep throughout the night.',
     price: 19.90,
     salePrice: 24.90,
     primaryCategory: 'Sleep & Relaxation',
@@ -273,6 +275,28 @@ export const products: Product[] = [
     formulation: 'Capsule',
     servingSize: '1 capsule',
     servingsPerContainer: 90,
+  },
+  {
+    id: 'fibermucil',
+    name: 'Fibermucil',
+    description: 'Natural Psyllium Fiber',
+    longDescription: 'A natural, encapsulated Psyllium Husk powder that contains no additives of any kind and provides an unparalleled natural source of both water-soluble fiber and bulk fiber to support a healthy digestive tract, as well as helping to support healthy blood cholesterol levels already in the normal range.',
+    price: 19.90,
+    salePrice: 14.90,
+    primaryCategory: 'Digestive Health',
+    bodyParts: ['GI Tract', 'Heart'],
+    bodySystems: ['Digestive', 'Cardiovascular'],
+    functions: [
+      { name: 'Digestion', evidence: 'gold' },
+      { name: 'Cholesterol Support', evidence: 'gold' },
+    ],
+    healthIssues: ['Digestive Health', 'Cholesterol'],
+    keyIngredients: ['Psyllium Husk'],
+    searchKeywords: ['fiber', 'psyllium', 'digestion', 'regularity', 'cholesterol', 'constipation'],
+    popularFor: ['digestive health', 'fiber', 'regularity', 'cholesterol support'],
+    formulation: 'Capsule',
+    servingSize: '5 capsules',
+    servingsPerContainer: 60,
   },
 
   // IMMUNE HEALTH

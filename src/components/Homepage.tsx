@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from './ui/Button';
-import { Leaf } from 'lucide-react';
+import { Leaf, Check } from 'lucide-react';
 import svgPathsL from "../imports/svg-npcn6vymav";
 import svgPathsXl from "../imports/svg-ovhudlxac5";
 import svgPathsHd from "../imports/svg-sng3ceu5u2";
@@ -16,6 +16,16 @@ import imgPhactBanner from "figma:asset/5a5f96028d316f191aab6e45927bd4f65654ab16
 import imgPhactBannerMobile from "figma:asset/d200b64011991f9d4d5cd6c122ce6fd49a8847bd.png";
 import imgVitaminsBanner from "figma:asset/c8d66f8a00fa97643f42ab2afa1531d42d26e4fb.png";
 import imgChocolateBanner from "figma:asset/206eaec0d4c50016e5ef2fb0ef60d883b8f31d16.png";
+import imgChocolateBannerMobile from "figma:asset/fde165d1920259e64f3feee84ace2aa76de0fb10.png";
+import imgSecureBanner from "figma:asset/bc0fb1459b829d0511fff53dd58163957f0b087d.png";
+import imgSecureBannerFrame from "figma:asset/f02fb39b988fbbc9d1b43dbaaf01bfc7d49a48ae.png";
+import imgSecureBannerCoconut from "figma:asset/ad3335c6a2281c7a5193c5575b34bf508794f240.png";
+import imgSecureBannerChocolate from "figma:asset/711cd4839a250bd5914a64839b158641184d0906.png";
+import imgSecureBannerPeanutButter from "figma:asset/25603b452c1be150f86bb15ca90c33c01c39a1e9.png";
+import imgSecureBannerMobileFrame from "figma:asset/69ce816a12d98857bcf36a4b8ae5fb0886eebce4.png";
+import imgSecureBannerMobileCoconut from "figma:asset/241abfa44ce3e91fc26a2aedc158e450ab73f8fb.png";
+import imgSecureBannerMobileChocolate from "figma:asset/0a9c72bd5282a739332bd87d6fc69f443f183dc3.png";
+import imgSecureBannerMobilePeanutButter from "figma:asset/e6406a5363b70a53311bcb63de55205548ec0811.png";
 import imgModule from "figma:asset/4c2934de3dbf27b37b800c210c506dfc23cea7d9.png";
 import imgModule1 from "figma:asset/bb079113e4e52e6f124be3a8b4815c8ab2dbad6d.png";
 import imgImage from "figma:asset/2af175d1ace132d63709b5990887874d1e9098a5.png";
@@ -27,10 +37,11 @@ import imgImage5 from "figma:asset/53da6d9ed35f82a7364b7a236e964b3d87a96086.png"
 
 type Breakpoint = 'S' | 'M' | 'L' | 'XL' | 'HD';
 
-export default function Homepage({ onFindSupplementsClick, onIngredientsClick, onOurStoryClick }: { 
+export default function Homepage({ onFindSupplementsClick, onIngredientsClick, onOurStoryClick, onCategoryClick }: { 
   onFindSupplementsClick?: () => void;
   onIngredientsClick?: () => void;
   onOurStoryClick?: () => void;
+  onCategoryClick?: (categoryId: string) => void;
 }) {
   const [breakpoint, setBreakpoint] = useState<Breakpoint>('XL');
 
@@ -64,6 +75,7 @@ export default function Homepage({ onFindSupplementsClick, onIngredientsClick, o
         breakpoint={breakpoint} 
         svgPaths={svgPaths} 
         onIngredientsClick={onIngredientsClick}
+        onCategoryClick={onCategoryClick}
       />
     </div>
   );
@@ -82,9 +94,9 @@ function getBannerSpacing(breakpoint: Breakpoint) {
 function getBannerTypography(breakpoint: Breakpoint) {
   const isDesktop = breakpoint === 'HD' || breakpoint === 'XL';
   return {
-    headlineSize: breakpoint === 'HD' ? 'text-[72px]' : breakpoint === 'XL' ? 'text-[54px]' : 'text-[38px]',
+    headlineSize: breakpoint === 'HD' ? 'text-7xl' : breakpoint === 'XL' ? 'text-6xl' : 'text-4xl',
     headlineTracking: breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : 'tracking-[-0.76px]',
-    subheadSize: isDesktop ? 'text-[20px]' : 'text-[16px]',
+    subheadSize: isDesktop ? 'text-[20px]' : 'text-base',
     starsHeight: breakpoint === 'S' ? 'h-[24px]' : 'h-[30px]',
     starsWidth: breakpoint === 'S' ? 'w-[131px]' : 'w-[164px]',
   };
@@ -107,7 +119,7 @@ function FiveStarRating({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: B
           </g>
         </svg>
       </div>
-      <p className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic leading-[1.4] relative shrink-0 text-[#003b3c] text-[20px] text-center text-nowrap whitespace-pre">
+      <p className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic leading-[1.4] relative shrink-0 text-[#003b3c] text-lg text-center text-nowrap whitespace-pre">
         50,000+ verified 5-star reviews
       </p>
     </div>
@@ -123,7 +135,7 @@ function BannerHeadline({ breakpoint }: { breakpoint: Breakpoint }) {
 
   return (
     <div className={`content-stretch flex flex-col gap-[20px] items-center relative shrink-0 text-[#003b3c] text-center ${nowrapClasses} w-full`}>
-      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[0px] ${typography.headlineSize} ${typography.headlineTracking}`}>
+      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 ${typography.headlineSize} ${typography.headlineTracking}`}>
         <span>
           The supplement brand{isMobile ? ' ' : ''}
           {!isMobile && <br aria-hidden="true" />}
@@ -148,11 +160,11 @@ function PhactBannerHeadline({ breakpoint }: { breakpoint: Breakpoint }) {
   const isMobile = breakpoint === 'S';
   const nowrapClasses = isMobile ? '' : 'text-nowrap whitespace-pre';
   const textAlign = isMobile ? 'text-center items-center' : 'text-left items-start';
-  const subTextSize = isMobile ? 'text-[16px]' : (breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]');
+  const subTextSize = isMobile ? 'text-base' : (breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-base');
 
   return (
     <div className={`content-stretch flex flex-col gap-[20px] relative shrink-0 text-[#003b3c] ${textAlign} ${nowrapClasses} w-full`}>
-      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[0px] ${typography.headlineSize} ${typography.headlineTracking}`}>
+      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 ${typography.headlineSize} ${typography.headlineTracking}`}>
         <span>
           The cleansing bar{isMobile ? ' ' : ''}
           {!isMobile && <br aria-hidden="true" />}
@@ -173,26 +185,67 @@ function PhactBannerHeadline({ breakpoint }: { breakpoint: Breakpoint }) {
 // Banner headline for Slide 3 (Chocolate)
 function ChocolateBannerHeadline({ breakpoint }: { breakpoint: Breakpoint }) {
   const typography = getBannerTypography(breakpoint);
-  const isMobile = breakpoint === 'S';;
+  const isMobile = breakpoint === 'S';
   const nowrapClasses = isMobile ? '' : 'text-nowrap whitespace-pre';
   const textAlign = isMobile ? 'text-center items-center' : 'text-left items-start';
-  const subTextSize = isMobile ? 'text-[16px]' : (breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]');
+  const subTextSize = isMobile ? 'text-base' : (breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-base');
+  const labelSize = isMobile ? 'text-[16px]' : 'text-xl';
 
   return (
-    <div className={`content-stretch flex flex-col gap-[20px] relative shrink-0 text-[#003b3c] ${textAlign} ${nowrapClasses} w-full`}>
-      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[0px] ${typography.headlineSize} ${typography.headlineTracking}`}>
-        <span>
-          The healthiest way to{isMobile ? ' ' : ''}
+    <div className={`content-stretch flex flex-col relative shrink-0 text-[#003b3c] ${textAlign} ${nowrapClasses} w-full`}>
+      {/* Monthly Special Label */}
+      <p className={`font-['Inter:Medium',sans-serif] font-medium leading-[1.2] text-[#009296] ${labelSize} tracking-[1px] uppercase mb-[30px]`}>
+        Monthly Special
+      </p>
+      
+      <div className="flex flex-col gap-[20px]">
+        <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 ${typography.headlineSize} ${typography.headlineTracking}`}>
+          <span>
+            The healthiest way to{isMobile ? ' ' : ''}
+            {!isMobile && <br aria-hidden="true" />}
+          </span>
+          <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">
+            indulge
+          </span>
+          <span>{` this season!`}</span>
+        </p>
+        <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 ${subTextSize}`}>
+          The world's best dark chocolate—also the healthiest.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// Banner headline for Slide 4 (Secure Bar)
+function SecureBannerHeadline({ breakpoint }: { breakpoint: Breakpoint }) {
+  const typography = getBannerTypography(breakpoint);
+  const isMobile = breakpoint === 'S';
+  const nowrapClasses = isMobile ? '' : 'text-nowrap whitespace-pre';
+  const textAlign = isMobile ? 'text-center items-center' : 'text-left items-start';
+  const subTextSize = isMobile ? 'text-base' : (breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-base');
+  const labelSize = isMobile ? 'text-[16px]' : 'text-xl';
+
+  return (
+    <div className={`content-stretch flex flex-col relative shrink-0 text-[#003b3c] ${textAlign} ${nowrapClasses} w-full`}>
+      {/* Monthly Special Label */}
+      <p className={`font-['Inter:Medium',sans-serif] font-medium leading-[1.2] text-[#009296] ${labelSize} tracking-[1px] uppercase mb-[30px]`}>
+        Monthly Special
+      </p>
+      
+      <div className="flex flex-col gap-[20px]">
+        <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 ${typography.headlineSize} ${typography.headlineTracking}`}>
+          <span>Who said </span>
+          <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">
+            healthy
+          </span>
           {!isMobile && <br aria-hidden="true" />}
-        </span>
-        <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">
-          indulge
-        </span>
-        <span>{` this season!`}</span>
-      </p>
-      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 ${subTextSize}`}>
-        The world's best dark chocolate—also the healthiest.
-      </p>
+          <span>{isMobile ? " can't be delicious." : "can't be delicious."}</span>
+        </p>
+        <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 ${subTextSize}`}>
+          Secure completely reinvents the category.
+        </p>
+      </div>
     </div>
   );
 }
@@ -239,7 +292,7 @@ function CarouselDots({ breakpoint, currentSlide, totalSlides, onDotClick }: {
 function NewBadge({ breakpoint }: { breakpoint: Breakpoint }) {
   const isMobile = breakpoint === 'S';
   const size = isMobile ? 'w-[60px] h-[60px]' : 'w-[80px] h-[80px]';
-  const fontSize = isMobile ? 'text-[13px]' : 'text-[15px]';
+  const fontSize = isMobile ? 'text-sm' : 'text-base';
   
   return (
     <div className={`${size} rounded-full border-2 border-[#009296] bg-white flex items-center justify-center`}>
@@ -254,7 +307,7 @@ function NewBadge({ breakpoint }: { breakpoint: Breakpoint }) {
 function MonthlySpecialBadge({ breakpoint }: { breakpoint: Breakpoint }) {
   const isMobile = breakpoint === 'S';
   const size = isMobile ? 'w-[140px] h-[140px]' : 'w-[160px] h-[160px]';
-  const fontSize = isMobile ? 'text-[18px]' : 'text-[20px]';
+  const fontSize = isMobile ? 'text-lg' : 'text-lg';
   
   return (
     <div className={`${size} rounded-full border-2 border-[#009296] bg-white flex flex-col items-center justify-center gap-[2px]`}>
@@ -326,53 +379,13 @@ function BannerContent2({ breakpoint, isActive }: { breakpoint: Breakpoint; isAc
 function BannerContent3({ breakpoint, isActive }: { breakpoint: Breakpoint; isActive: boolean }) {
   const spacing = getBannerSpacing(breakpoint);
   const isMobile = breakpoint === 'S';
-  const benefitSize = breakpoint === 'HD' ? 'text-[20px]' : 'text-[16px]';
+  const benefitSize = breakpoint === 'HD' ? 'text-lg' : 'text-base';
   const benefitTracking = breakpoint === 'HD' ? 'tracking-[-0.2px]' : 'tracking-[-0.16px]';
-  const badgePosition = isMobile ? 'top-[25%] right-[15%]' : 'top-[32%] right-[8%]';
   
   // Mobile: centered and top-aligned like vitamins banner
   if (isMobile) {
     return (
-      <>
-        {/* Monthly Special Badge - top right */}
-        <div className={`absolute ${badgePosition} pointer-events-none z-10`}>
-          <div className={isActive ? 'banner-animate-1' : 'opacity-0'}>
-            <MonthlySpecialBadge breakpoint={breakpoint} />
-          </div>
-        </div>
-        
-        <div className={`absolute content-stretch flex flex-col gap-[30px] items-center left-0 translate-x-0 ${spacing.contentTop} ${spacing.contentWidth} pointer-events-none`}>
-          <div className={isActive ? 'banner-animate-2' : 'opacity-0'}>
-            <ChocolateBannerHeadline breakpoint={breakpoint} />
-          </div>
-          <div className={`${isActive ? 'banner-animate-3' : 'opacity-0'} pointer-events-auto`}>
-            <BannerButton>SHOP NOW</BannerButton>
-          </div>
-        </div>
-        {/* Benefits below image on right - mobile centered at bottom */}
-        <div className={`absolute bottom-[40px] left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none`}>
-          <div className={isActive ? 'banner-animate-4' : 'opacity-0'}>
-            <div className={`flex items-center gap-[10px] text-[#009296] font-['Inter:Regular',sans-serif] font-normal leading-[1.4] ${benefitSize} ${benefitTracking}`}>
-              <Leaf className="w-[18px] h-[18px] text-[#009296] shrink-0" strokeWidth={2.5} />
-              <span>Heart-healthy plant sterols in a delicious dark chocolate.</span>
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  }
-  
-  // Desktop/Tablet: left-aligned and vertically centered
-  return (
-    <>
-      {/* Monthly Special Badge - top right */}
-      <div className={`absolute ${badgePosition} pointer-events-none z-10`}>
-        <div className={isActive ? 'banner-animate-1' : 'opacity-0'}>
-          <MonthlySpecialBadge breakpoint={breakpoint} />
-        </div>
-      </div>
-      
-      <div className={`absolute content-stretch flex flex-col gap-[30px] items-start left-0 top-1/2 -translate-y-1/2 pl-[40px] pointer-events-none`}>
+      <div className={`absolute content-stretch flex flex-col gap-[30px] items-center left-0 translate-x-0 ${spacing.contentTop} ${spacing.contentWidth} pointer-events-none`}>
         <div className={isActive ? 'banner-animate-2' : 'opacity-0'}>
           <ChocolateBannerHeadline breakpoint={breakpoint} />
         </div>
@@ -380,16 +393,65 @@ function BannerContent3({ breakpoint, isActive }: { breakpoint: Breakpoint; isAc
           <BannerButton>SHOP NOW</BannerButton>
         </div>
       </div>
-      {/* Benefits below product collage on right - centered */}
-      <div className={`absolute bottom-[60px] right-[15%] flex items-center pointer-events-none`}>
-        <div className={isActive ? 'banner-animate-4' : 'opacity-0'}>
-          <div className={`flex items-center gap-[10px] text-[#009296] font-['Inter:Regular',sans-serif] font-normal leading-[1.4] ${benefitSize} ${benefitTracking}`}>
-            <Leaf className="w-[18px] h-[18px] text-[#009296] shrink-0" strokeWidth={2.5} />
-            <span>Heart-healthy plant sterols in a delicious dark chocolate.</span>
-          </div>
+    );
+  }
+  
+  // Desktop/Tablet: left-aligned and vertically centered
+  return (
+    <div className={`absolute content-stretch flex flex-col gap-[30px] items-start left-0 top-1/2 -translate-y-1/2 pl-[40px] pointer-events-none`}>
+      <div className={isActive ? 'banner-animate-2' : 'opacity-0'}>
+        <ChocolateBannerHeadline breakpoint={breakpoint} />
+      </div>
+      <div className={`${isActive ? 'banner-animate-3' : 'opacity-0'} pointer-events-auto`}>
+        <BannerButton>SHOP NOW</BannerButton>
+      </div>
+      <div className={`${isActive ? 'banner-animate-4' : 'opacity-0'} mt-[30px]`}>
+        <div className={`flex items-center gap-[10px] text-[#009296] font-['Inter:Regular',sans-serif] font-normal leading-[1.4] ${benefitSize} ${benefitTracking}`}>
+          <Leaf className="w-[18px] h-[18px] text-[#009296] shrink-0" strokeWidth={2.5} />
+          <span>Heart-healthy plant sterols in a delicious dark chocolate.</span>
         </div>
       </div>
-    </>
+    </div>
+  );
+}
+
+// Banner content overlay for Slide 4 - Secure Bar
+function BannerContent4({ breakpoint, isActive }: { breakpoint: Breakpoint; isActive: boolean }) {
+  const spacing = getBannerSpacing(breakpoint);
+  const isMobile = breakpoint === 'S';
+  const benefitSize = breakpoint === 'HD' ? 'text-lg' : 'text-base';
+  const benefitTracking = breakpoint === 'HD' ? 'tracking-[-0.2px]' : 'tracking-[-0.16px]';
+  
+  // Mobile: centered and top-aligned like vitamins banner
+  if (isMobile) {
+    return (
+      <div className={`absolute content-stretch flex flex-col gap-[30px] items-center left-0 translate-x-0 ${spacing.contentTop} ${spacing.contentWidth} pointer-events-none`}>
+        <div className={isActive ? 'banner-animate-2' : 'opacity-0'}>
+          <SecureBannerHeadline breakpoint={breakpoint} />
+        </div>
+        <div className={`${isActive ? 'banner-animate-3' : 'opacity-0'} pointer-events-auto`}>
+          <BannerButton>SHOP NOW</BannerButton>
+        </div>
+      </div>
+    );
+  }
+  
+  // Desktop/Tablet: left-aligned and vertically centered
+  return (
+    <div className={`absolute content-stretch flex flex-col gap-[30px] items-start left-0 top-1/2 -translate-y-1/2 pl-[40px] pointer-events-none`}>
+      <div className={isActive ? 'banner-animate-2' : 'opacity-0'}>
+        <SecureBannerHeadline breakpoint={breakpoint} />
+      </div>
+      <div className={`${isActive ? 'banner-animate-3' : 'opacity-0'} pointer-events-auto`}>
+        <BannerButton>SHOP NOW</BannerButton>
+      </div>
+      <div className={`${isActive ? 'banner-animate-4' : 'opacity-0'} mt-[30px]`}>
+        <div className={`flex items-center gap-[10px] text-[#009296] font-['Inter:Regular',sans-serif] font-normal leading-[1.4] ${benefitSize} ${benefitTracking}`}>
+          <Check className="w-[18px] h-[18px] text-[#009296] shrink-0" strokeWidth={2.5} />
+          <span>Available in Original and Sugar-Free varieties!</span>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -433,7 +495,8 @@ function SnowAnimation({ isActive }: { isActive: boolean }) {
       <div 
         className="absolute inset-0 pointer-events-none overflow-hidden" 
         style={{ 
-          clipPath: 'polygon(0 0, 100% 0, 100% 55%, 0 55%)', // Clip to top 55% (blue sky area)
+          maskImage: 'linear-gradient(to bottom, white 0%, white 45%, transparent 60%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, white 0%, white 45%, transparent 60%)',
         }}
       >
         {snowflakes.map((flake) => (
@@ -460,24 +523,151 @@ function SnowAnimation({ isActive }: { isActive: boolean }) {
   );
 }
 
+// Rotating Secure Banner - alternates between three flavors (desktop only)
+function RotatingSecureBanner({ isActive, breakpoint }: { isActive: boolean; breakpoint: Breakpoint }) {
+  const [currentFlavor, setCurrentFlavor] = useState(0);
+  
+  useEffect(() => {
+    if (!isActive) return;
+    
+    // Reset to first flavor when becoming active
+    setCurrentFlavor(0);
+    
+    const interval = setInterval(() => {
+      setCurrentFlavor(prev => (prev + 1) % 3); // 3 flavors now
+    }, 4000); // 4 seconds per flavor
+    
+    return () => clearInterval(interval);
+  }, [isActive]);
+  
+  const isMobile = breakpoint === 'S';
+  const isTablet = breakpoint === 'M';
+  
+  // For tablet, show static image (handled by BannerSlide's fallback)
+  if (isTablet) {
+    return <img alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" src={imgSecureBanner} />;
+  }
+  
+  // Select images based on breakpoint
+  const frameImage = isMobile ? imgSecureBannerMobileFrame : imgSecureBannerFrame;
+  const chocolateImage = isMobile ? imgSecureBannerMobileChocolate : imgSecureBannerChocolate;
+  const coconutImage = isMobile ? imgSecureBannerMobileCoconut : imgSecureBannerCoconut;
+  const peanutButterImage = isMobile ? imgSecureBannerMobilePeanutButter : imgSecureBannerPeanutButter;
+  
+  // Mobile: natural aspect ratio like other mobile banners
+  if (isMobile) {
+    return (
+      <div className="relative w-full">
+        {/* Invisible sizer image to maintain aspect ratio */}
+        <img 
+          alt="" 
+          className="w-full h-auto block opacity-0"
+          src={chocolateImage}
+          aria-hidden="true"
+        />
+        
+        {/* Background color layer - #F7F2EC */}
+        <div className="absolute inset-0 bg-[#F7F2EC]" />
+        
+        {/* Layer 1: Rotating bar variants with crossfade (Chocolate Brownie Almond) */}
+        <img 
+          alt="Secure Bar - Chocolate Brownie Almond Crunch" 
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[800ms] ease-in-out"
+          src={chocolateImage}
+          style={{ opacity: currentFlavor === 0 ? 1 : 0 }}
+        />
+        
+        {/* Layer 2: Rotating bar variants with crossfade (Coconut Almond Cookie) */}
+        <img 
+          alt="Secure Bar - Coconut Almond Cookie Crunch" 
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[800ms] ease-in-out"
+          src={coconutImage}
+          style={{ opacity: currentFlavor === 1 ? 1 : 0 }}
+        />
+        
+        {/* Layer 3: Rotating bar variants with crossfade (Peanut Butter Chocolate Chip) */}
+        <img 
+          alt="Secure Bar - Peanut Butter Chocolate Chip" 
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[800ms] ease-in-out"
+          src={peanutButterImage}
+          style={{ opacity: currentFlavor === 2 ? 1 : 0 }}
+        />
+        
+        {/* Layer 4: Static chocolate chunk frame (always visible on top) */}
+        <img 
+          alt="" 
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          src={frameImage}
+        />
+      </div>
+    );
+  }
+  
+  // Desktop: fixed proportional height
+  return (
+    <>
+      {/* Background color layer - #F7F2EC */}
+      <div className="absolute inset-0 bg-[#F7F2EC]" />
+      
+      {/* Layer 1: Rotating bar variants with crossfade (Chocolate Brownie Almond) */}
+      <img 
+        alt="Secure Bar - Chocolate Brownie Almond Crunch" 
+        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[800ms] ease-in-out"
+        src={chocolateImage}
+        style={{ opacity: currentFlavor === 0 ? 1 : 0 }}
+      />
+      
+      {/* Layer 2: Rotating bar variants with crossfade (Coconut Almond Cookie) */}
+      <img 
+        alt="Secure Bar - Coconut Almond Cookie Crunch" 
+        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[800ms] ease-in-out"
+        src={coconutImage}
+        style={{ opacity: currentFlavor === 1 ? 1 : 0 }}
+      />
+      
+      {/* Layer 3: Rotating bar variants with crossfade (Peanut Butter Chocolate Chip) */}
+      <img 
+        alt="Secure Bar - Peanut Butter Chocolate Chip" 
+        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[800ms] ease-in-out"
+        src={peanutButterImage}
+        style={{ opacity: currentFlavor === 2 ? 1 : 0 }}
+      />
+      
+      {/* Layer 4: Static chocolate chunk frame (always visible on top) */}
+      <img 
+        alt="" 
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+        src={frameImage}
+      />
+    </>
+  );
+}
+
 // Single slide component
 function BannerSlide({ 
   image, 
   content, 
   breakpoint,
-  showSnow = false
+  showSnow = false,
+  rotatingBackground = null,
+  isActive = false
 }: { 
   image: string; 
   content: React.ReactNode; 
   breakpoint: Breakpoint;
   showSnow?: boolean;
+  rotatingBackground?: React.ReactNode;
+  isActive?: boolean;
 }) {
   const isMobileOrTablet = breakpoint === 'S' || breakpoint === 'M';
   
   if (isMobileOrTablet) {
     return (
       <div className="relative shrink-0 w-full" data-name="banner-slide">
-        <img alt="" className="w-full h-auto block" src={image} />
+        {rotatingBackground ? rotatingBackground : (
+          <img alt="" className="w-full h-auto block" src={image} />
+        )}
+        {showSnow && <SnowAnimation isActive={true} />}
         <div className="absolute inset-0 pointer-events-none">
           {content}
         </div>
@@ -488,7 +678,9 @@ function BannerSlide({
   // Desktop: Use proportional height approach
   return (
     <div className="relative shrink-0 w-full h-[43.06vw]" data-name="banner-slide">
-      <img alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" src={image} />
+      {rotatingBackground ? rotatingBackground : (
+        <img alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" src={image} />
+      )}
       {showSnow && <SnowAnimation isActive={true} />}
       {content}
     </div>
@@ -499,10 +691,29 @@ function Banner({ breakpoint, svgPaths, onOurStoryClick }: { breakpoint: Breakpo
   const [currentSlide, setCurrentSlide] = useState(0);
   let sliderRef: Slider | null = null;
   
+  // Slide visibility configuration - set to true/false to show/hide slides
+  const slideConfig = {
+    supplements: true,
+    chocolate: true,
+    soap: false,        // Set to false to hide the soap banner
+    secure: true,
+  };
+  
+  // Calculate active slide indices dynamically
+  const activeSlides: string[] = [];
+  if (slideConfig.supplements) activeSlides.push('supplements');
+  if (slideConfig.chocolate) activeSlides.push('chocolate');
+  if (slideConfig.soap) activeSlides.push('soap');
+  if (slideConfig.secure) activeSlides.push('secure');
+  
+  const totalActiveSlides = activeSlides.length;
+  const getSlideIndex = (slideName: string) => activeSlides.indexOf(slideName);
+  
   // Image selection based on breakpoint
   const vitaminsImage = breakpoint === 'S' ? imgBannerMobile : breakpoint === 'M' ? imgBannerTablet : imgVitaminsBanner;
   const soapImage = breakpoint === 'S' ? imgPhactBannerMobile : breakpoint === 'M' ? imgBannerTablet : imgPhactBanner;
-  const chocolateImage = breakpoint === 'S' ? imgBannerMobile : breakpoint === 'M' ? imgBannerTablet : imgChocolateBanner;
+  const chocolateImage = breakpoint === 'S' ? imgChocolateBannerMobile : breakpoint === 'M' ? imgBannerTablet : imgChocolateBanner;
+  const secureImage = breakpoint === 'S' ? imgBannerMobile : breakpoint === 'M' ? imgBannerTablet : imgSecureBanner;
   
   const settings = {
     dots: false,
@@ -512,7 +723,7 @@ function Banner({ breakpoint, svgPaths, onOurStoryClick }: { breakpoint: Breakpo
     slidesToScroll: 1,
     arrows: false,
     autoplay: true,
-    autoplaySpeed: 5000,
+    autoplaySpeed: 15000, // 15 seconds to accommodate 3-flavor cycle (3 × 4s = 12s)
     fade: true,
     cssEase: 'cubic-bezier(0.4, 0, 0.2, 1)',
     beforeChange: (_current: number, next: number) => setCurrentSlide(next),
@@ -528,26 +739,43 @@ function Banner({ breakpoint, svgPaths, onOurStoryClick }: { breakpoint: Breakpo
     <div className="relative w-full" data-name="banner">
       <Slider ref={(slider) => { sliderRef = slider; }} {...settings}>
         {/* Slide 1: Supplements */}
-        <BannerSlide
-          image={vitaminsImage}
-          breakpoint={breakpoint}
-          content={<BannerContent1 breakpoint={breakpoint} onOurStoryClick={onOurStoryClick} isActive={currentSlide === 0} />}
-        />
+        {slideConfig.supplements && (
+          <BannerSlide
+            image={vitaminsImage}
+            breakpoint={breakpoint}
+            content={<BannerContent1 breakpoint={breakpoint} onOurStoryClick={onOurStoryClick} isActive={currentSlide === getSlideIndex('supplements')} />}
+          />
+        )}
         
         {/* Slide 2: Chocolate */}
-        <BannerSlide
-          image={chocolateImage}
-          breakpoint={breakpoint}
-          content={<BannerContent3 breakpoint={breakpoint} isActive={currentSlide === 1} />}
-          showSnow={true}
-        />
+        {slideConfig.chocolate && (
+          <BannerSlide
+            image={chocolateImage}
+            breakpoint={breakpoint}
+            content={<BannerContent3 breakpoint={breakpoint} isActive={currentSlide === getSlideIndex('chocolate')} />}
+            showSnow={true}
+          />
+        )}
         
         {/* Slide 3: pHact Soap */}
-        <BannerSlide
-          image={soapImage}
-          breakpoint={breakpoint}
-          content={<BannerContent2 breakpoint={breakpoint} isActive={currentSlide === 2} />}
-        />
+        {slideConfig.soap && (
+          <BannerSlide
+            image={soapImage}
+            breakpoint={breakpoint}
+            content={<BannerContent2 breakpoint={breakpoint} isActive={currentSlide === getSlideIndex('soap')} />}
+          />
+        )}
+        
+        {/* Slide 4: Secure Bar */}
+        {slideConfig.secure && (
+          <BannerSlide
+            image={secureImage}
+            breakpoint={breakpoint}
+            content={<BannerContent4 breakpoint={breakpoint} isActive={currentSlide === getSlideIndex('secure')} />}
+            rotatingBackground={<RotatingSecureBanner isActive={currentSlide === getSlideIndex('secure')} breakpoint={breakpoint} />}
+            isActive={currentSlide === getSlideIndex('secure')}
+          />
+        )}
       </Slider>
       
       {/* Carousel dots - only show on M breakpoint and above */}
@@ -555,7 +783,7 @@ function Banner({ breakpoint, svgPaths, onOurStoryClick }: { breakpoint: Breakpo
         <CarouselDots
           breakpoint={breakpoint}
           currentSlide={currentSlide}
-          totalSlides={3}
+          totalSlides={totalActiveSlides}
           onDotClick={handleDotClick}
         />
       )}
@@ -567,7 +795,7 @@ function Banner({ breakpoint, svgPaths, onOurStoryClick }: { breakpoint: Breakpo
 function TickerScroll() {
   return (
     <div className="content-stretch flex gap-[31px] items-center justify-center relative shrink-0 w-full" data-name="ticker scroll">
-      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.3] not-italic relative shrink-0 text-[#009296] text-[28px] text-center text-nowrap tracking-[-0.28px] whitespace-pre">No preservatives</p>
+      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.3] not-italic relative shrink-0 text-[#009296] text-2xl text-center text-nowrap tracking-[-0.28px] whitespace-pre">No preservatives</p>
       <div className="flex items-center justify-center relative shrink-0">
         <div className="flex-none rotate-[180deg]">
           <div className="h-0 relative w-[94px]" data-name="line">
@@ -579,7 +807,7 @@ function TickerScroll() {
           </div>
         </div>
       </div>
-      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.3] not-italic relative shrink-0 text-[#009296] text-[28px] text-center text-nowrap tracking-[-0.28px] whitespace-pre">No artificial colors</p>
+      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.3] not-italic relative shrink-0 text-[#009296] text-2xl text-center text-nowrap tracking-[-0.28px] whitespace-pre">No artificial colors</p>
       <div className="flex items-center justify-center relative shrink-0">
         <div className="flex-none rotate-[180deg]">
           <div className="h-0 relative w-[94px]" data-name="line">
@@ -591,7 +819,7 @@ function TickerScroll() {
           </div>
         </div>
       </div>
-      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.3] not-italic relative shrink-0 text-[#009296] text-[28px] text-center text-nowrap tracking-[-0.28px] whitespace-pre">No fillers</p>
+      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.3] not-italic relative shrink-0 text-[#009296] text-2xl text-center text-nowrap tracking-[-0.28px] whitespace-pre">No fillers</p>
       <div className="flex items-center justify-center relative shrink-0">
         <div className="flex-none rotate-[180deg]">
           <div className="h-0 relative w-[94px]" data-name="line">
@@ -603,7 +831,7 @@ function TickerScroll() {
           </div>
         </div>
       </div>
-      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.3] not-italic relative shrink-0 text-[#009296] text-[28px] text-center text-nowrap tracking-[-0.28px] whitespace-pre">No lubricants</p>
+      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.3] not-italic relative shrink-0 text-[#009296] text-2xl text-center text-nowrap tracking-[-0.28px] whitespace-pre">No lubricants</p>
       <div className="flex items-center justify-center relative shrink-0">
         <div className="flex-none rotate-[180deg]">
           <div className="h-0 relative w-[94px]" data-name="line">
@@ -615,7 +843,7 @@ function TickerScroll() {
           </div>
         </div>
       </div>
-      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.3] not-italic relative shrink-0 text-[#009296] text-[28px] text-center text-nowrap tracking-[-0.28px] whitespace-pre">No stabilizers</p>
+      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.3] not-italic relative shrink-0 text-[#009296] text-2xl text-center text-nowrap tracking-[-0.28px] whitespace-pre">No stabilizers</p>
       <div className="flex items-center justify-center relative shrink-0">
         <div className="flex-none rotate-[180deg]">
           <div className="h-0 relative w-[94px]" data-name="line">
@@ -627,7 +855,7 @@ function TickerScroll() {
           </div>
         </div>
       </div>
-      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.3] not-italic relative shrink-0 text-[#009296] text-[28px] text-center text-nowrap tracking-[-0.28px] whitespace-pre">No Fillers</p>
+      <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.3] not-italic relative shrink-0 text-[#009296] text-2xl text-center text-nowrap tracking-[-0.28px] whitespace-pre">No Fillers</p>
     </div>
   );
 }
@@ -645,7 +873,7 @@ function getModuleSpacing(breakpoint: Breakpoint) {
 
 function getModuleTypography(breakpoint: Breakpoint) {
   return {
-    size: breakpoint === 'S' || breakpoint === 'M' ? 'text-[24px]' : breakpoint === 'HD' ? 'text-[48px]' : 'text-[34px]',
+    size: breakpoint === 'S' || breakpoint === 'M' ? 'text-[28px]' : breakpoint === 'HD' ? 'text-5xl' : 'text-[34px]',
     tracking: breakpoint === 'S' || breakpoint === 'M' ? 'tracking-[-0.48px]' : breakpoint === 'HD' ? 'tracking-[-0.96px]' : 'tracking-[-0.68px]',
   };
 }
@@ -670,7 +898,7 @@ function ModuleButton({
       className={`absolute ${bgColor} ${spacing.bottom} box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center left-1/2 px-[39px] py-[15px] rounded-[999px] -translate-x-1/2`} 
       data-name="button"
     >
-      <p className={`font-['Inter:Medium',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 ${textColor} text-[16px] text-center text-nowrap tracking-[1.92px] uppercase whitespace-pre`}>
+      <p className={`font-['Inter:Medium',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 ${textColor} text-base text-center text-nowrap tracking-[1.92px] uppercase whitespace-pre`}>
         {text}
       </p>
     </div>
@@ -717,7 +945,7 @@ function ModuleCard({
         src={image} 
       />
       <p 
-        className={`absolute font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] left-1/2 text-[0px] ${typography.size} text-center ${textColor} ${spacing.top} ${typography.tracking} -translate-x-1/2 ${widthClass}`}
+        className={`absolute font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] left-1/2 ${typography.size} text-center ${textColor} ${spacing.top} ${typography.tracking} -translate-x-1/2 ${widthClass}`}
       >
         {title}
       </p>
@@ -726,7 +954,7 @@ function ModuleCard({
   );
 }
 
-// Module 1: Mother Nature's
+// Module 1: Shop our specials
 function Module({ breakpoint }: { breakpoint: Breakpoint }) {
   return (
     <ModuleCard
@@ -737,8 +965,10 @@ function Module({ breakpoint }: { breakpoint: Breakpoint }) {
       maxWidth={{ hd: 'w-[650px]', default: 'w-[552px]' }}
       title={
         <>
-          <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">Mother Nature's</span>
-          <span>{` most targeted protective molecules.`}</span>
+          <span>Featured savings on our</span>
+          <br />
+          <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">finest</span>
+          <span> formulas.</span>
         </>
       }
     />
@@ -796,14 +1026,14 @@ const CATEGORY_ITEMS = [
 ];
 
 function CopyGroup1({ breakpoint }: { breakpoint: Breakpoint }) {
-  const headlineSize = breakpoint === 'S' || breakpoint === 'M' ? 'text-[34px]' : breakpoint === 'HD' ? 'text-[72px]' : breakpoint === 'XL' ? 'text-[54px]' : 'text-[38px]';
+  const headlineSize = breakpoint === 'S' || breakpoint === 'M' ? 'text-3xl' : breakpoint === 'HD' ? 'text-7xl' : breakpoint === 'XL' ? 'text-6xl' : 'text-4xl';
   const tracking = breakpoint === 'S' || breakpoint === 'M' ? 'tracking-[-0.68px]' : breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : 'tracking-[-0.76px]';
-  const subTextSize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]';
+  const subTextSize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-base';
   const subTextTracking = breakpoint === 'HD' || breakpoint === 'XL' ? 'tracking-[-0.2px]' : 'tracking-[-0.16px]';
 
   return (
     <div className="content-stretch flex flex-col gap-[20px] items-center relative shrink-0 text-[#003b3c] text-center w-full" data-name="copy GROUP">
-      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[0px] ${headlineSize} ${tracking} w-full`}>
+      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 ${headlineSize} ${tracking} w-full`}>
         <span>
           Let us guide you
           <br aria-hidden="true" />
@@ -827,7 +1057,7 @@ function ComponentCircle({ img, label, breakpoint, onClick }: {
 }) {
   const isMobile = breakpoint === 'S';
   const isTablet = breakpoint === 'M';
-  const labelSize = isMobile || isTablet ? 'text-[16px]' : 'text-[20px]';
+  const labelSize = isMobile || isTablet ? 'text-base' : 'text-lg';
   const labelTracking = isMobile || isTablet ? 'tracking-[-0.16px]' : 'tracking-[-0.2px]';
   const gap = isMobile || isTablet ? 'gap-[20px]' : 'gap-[40px]';
   const isClickable = !!onClick;
@@ -867,7 +1097,11 @@ function ComponentCircle({ img, label, breakpoint, onClick }: {
   );
 }
 
-function Columns({ breakpoint, onIngredientsClick }: { breakpoint: Breakpoint; onIngredientsClick?: () => void }) {
+function Columns({ breakpoint, onIngredientsClick, onCategoryClick }: { 
+  breakpoint: Breakpoint; 
+  onIngredientsClick?: () => void;
+  onCategoryClick?: (categoryId: string) => void;
+}) {
   const isMobile = breakpoint === 'S';
   
   if (isMobile) {
@@ -880,6 +1114,14 @@ function Columns({ breakpoint, onIngredientsClick }: { breakpoint: Breakpoint; o
             const isLast = index === CATEGORY_ITEMS.length - 1;
             const isIngredients = item.id === 'ingredients';
             
+            // Determine onClick handler based on item
+            let handleClick: (() => void) | undefined = undefined;
+            if (isIngredients && onIngredientsClick) {
+              handleClick = onIngredientsClick;
+            } else if (!isIngredients && onCategoryClick) {
+              handleClick = () => onCategoryClick(item.id);
+            }
+            
             return (
               <div 
                 key={item.id} 
@@ -889,7 +1131,7 @@ function Columns({ breakpoint, onIngredientsClick }: { breakpoint: Breakpoint; o
                   img={item.img} 
                   label={item.label} 
                   breakpoint={breakpoint}
-                  onClick={isIngredients ? onIngredientsClick : undefined}
+                  onClick={handleClick}
                 />
               </div>
             );
@@ -907,13 +1149,22 @@ function Columns({ breakpoint, onIngredientsClick }: { breakpoint: Breakpoint; o
       <div className={`content-stretch flex ${gap} items-start relative shrink-0 w-full max-w-[1200px]`}>
         {CATEGORY_ITEMS.map(item => {
           const isIngredients = item.id === 'ingredients';
+          
+          // Determine onClick handler based on item
+          let handleClick: (() => void) | undefined = undefined;
+          if (isIngredients && onIngredientsClick) {
+            handleClick = onIngredientsClick;
+          } else if (!isIngredients && onCategoryClick) {
+            handleClick = () => onCategoryClick(item.id);
+          }
+          
           return (
             <ComponentCircle 
               key={item.id} 
               img={item.img} 
               label={item.label} 
               breakpoint={breakpoint}
-              onClick={isIngredients ? onIngredientsClick : undefined}
+              onClick={handleClick}
             />
           );
         })}
@@ -922,7 +1173,11 @@ function Columns({ breakpoint, onIngredientsClick }: { breakpoint: Breakpoint; o
   );
 }
 
-function InformedChoice({ breakpoint, onIngredientsClick }: { breakpoint: Breakpoint; onIngredientsClick?: () => void }) {
+function InformedChoice({ breakpoint, onIngredientsClick, onCategoryClick }: { 
+  breakpoint: Breakpoint; 
+  onIngredientsClick?: () => void;
+  onCategoryClick?: (categoryId: string) => void;
+}) {
   const padding = breakpoint === 'S' ? 'px-0' : breakpoint === 'M' ? 'px-[30px]' : breakpoint === 'HD' ? 'px-[200px]' : breakpoint === 'XL' ? 'px-[180px]' : 'px-[160px]';
   const textPadding = breakpoint === 'S' ? 'px-[20px]' : '';
   const gap = breakpoint === 'S' || breakpoint === 'M' ? 'gap-[40px]' : 'gap-[60px]';
@@ -934,7 +1189,7 @@ function InformedChoice({ breakpoint, onIngredientsClick }: { breakpoint: Breakp
           <div className={textPadding}>
             <CopyGroup1 breakpoint={breakpoint} />
           </div>
-          <Columns breakpoint={breakpoint} onIngredientsClick={onIngredientsClick} />
+          <Columns breakpoint={breakpoint} onIngredientsClick={onIngredientsClick} onCategoryClick={onCategoryClick} />
           <div className={`h-0 relative shrink-0 w-full ${textPadding}`} data-name="hori line">
             <div className="absolute bottom-0 left-0 right-0 top-[-1px]">
               <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 960 1">
@@ -952,15 +1207,15 @@ function InformedChoice({ breakpoint, onIngredientsClick }: { breakpoint: Breakp
 function FrameVideoQuote({ breakpoint }: { breakpoint: Breakpoint }) {
   const isMobile = breakpoint === 'S';
   const isTablet = breakpoint === 'M';
-  const headlineSize = isMobile ? 'text-[34px]' : isTablet ? 'text-[34px]' : breakpoint === 'HD' ? 'text-[72px]' : breakpoint === 'XL' ? 'text-[54px]' : 'text-[38px]';
+  const headlineSize = isMobile ? 'text-3xl' : isTablet ? 'text-3xl' : breakpoint === 'HD' ? 'text-7xl' : breakpoint === 'XL' ? 'text-6xl' : 'text-4xl';
   const tracking = isMobile ? 'tracking-[-0.68px]' : isTablet ? 'tracking-[-0.68px]' : breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : 'tracking-[-0.76px]';
-  const quoteSize = isMobile ? 'text-[20px]' : isTablet ? 'text-[18px]' : breakpoint === 'HD' ? 'text-[34px]' : breakpoint === 'XL' ? 'text-[34px]' : 'text-[24px]';
-  const quoteTracking = isMobile ? 'tracking-[-0.4px]' : isTablet ? 'tracking-[-0.36px]' : breakpoint === 'HD' ? 'tracking-[-0.68px]' : breakpoint === 'XL' ? 'tracking-[-0.68px]' : 'tracking-[-0.48px]';
+  const quoteSize = isMobile ? 'text-lg' : isTablet ? 'text-lg' : breakpoint === 'HD' ? 'text-3xl' : breakpoint === 'XL' ? 'text-3xl' : 'text-xl';
+  const quoteTracking = isMobile ? 'tracking-[-0.4px]' : isTablet ? 'tracking-[-0.4px]' : breakpoint === 'HD' ? 'tracking-[-0.68px]' : breakpoint === 'XL' ? 'tracking-[-0.68px]' : 'tracking-[-0.48px]';
   const textAlign = 'text-left';
 
   return (
     <div className={`content-stretch flex flex-col gap-[30px] items-start relative shrink-0 text-[#003b3c] w-full ${textAlign}`}>
-      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[0px] ${headlineSize} ${tracking} w-full`}>
+      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 ${headlineSize} ${tracking} w-full`}>
         <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">Passionate</span>
         <span>{` about your health and the planet.`}</span>
       </p>
@@ -1007,7 +1262,7 @@ function AndrewSignatureNew({ svgPaths }: { svgPaths: any }) {
 }
 
 function SignatureWithTitle({ svgPaths, breakpoint }: { svgPaths: any; breakpoint: Breakpoint }) {
-  const textSize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]';
+  const textSize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-lg' : 'text-base';
   const tracking = breakpoint === 'HD' || breakpoint === 'XL' ? 'tracking-[-0.2px]' : 'tracking-[-0.16px]';
   const width = breakpoint === 'S' ? 'w-full' : 'w-[322.972px]';
 
@@ -1109,11 +1364,11 @@ function VideoSection({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPat
 
 // Procaps Difference Video Section
 function ProcapsDifferenceVideo({ breakpoint, svgPaths }: { breakpoint: Breakpoint; svgPaths: any }) {
-  const headlineSize = breakpoint === 'HD' ? 'text-[72px]' : breakpoint === 'XL' ? 'text-[54px]' : 'text-[38px]';
+  const headlineSize = breakpoint === 'HD' ? 'text-7xl' : breakpoint === 'XL' ? 'text-6xl' : 'text-4xl';
   const headlineTracking = breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : 'tracking-[-0.76px]';
-  const labelSize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[34px]' : 'text-[24px]';
+  const labelSize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-3xl' : 'text-xl';
   const labelTracking = breakpoint === 'HD' || breakpoint === 'XL' ? 'tracking-[-0.34px]' : 'tracking-[-0.24px]';
-  const bodySize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-[20px]' : 'text-[16px]';
+  const bodySize = breakpoint === 'HD' || breakpoint === 'XL' ? 'text-lg' : 'text-base';
   const bodyTracking = breakpoint === 'HD' || breakpoint === 'XL' ? 'tracking-[-0.4px]' : 'tracking-[-0.32px]';
   const padding = breakpoint === 'HD' ? 'px-[200px]' : breakpoint === 'XL' ? 'px-[150px]' : 'px-[100px]';
 
@@ -1159,14 +1414,20 @@ function ProcapsDifferenceVideo({ breakpoint, svgPaths }: { breakpoint: Breakpoi
 }
 
 // Body Group
-function BodyGroup({ breakpoint, svgPaths, onIngredientsClick }: { breakpoint: Breakpoint; svgPaths: any; onIngredientsClick?: () => void }) {
+function BodyGroup({ breakpoint, svgPaths, onIngredientsClick, onCategoryClick }: { 
+  breakpoint: Breakpoint; 
+  svgPaths: any; 
+  onIngredientsClick?: () => void;
+  onCategoryClick?: (categoryId: string) => void;
+}) {
   const verticalSpacing = breakpoint === 'S' ? 'py-[60px] gap-[60px]' : 'py-[80px] gap-[80px]';
+  const isMobile = breakpoint === 'S';
 
   return (
     <div className={`box-border content-stretch flex flex-col items-center px-0 relative shrink-0 w-full ${verticalSpacing}`} data-name="body group">
-      <TickerTape />
+      <TickerTape fontSize={isMobile ? '28px' : '34px'} />
       <Component2Up breakpoint={breakpoint} />
-      <InformedChoice breakpoint={breakpoint} onIngredientsClick={onIngredientsClick} />
+      <InformedChoice breakpoint={breakpoint} onIngredientsClick={onIngredientsClick} onCategoryClick={onCategoryClick} />
       <VitaminSpecialist breakpoint={breakpoint} />
       <VideoSection breakpoint={breakpoint} svgPaths={svgPaths} />
       <PhactSection breakpoint={breakpoint} svgPaths={svgPaths} />

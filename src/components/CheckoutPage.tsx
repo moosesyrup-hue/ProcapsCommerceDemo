@@ -22,12 +22,18 @@ import svgPaths from "../imports/svg-vsxzdz3mbf";
 
 interface CartItem {
   id: string;
+  productId?: string;
   name: string;
   count: string;
   price: number;
   originalPrice?: number;
   quantity: number;
   image: string;
+  purchaseType?: 'one-time' | 'autoship' | 'flexpay';
+  deliveryFrequency?: number;
+  autoshipDiscount?: number;
+  flexPayInstallments?: number;
+  flexPayAmount?: number;
   frequency?: string;
 }
 
@@ -3072,7 +3078,9 @@ function OrderSummary({
                 <p className="font-['Inter',sans-serif] text-[12px] l:text-[13px] xl:text-[14px] text-[#406c6d]">
                   Quantity: {item.quantity}
                 </p>
-                {item.frequency && (
+                
+                {/* Autoship Badge */}
+                {(item.purchaseType === 'autoship' || item.frequency) && (
                   <div className="flex items-center gap-[6px] mt-[6px]">
                     <div className="bg-[#009296] text-white px-[6px] py-[2px] rounded-[4px]">
                       <p className="font-['Inter',sans-serif] text-[10px] uppercase tracking-[0.5px]">
@@ -3080,7 +3088,26 @@ function OrderSummary({
                       </p>
                     </div>
                     <p className="font-['Inter',sans-serif] text-[12px] l:text-[13px] xl:text-[14px] text-[#009296]">
-                      {item.frequency}
+                      {item.frequency || `Every ${item.deliveryFrequency} days`}
+                    </p>
+                  </div>
+                )}
+                
+                {/* FlexPay Badge */}
+                {item.purchaseType === 'flexpay' && item.flexPayInstallments && item.flexPayAmount && (
+                  <div className="flex flex-col gap-[4px] mt-[6px]">
+                    <div className="flex items-center gap-[6px]">
+                      <div className="bg-[#7B61FF] text-white px-[6px] py-[2px] rounded-[4px]">
+                        <p className="font-['Inter',sans-serif] text-[10px] uppercase tracking-[0.5px]">
+                          FlexPay
+                        </p>
+                      </div>
+                      <p className="font-['Inter',sans-serif] text-[12px] l:text-[13px] xl:text-[14px] text-[#7B61FF]">
+                        {item.flexPayInstallments} payments of ${item.flexPayAmount.toFixed(2)}
+                      </p>
+                    </div>
+                    <p className="font-['Inter',sans-serif] text-[11px] text-[#406c6d]">
+                      First payment charged today
                     </p>
                   </div>
                 )}
@@ -3098,12 +3125,12 @@ function OrderSummary({
             </div>
             
             {/* Autoship Benefits - Show for autoship items */}
-            {item.frequency && (
+            {(item.purchaseType === 'autoship' || item.frequency) && (
               <div className="bg-[#F5F9F9] rounded-[8px] p-[12px] ml-[96px]">
                 <div className="space-y-[4px]">
                   <p className="font-['Inter',sans-serif] text-[11px] text-[#003b3c] leading-[1.5]">
                     <span className="font-medium">Next delivery:</span> {(() => {
-                      const days = item.frequency.includes('30') ? 30 : item.frequency.includes('60') ? 60 : 90;
+                      const days = item.deliveryFrequency || (item.frequency?.includes('30') ? 30 : item.frequency?.includes('60') ? 60 : 90);
                       const nextDate = new Date();
                       nextDate.setDate(nextDate.getDate() + days);
                       return nextDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -3111,6 +3138,23 @@ function OrderSummary({
                   </p>
                   <p className="font-['Inter',sans-serif] text-[11px] text-[#406c6d] leading-[1.5]">
                     ✓ Cancel anytime • Skip or reschedule deliveries • Modify frequency
+                  </p>
+                </div>
+              </div>
+            )}
+            
+            {/* FlexPay Details - Show for flexpay items */}
+            {item.purchaseType === 'flexpay' && item.flexPayInstallments && item.flexPayAmount && (
+              <div className="bg-[#F5F5FF] rounded-[8px] p-[12px] ml-[96px]">
+                <div className="space-y-[4px]">
+                  <p className="font-['Inter',sans-serif] text-[11px] text-[#003b3c] leading-[1.5]">
+                    <span className="font-medium">Payment schedule:</span>
+                  </p>
+                  <p className="font-['Inter',sans-serif] text-[11px] text-[#406c6d] leading-[1.5]">
+                    ${item.flexPayAmount.toFixed(2)} charged today, then ${item.flexPayAmount.toFixed(2)} every 30 days for {item.flexPayInstallments - 1} more {item.flexPayInstallments - 1 === 1 ? 'payment' : 'payments'}
+                  </p>
+                  <p className="font-['Inter',sans-serif] text-[11px] text-[#406c6d] leading-[1.5]">
+                    ✓ No interest • No fees • Products ship immediately
                   </p>
                 </div>
               </div>

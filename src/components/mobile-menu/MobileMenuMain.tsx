@@ -46,7 +46,7 @@ export default function MobileMenuMain({
   };
 
   return (
-    <div className="content-stretch flex flex-col gap-[8px] items-start w-full" data-name="menu">
+    <div className="content-stretch flex flex-col gap-[16px] items-start w-full" data-name="menu">
       {mainMenuItems.map((item, index) => (
         <motion.div
           key={item.id}
@@ -57,7 +57,7 @@ export default function MobileMenuMain({
           className="content-stretch flex items-center justify-between w-full cursor-pointer"
           onClick={() => handleItemClick(item.action)}
         >
-          <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.4] not-italic text-[#003b3c] text-[24px] tracking-[-0.48px] w-full">
+          <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.3] not-italic text-[#003b3c] text-[26px] tracking-[-0.52px] w-full">
             {item.label}
           </p>
           {item.action === 'shop' && <ChevronRightIcon />}

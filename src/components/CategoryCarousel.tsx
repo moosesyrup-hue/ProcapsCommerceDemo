@@ -14,9 +14,12 @@ import imgWeightManagement from "figma:asset/a9fe83c2b56267b60452f4c16f68e1f735a
 import imgStressMood from "figma:asset/923eecf2b24812333f9562fff178df23e5368ba1.png";
 import imgBrainHealth from "figma:asset/e24feb2f2ba186bdc59c2c2f406c369c314d8735.png";
 import imgJointHealth from "figma:asset/a73500931a5e725df77558da1e9193957469926c.png";
+import imgEnergy from "figma:asset/59c8dacdf71c3d35e7a6dd12b3982ff211175e7f.png";
+import imgMultivitamins from "figma:asset/59c8dacdf71c3d35e7a6dd12b3982ff211175e7f.png";
 
 interface CategoryCarouselProps {
   onNavigateToCategory: (category: string) => void;
+  type?: 'product-category' | 'body-part' | 'body-function' | 'health-issues';
 }
 
 interface Category {
@@ -25,13 +28,13 @@ interface Category {
   image?: string;
 }
 
-export default function CategoryCarousel({ onNavigateToCategory }: CategoryCarouselProps) {
+export default function CategoryCarousel({ onNavigateToCategory, type = 'product-category' }: CategoryCarouselProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
   // All 21 product categories
-  const categories: Category[] = [
+  const productCategories: Category[] = [
     { id: 'anti-aging', name: 'Anti-Aging' },
     { id: 'beauty', name: 'Beauty', image: imgBeauty },
     { id: 'beverages', name: 'Beverages' },
@@ -54,6 +57,92 @@ export default function CategoryCarousel({ onNavigateToCategory }: CategoryCarou
     { id: 'weight-management', name: 'Weight Management', image: imgWeightManagement },
     { id: 'other', name: 'Other' },
   ];
+
+  // Body Part subcategories (14 items)
+  const bodyPartCategories: Category[] = [
+    { id: 'brain-and-nerves', name: 'Brain & Nerves', image: imgBrainHealth },
+    { id: 'cardiovascular-system', name: 'Cardiovascular System', image: imgCardiovascular },
+    { id: 'digestive-system', name: 'Digestive System', image: imgDigestive },
+    { id: 'eyes', name: 'Eyes', image: imgVision },
+    { id: 'hair-skin-and-nails', name: 'Hair, Skin & Nails', image: imgBeauty },
+    { id: 'heart', name: 'Heart' },
+    { id: 'immune-system', name: 'Immune System' },
+    { id: 'joints-and-bones', name: 'Joints & Bones', image: imgJointHealth },
+    { id: 'kidneys', name: 'Kidneys' },
+    { id: 'liver', name: 'Liver' },
+    { id: 'lungs', name: 'Lungs' },
+    { id: 'muscles', name: 'Muscles' },
+    { id: 'prostate', name: 'Prostate' },
+    { id: 'thyroid', name: 'Thyroid' },
+  ];
+
+  // Body Function subcategories (14 items)
+  const bodyFunctionCategories: Category[] = [
+    { id: 'antioxidant-protection', name: 'Antioxidant Protection' },
+    { id: 'blood-sugar-support', name: 'Blood Sugar Support' },
+    { id: 'bone-density', name: 'Bone Density' },
+    { id: 'cellular-energy', name: 'Cellular Energy' },
+    { id: 'circulation', name: 'Circulation' },
+    { id: 'detoxification', name: 'Detoxification' },
+    { id: 'digestive-health', name: 'Digestive Health', image: imgDigestive },
+    { id: 'hormonal-balance', name: 'Hormonal Balance' },
+    { id: 'immune-function', name: 'Immune Function' },
+    { id: 'joint-flexibility', name: 'Joint Flexibility', image: imgJointHealth },
+    { id: 'memory-and-focus', name: 'Memory & Focus', image: imgBrainHealth },
+    { id: 'metabolism', name: 'Metabolism', image: imgWeightManagement },
+    { id: 'muscle-recovery', name: 'Muscle Recovery' },
+    { id: 'vision-health', name: 'Vision Health', image: imgVision },
+  ];
+
+  // Health Issues subcategories (14 items)
+  const healthIssuesCategories: Category[] = [
+    { id: 'allergies', name: 'Allergies' },
+    { id: 'anxiety-and-stress', name: 'Anxiety & Stress', image: imgStressMood },
+    { id: 'arthritis', name: 'Arthritis', image: imgJointHealth },
+    { id: 'blood-pressure', name: 'Blood Pressure', image: imgCardiovascular },
+    { id: 'cholesterol', name: 'Cholesterol' },
+    { id: 'cognitive-decline', name: 'Cognitive Decline', image: imgBrainHealth },
+    { id: 'diabetes-support', name: 'Diabetes Support' },
+    { id: 'fatigue', name: 'Fatigue' },
+    { id: 'inflammation', name: 'Inflammation' },
+    { id: 'insomnia', name: 'Insomnia', image: imgSleep },
+    { id: 'joint-pain', name: 'Joint Pain', image: imgJointHealth },
+    { id: 'poor-circulation', name: 'Poor Circulation' },
+    { id: 'weight-management', name: 'Weight Management', image: imgWeightManagement },
+    { id: 'weak-immunity', name: 'Weak Immunity' },
+  ];
+
+  // Product Category subcategories (21 items)
+  const productCategoryCategories: Category[] = [
+    { id: 'anti-aging', name: 'Anti-Aging' },
+    { id: 'beauty', name: 'Beauty', image: imgBeauty },
+    { id: 'beverages', name: 'Beverages' },
+    { id: 'bone-and-skeletal-health', name: 'Bone & Skeletal Health' },
+    { id: 'brain-health', name: 'Brain Health', image: imgBrainHealth },
+    { id: 'cardiovascular-health', name: 'Cardiovascular Health', image: imgCardiovascular },
+    { id: 'circulation', name: 'Circulation' },
+    { id: 'digestive-health', name: 'Digestive Health', image: imgDigestive },
+    { id: 'energy', name: 'Energy' },
+    { id: 'immune-health', name: 'Immune Health' },
+    { id: 'individual-vitamins-and-minerals', name: 'Individual Vitamins & Minerals' },
+    { id: 'joint-health', name: 'Joint Health', image: imgJointHealth },
+    { id: 'meals-and-proteins', name: 'Meals & Proteins' },
+    { id: 'multivitamins', name: 'Multivitamins' },
+    { id: 'pet-products', name: 'Pet Products' },
+    { id: 'sleep-and-relaxation', name: 'Sleep & Relaxation', image: imgSleep },
+    { id: 'stress-and-mood', name: 'Stress & Mood', image: imgStressMood },
+    { id: 'sweeteners', name: 'Sweeteners' },
+    { id: 'vision-health', name: 'Vision Health', image: imgVision },
+    { id: 'weight-management', name: 'Weight Management', image: imgWeightManagement },
+    { id: 'other', name: 'Other' },
+  ];
+
+  // Select categories based on type
+  const categories = type === 'body-part' ? bodyPartCategories : 
+                    type === 'body-function' ? bodyFunctionCategories :
+                    type === 'health-issues' ? healthIssuesCategories :
+                    type === 'product-category' ? productCategoryCategories :
+                    productCategories;
 
   // Update scroll button visibility
   const updateScrollButtons = () => {
@@ -104,14 +193,14 @@ export default function CategoryCarousel({ onNavigateToCategory }: CategoryCarou
           <div 
             ref={scrollContainerRef}
             onScroll={updateScrollButtons}
-            className="flex gap-[30px] md:gap-[40px] overflow-x-auto scrollbar-hide scroll-smooth"
+            className="flex gap-[10px] md:gap-[20px] overflow-x-auto scrollbar-hide scroll-smooth"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {categories.map((category) => (
               <button
                 key={category.id}
                 onClick={() => onNavigateToCategory(category.id)}
-                className="flex flex-col items-center gap-[14px] shrink-0 group cursor-pointer"
+                className="flex flex-col items-center gap-[14px] shrink-0 group cursor-pointer w-[140px]"
               >
                 {/* Circle Image with Placeholder */}
                 <div className="relative size-[100px] md:size-[120px] rounded-full overflow-hidden bg-[#e5ddd3] flex items-center justify-center group-hover:bg-[#d9cfc5] transition-colors">
@@ -129,7 +218,7 @@ export default function CategoryCarousel({ onNavigateToCategory }: CategoryCarou
                 </div>
 
                 {/* Category Name */}
-                <p className="font-['Inter',sans-serif] text-[#003b3c] text-[16px] text-center max-w-[140px] leading-[1.3] group-hover:text-[#009296] transition-colors">
+                <p className="font-['Inter',sans-serif] text-[#003b3c] text-[16px] text-center w-full leading-[1.3] group-hover:text-[#009296] transition-colors">
                   {category.name}
                 </p>
               </button>

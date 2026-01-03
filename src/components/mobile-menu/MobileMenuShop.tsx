@@ -49,7 +49,7 @@ export default function MobileMenuShop({
   };
 
   return (
-    <div className="content-stretch flex flex-col gap-[8px] items-start w-full" data-name="menu">
+    <div className="content-stretch flex flex-col gap-[16px] items-start w-full" data-name="menu">
       {/* Expandable Sections */}
       {shopSections.map((section, index) => (
         <ExpandableSection
@@ -66,6 +66,7 @@ export default function MobileMenuShop({
             }
           }}
           customIndex={index}
+          icon={section.icon}
         />
       ))}
 
@@ -77,10 +78,10 @@ export default function MobileMenuShop({
           initial="hidden"
           animate="visible"
           variants={itemVariants}
-          className="content-stretch flex items-center justify-between w-full cursor-pointer"
+          className={`content-stretch flex items-center justify-between w-full cursor-pointer ${index === 0 ? 'mt-[32px]' : ''}`}
           onClick={() => handleLinkClick(link.action)}
         >
-          <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.4] not-italic text-[#003b3c] text-[24px] text-nowrap tracking-[-0.48px] whitespace-pre">
+          <p className="font-['Inter:Medium',sans-serif] font-medium leading-[1.3] not-italic text-[#003b3c] text-[26px] text-nowrap tracking-[-0.52px] whitespace-pre">
             {link.label}
           </p>
         </motion.div>

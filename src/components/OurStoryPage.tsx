@@ -1,11 +1,14 @@
 import svgPaths from "../imports/svg-dtsi8ijs14";
-import imgAndrewLessman from "figma:asset/57c0a2c73038ec880e929f319cc00673eadd1d96.png";
+import imgAndrewLessman from "figma:asset/384ef49028b56ed05243dbdcd0905aa0a6fec69e.png";
 import imgSolarPanels from "figma:asset/ef394230c09eec394da41c87196d663833c1283c.png";
 import imgPill from "figma:asset/51bfd1cd02e5e96025702f9020e2597cdefc893c.png";
+import imgAndrewEducation from "figma:asset/fd37985b5e095f1bed66c1ed2ce98843526dc5bf.png";
+import imgEarthFromSpace from "figma:asset/12a0d600c05e6f49713d60e3fad495b6e99550cc.png";
 import { motion, useInView } from 'motion/react';
 import { useRef, useState, useEffect } from 'react';
 import { Sun, ShieldCheck, FlaskConical, Leaf } from 'lucide-react';
 import React from 'react';
+import { StorySection } from './StorySection';
 
 // ============================================================================
 // BREAKPOINT TYPE
@@ -31,14 +34,14 @@ function SectionHeadline({ eyebrow, headline, align = 'center', animated = false
   
   const containerClass = align === 'center' 
     ? breakpoint === 'S' 
-      ? "content-stretch flex flex-col gap-[40px] lg:gap-[30px] items-center relative shrink-0 w-full"
-      : "content-stretch flex flex-col gap-[40px] lg:gap-[30px] items-center relative shrink-0 w-[785px] lg:w-[650px]"
+      ? "content-stretch flex flex-col gap-[40px] items-center relative shrink-0 w-full"
+      : "content-stretch flex flex-col gap-[40px] items-center relative shrink-0 w-[785px] lg:w-[650px]"
     : "content-stretch flex flex-col gap-[40px] md:gap-[30px] lg:gap-[30px] items-start relative shrink-0 w-full";
   
   const headlineClass = align === 'center'
     ? breakpoint === 'S'
-      ? "font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] relative shrink-0 text-[#003b3c] text-[44px] text-center tracking-[-0.88px] w-full"
-      : "font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] min-w-full relative shrink-0 text-[#003b3c] text-[72px] lg:text-[92px] text-center tracking-[-1.44px] lg:tracking-[-1.84px] w-[min-content]"
+      ? "font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] relative shrink-0 text-[#003b3c] text-[48px] text-center tracking-[-0.96px] w-full"
+      : "font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] min-w-full relative shrink-0 text-[#003b3c] text-[72px] lg:text-[120px] text-center tracking-[-1.44px] lg:tracking-[-2.4px] w-[min-content]"
     : "font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] min-w-full relative shrink-0 text-[#003b3c] text-[34px] m:text-[38px] lg:text-[48px] hd:text-[58px] tracking-[-1.16px] w-[min-content]";
   
   const eyebrowClass = align === 'center'
@@ -90,7 +93,7 @@ function QuoteBlock({ quote, author }: QuoteBlockProps) {
       <div className="size-full">
         <div className="content-stretch flex flex-col items-start px-[40px] s:px-[55px] py-[40px] s:py-[50px] relative w-full">
           <div className="content-stretch flex flex-col font-['Inter:Regular',sans-serif] font-normal gap-[20px] items-start leading-[1.4] not-italic relative shrink-0 text-[#003b3c] w-full">
-            <p className="relative shrink-0 text-[20px] s:text-[20px] m:text-[24px] lg:text-[28px] tracking-[-0.4px] s:tracking-[-0.4px] m:tracking-[-0.48px] lg:tracking-[-0.56px] w-full">{quote}</p>
+            <p className="relative shrink-0 text-[20px] s:text-[20px] m:text-[24px] lg:text-[24px] xl:text-[24px] hd:text-[28px] tracking-[-0.4px] s:tracking-[-0.4px] m:tracking-[-0.48px] lg:tracking-[-0.48px] xl:tracking-[-0.48px] hd:tracking-[-0.56px] w-full">{quote}</p>
             <p className="relative shrink-0 text-[16px] s:text-[20px] tracking-[-0.16px] s:tracking-[-0.2px] w-full">{author}</p>
           </div>
         </div>
@@ -144,7 +147,7 @@ function StickyContent({ headline, body, breakpoint = 'XL' }: StickyContentProps
       data-name="sticky-content"
     >
       {headline}
-      <div className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] text-[16px] lg:text-[20px] tracking-[-0.32px] lg:tracking-[-0.4px] w-full xl:max-w-[540px] ${bodyAlignClass}`}>
+      <div className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] text-[16px] lg:text-[20px] xl:text-[20px] hd:text-[20px] tracking-[-0.32px] lg:tracking-[-0.4px] w-full xl:max-w-[540px] ${bodyAlignClass}`}>
         {body}
       </div>
     </motion.div>
@@ -259,12 +262,12 @@ function HeroCopy({ breakpoint }: { breakpoint: Breakpoint }) {
         transition={{ duration: 0.8, delay: 0.4 }}
         className={`font-['STIX_Two_Text:Regular',sans-serif] font-normal ${headlineHeight} leading-[1.1] relative shrink-0 ${headlineFontSize} ${headlineTracking} w-full`}
       >
-        <p className="mb-0">
+        <p className={`mb-0 ${headlineFontSize} ${headlineTracking}`}>
           <span className="font-['STIX_Two_Text:Regular',sans-serif] font-normal">Made</span>
           <span className="font-['STIX_Two_Text:Regular',sans-serif] font-normal"> </span>
           <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#48e1dc]">differently.</span>
         </p>
-        <p>For a reason.</p>
+        <p className={`${headlineFontSize} ${headlineTracking}`}>For a reason.</p>
       </motion.div>
       <motion.p 
         initial={{ opacity: 0, y: 20 }}
@@ -356,7 +359,7 @@ function LargePillImage() {
         className="absolute top-[6px] md:top-[10px] lg:top-[13px] left-1/2 -translate-x-1/2 overflow-hidden w-[315px] h-[120px] md:w-[560px] md:h-[214px] lg:w-[700px] lg:h-[267px]"
         style={{
           mixBlendMode: 'overlay',
-          opacity: 0.7,
+          opacity: 0.9,
           clipPath: 'url(#pillShapeClip)',
         }}
       >
@@ -525,25 +528,50 @@ function Hero({ breakpoint }: { breakpoint: Breakpoint }) {
 }
 
 // ============================================================================
-// FOUNDER SECTION
+// OUR STORY BLOCK (Reusable content block for Our Story page)
 // ============================================================================
 
-function FounderSection({ breakpoint }: { breakpoint: Breakpoint }) {
-  const fontSize = breakpoint === 'S' ? 'text-[44px]' : breakpoint === 'M' ? 'text-[38px]' : breakpoint === 'HD' ? 'text-[58px]' : 'text-[48px]';
+interface OurStoryBlockProps {
+  breakpoint: Breakpoint;
+  eyebrow: string;
+  headline: React.ReactNode;
+  bodyContent: React.ReactNode;
+  imageSlot: React.ReactNode;
+  imageOnRight?: boolean;
+  paddingTop?: string;
+}
+
+function OurStoryBlock({ 
+  breakpoint, 
+  eyebrow, 
+  headline, 
+  bodyContent, 
+  imageSlot, 
+  imageOnRight = true,
+  paddingTop 
+}: OurStoryBlockProps) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
   
-  // Responsive paddingTop - smaller on M, standard on L/XL/HD
-  const paddingTop = breakpoint === 'M' ? '200px' : '338px';
+  const isMobile = breakpoint === 'S';
+  const sectionPaddingTop = paddingTop || (isMobile ? 'pt-[60px]' : 'pt-[300px] md:pt-[300px] lg:pt-[300px]');
   
-  // Center align on S breakpoint
-  const alignClass = breakpoint === 'S' ? 'items-center' : 'items-start';
-  const textAlignClass = breakpoint === 'S' ? 'text-center' : '';
+  const padding = isMobile ? 'px-[24px] pb-[40px]' : 'px-[40px] pb-[55px]';
+  const eyebrowSize = isMobile ? 'text-[14px]' : 'text-[16px] lg:text-[20px]';
+  const headlineSize = breakpoint === 'S' || breakpoint === 'M' ? 'text-3xl' : breakpoint === 'HD' ? 'text-7xl' : breakpoint === 'XL' ? 'text-6xl' : 'text-4xl';
+  const headlineTracking = breakpoint === 'S' || breakpoint === 'M' ? 'tracking-[-0.68px]' : breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : 'tracking-[-0.76px]';
+  const layoutDirection = isMobile ? 'flex-col' : 'flex-row';
+  const contentGap = isMobile ? 'gap-[40px]' : 'gap-[100px]';
   
-  const headline = (
-    <div className={`content-stretch flex flex-col gap-[40px] ${alignClass} relative shrink-0 w-full`} data-name="headline group">
-      <div className={`font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] relative shrink-0 text-[#003b3c] tracking-[-1.16px] w-full ${textAlignClass}`}>
-        <p className={`mb-0 ${fontSize}`}>Founder owned.</p>
-        <p className={`text-[#009296] ${fontSize}`}>Always.</p>
-      </div>
+  const textOrder = isMobile ? 'order-2' : imageOnRight ? 'order-1' : 'order-2';
+  const imageOrder = isMobile ? 'order-1' : imageOnRight ? 'order-2' : 'order-1';
+  
+  const headlineSection = (
+    <div className="flex flex-col gap-[40px]">
+      <h2 className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] text-[#003b3c] ${headlineSize} ${headlineTracking}`}>
+        {headline}
+      </h2>
+      
       <div className="h-0 relative shrink-0 w-[50px]" data-name="line">
         <div className="absolute bottom-0 left-0 right-0 top-[-1px]">
           <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 50 1">
@@ -551,61 +579,51 @@ function FounderSection({ breakpoint }: { breakpoint: Breakpoint }) {
           </svg>
         </div>
       </div>
-      <p className={`font-['Inter:Medium',sans-serif] font-medium leading-[1.4] not-italic relative shrink-0 text-[#009296] text-[20px] tracking-[2px] w-full uppercase ${textAlignClass}`}>MEET ANDREW LESSMAN</p>
+      
+      <p className={`font-['Inter:Medium',sans-serif] font-medium leading-[1.4] text-[#009296] uppercase tracking-[1.4px] ${eyebrowSize}`}>
+        {eyebrow}
+      </p>
     </div>
   );
-
-  const body = (
-    <>
-      <p className="mb-0">Andrew Lessman—biochemist, law student, and elite decathlon athlete—founded ProCaps in 1979 after realizing most supplements were low quality and made without regard to scientific research.</p>
-      <p className="mb-0">&nbsp;</p>
-      <p>{`He created the world's first 100% pure, additive-free vitamins for his own athletic needs. The company remains privately owned with no shareholders or board of directors—just Andrew's unwavering commitment to your health.`}</p>
-    </>
+  
+  const textContent = (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{ duration: 0.6 }}
+      className={`flex flex-col gap-[40px] max-w-[740px] min-w-0 ${textOrder} ${isMobile ? 'w-full' : ''}`}
+    >
+      {headlineSection}
+      {bodyContent}
+    </motion.div>
   );
-
-  if (breakpoint === 'S') {
-    // S breakpoint: simple stacked layout without StickyContent
-    return (
-      <div className="bg-white w-full" style={{ paddingTop: '40px', paddingBottom: '60px' }}>
-        <div className="flex flex-col gap-[80px]">
-          {/* Headline - 60px padding */}
-          <div className="px-[60px]">
-            <div className={`content-stretch flex flex-col gap-[40px] ${alignClass} relative shrink-0 w-full`}>
-              {headline}
-              <div className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] text-[16px] tracking-[-0.32px] w-full ${textAlignClass}`}>
-                {body}
+  
+  const imageContent = (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      className={`${isMobile ? 'w-full' : 'max-w-[740px] min-w-0'} ${imageOrder}`}
+    >
+      {imageSlot}
+    </motion.div>
+  );
+  
+  return (
+    <div ref={ref} className={`${sectionPaddingTop} bg-white w-full`}>
+      <div className="size-full">
+        <div className={`content-stretch flex flex-col items-start ${padding} relative w-full`}>
+          <div className="content-stretch flex flex-col items-center relative shrink-0 w-full">
+            <div className="max-w-[1600px] mx-auto w-full">
+              <div className={`flex ${layoutDirection} ${contentGap} items-center`}>
+                {textContent}
+                {imageContent}
               </div>
             </div>
           </div>
-          
-          {/* Images - 20px padding only */}
-          <div className="flex flex-col gap-[20px] w-full px-[20px]">
-            <ImageBlock src={imgAndrewLessman} alt="Andrew Lessman" />
-            <QuoteBlock 
-              quote={`"I'd rather focus on prevention than illness."`}
-              author="- Andrew Lessman"
-            />
-          </div>
         </div>
       </div>
-    );
-  }
-
-  return (
-    <TwoColumnSection
-      breakpoint={breakpoint}
-      paddingTop={paddingTop}
-      leftContent={<StickyContent headline={headline} body={body} breakpoint={breakpoint} />}
-      rightContent={
-        <AnimatedImageColumn breakpoint={breakpoint}>
-          <ImageBlock src={imgAndrewLessman} alt="Andrew Lessman" />
-          <QuoteBlock 
-            quote={`"I'd rather focus on prevention than illness."`}
-            author="- Andrew Lessman"
-          />
-        </AnimatedImageColumn>
-      }
-    />
+    </div>
   );
 }
 
@@ -670,7 +688,7 @@ function ValueCardsRow({ cards, breakpoint }: { cards: Array<{ title: string; de
 
 function ValuesSection({ breakpoint }: { breakpoint: Breakpoint }) {
   const paddingY = breakpoint === 'S' ? 'py-[60px]' : breakpoint === 'M' ? 'py-[100px]' : 'py-[120px]';
-  const paddingX = breakpoint === 'S' ? 'px-[20px]' : 'px-[176px] md:px-[40px] lg:px-[120px]';
+  const paddingX = breakpoint === 'S' ? 'px-[24px]' : 'px-[40px]';
   const gapSize = breakpoint === 'S' ? 'gap-[60px]' : 'gap-[120px] lg:gap-[100px]';
   
   const valuesData = {
@@ -704,25 +722,24 @@ function ValuesSection({ breakpoint }: { breakpoint: Breakpoint }) {
     <div className="bg-[#f6f2ec] relative shrink-0 w-full" data-name="values-section">
       <div className="size-full">
         <div className={`content-stretch flex flex-col items-start ${paddingX} ${paddingY} relative w-full`}>
-          <div className={`content-stretch flex flex-col ${gapSize} items-center relative shrink-0 w-full`}>
-            <SectionHeadline 
+          <div className="max-w-[1600px] mx-auto w-full">
+            <div className={`content-stretch flex flex-col ${gapSize} items-center relative shrink-0 w-full`}>
+              <SectionHeadline 
               eyebrow="WHAT SETS US APART"
               headline={
                 breakpoint === 'S' ? (
                   <>
-                    <p className="font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] mb-0 text-[44px] tracking-[-0.88px]">Changing times,</p>
-                    <p className="font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] text-[44px] tracking-[-0.88px]">
+                    <p className="font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] mb-0 text-[48px] tracking-[-0.96px]">Changing times,</p>
+                    <p className="font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] text-[48px] tracking-[-0.96px]">
                       <span className="text-[#003b3c]">enduring</span>
                       <span>{` values.`}</span>
                     </p>
                   </>
                 ) : (
                   <>
-                    <p className="font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] mb-0 text-[72px] lg:text-[92px] tracking-[-1.44px] lg:tracking-[-1.84px]">Changing times,</p>
-                    <p className="font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] text-[72px] lg:text-[92px] tracking-[-1.44px] lg:tracking-[-1.84px]">
-                      <span className="text-[#003b3c]">enduring</span>
-                      <span>{` values.`}</span>
-                    </p>
+                    <span className="whitespace-nowrap">Changing times,</span>
+                    <br aria-hidden="true" />
+                    <span className="text-[#003b3c] whitespace-nowrap">enduring values.</span>
                   </>
                 )
               }
@@ -752,6 +769,7 @@ function ValuesSection({ breakpoint }: { breakpoint: Breakpoint }) {
                 <ValueCardsRow cards={valuesData.row2} breakpoint={breakpoint} />
               </div>
             )}
+            </div>
           </div>
         </div>
       </div>
@@ -933,90 +951,6 @@ function ByTheNumbersSection({ breakpoint }: { breakpoint: Breakpoint }) {
   );
 }
 
-function EnvironmentalSection({ breakpoint }: { breakpoint: Breakpoint }) {
-  const fontSize = breakpoint === 'S' ? 'text-[44px]' : breakpoint === 'M' ? 'text-[38px]' : breakpoint === 'HD' ? 'text-[58px]' : 'text-[48px]';
-  
-  // Top padding adjusted to match spacing between sections
-  const paddingTop = breakpoint === 'M' ? '60px' : '100px';
-  const paddingBottom = breakpoint === 'M' ? '100px' : '120px';
-  
-  // Center align on S breakpoint
-  const alignClass = breakpoint === 'S' ? 'items-center' : 'items-start';
-  const textAlignClass = breakpoint === 'S' ? 'text-center' : '';
-  
-  const headline = (
-    <div className={`content-stretch flex flex-col gap-[40px] ${alignClass} relative shrink-0 w-full`} data-name="headline group">
-      <div className={`font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] relative shrink-0 text-[#003b3c] tracking-[-1.16px] w-full ${textAlignClass}`}>
-        <p className={`mb-0 ${fontSize}`}>Solar powered.</p>
-        <p className={`text-[#009296] ${fontSize}`}>Future focused.</p>
-      </div>
-      <div className="h-0 relative shrink-0 w-[50px]" data-name="line">
-        <div className="absolute bottom-0 left-0 right-0 top-[-1px]">
-          <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 50 1">
-            <line stroke="#009296" x2="50" y1="0.5" y2="0.5" />
-          </svg>
-        </div>
-      </div>
-      <p className={`font-['Inter:Medium',sans-serif] font-medium leading-[1.4] not-italic relative shrink-0 text-[#009296] text-[20px] tracking-[2px] w-full uppercase ${textAlignClass}`}>ENVIRONMENTAL LEADERSHIP</p>
-    </div>
-  );
-
-  const body = (
-    <>
-      <p className="mb-0">Our Henderson, Nevada facility features one of the largest private solar installations in the world, generating over 25 million kWh of clean energy annually.</p>
-      <p className="mb-0">&nbsp;</p>
-      <p>LEED Gold certified for environmental excellence, our operations prevent over 15,000 tons of CO₂ emissions each year—equivalent to taking 3,000 cars off the road.</p>
-    </>
-  );
-
-  if (breakpoint === 'S') {
-    // S breakpoint: simple stacked layout without StickyContent
-    return (
-      <div className="bg-white w-full" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
-        <div className="flex flex-col gap-[80px]">
-          {/* Headline - 60px padding */}
-          <div className="px-[60px]">
-            <div className={`content-stretch flex flex-col gap-[40px] ${alignClass} relative shrink-0 w-full`}>
-              {headline}
-              <div className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] text-[16px] tracking-[-0.32px] w-full ${textAlignClass}`}>
-                {body}
-              </div>
-            </div>
-          </div>
-          
-          {/* Images - 20px padding only */}
-          <div className="flex flex-col gap-[20px] w-full px-[20px]">
-            <div className="aspect-[789/800] bg-[#ccd8d8] overflow-clip rounded-[20px] shrink-0 w-full" />
-            <QuoteBlock 
-              quote={`"We're not just making supplements. We're protecting the planet for future generations."`}
-              author="- Andrew Lessman"
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <TwoColumnSection
-      breakpoint={breakpoint}
-      bgColor="white"
-      paddingTop={paddingTop}
-      paddingBottom={paddingBottom}
-      leftContent={<StickyContent headline={headline} body={body} breakpoint={breakpoint} />}
-      rightContent={
-        <AnimatedImageColumn breakpoint={breakpoint}>
-          <div className="aspect-[789/800] bg-[#ccd8d8] overflow-clip rounded-[20px] shrink-0 w-full" />
-          <QuoteBlock 
-            quote={`"We're not just making supplements. We're protecting the planet for future generations."`}
-            author="- Andrew Lessman"
-          />
-        </AnimatedImageColumn>
-      }
-    />
-  );
-}
-
 // ============================================================================
 // TIMELINE SECTION
 // ============================================================================
@@ -1077,7 +1011,7 @@ function TimelineSection({ breakpoint }: { breakpoint: Breakpoint }) {
             initial={{ scale: 0, opacity: 0 }}
             animate={itemInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
             transition={{ duration: 0.5, delay: circleDelay, ease: "easeOut" }}
-            className="relative z-10 flex items-center justify-center w-[140px] h-[140px] rounded-full border-[2px] border-[#009296] bg-white"
+            className="relative z-10 flex items-center justify-center w-[160px] h-[160px] rounded-full border-[2px] border-[#009296] bg-white"
           >
             <span className="font-['Inter:Medium',sans-serif] font-medium text-[#009296] text-[20px] tracking-[0.4px]">
               {year}
@@ -1086,7 +1020,7 @@ function TimelineSection({ breakpoint }: { breakpoint: Breakpoint }) {
 
           {/* Vertical line below - grows down from bottom of circle to top of next circle */}
           {!isLastItem && (
-            <div className="absolute top-[140px] overflow-hidden w-[1.5px]" style={{ height: '200px' }}>
+            <div className="absolute top-[160px] overflow-hidden w-[1.5px]" style={{ height: '200px' }}>
               <motion.div
                 initial={{ height: 0 }}
                 animate={itemInView ? { height: '200px' } : { height: 0 }}
@@ -1194,8 +1128,9 @@ function TimelineSection({ breakpoint }: { breakpoint: Breakpoint }) {
               eyebrow="OUR JOURNEY"
               headline={
                 <>
-                  Four decades<br />
-                  of excellence.
+                  <span className="whitespace-nowrap">Four decades</span>
+                  <br aria-hidden="true" />
+                  <span className="whitespace-nowrap">of excellence.</span>
                 </>
               }
               align="center"
@@ -1235,18 +1170,23 @@ function TimelineSection({ breakpoint }: { breakpoint: Breakpoint }) {
 // ============================================================================
 
 function EducationSection({ breakpoint }: { breakpoint: Breakpoint }) {
-  const fontSize = breakpoint === 'S' ? 'text-[44px]' : breakpoint === 'M' ? 'text-[38px]' : breakpoint === 'HD' ? 'text-[58px]' : 'text-[48px]';
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
   
+  const fontSize = breakpoint === 'S' || breakpoint === 'M' ? 'text-3xl' : breakpoint === 'HD' ? 'text-7xl' : breakpoint === 'XL' ? 'text-6xl' : 'text-4xl';
+  const tracking = breakpoint === 'S' || breakpoint === 'M' ? 'tracking-[-0.68px]' : breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : 'tracking-[-0.76px]';
   const paddingTop = breakpoint === 'M' ? '100px' : '120px';
   const paddingBottom = breakpoint === 'M' ? '100px' : '120px';
-  
-  // Center align on S breakpoint
   const alignClass = breakpoint === 'S' ? 'items-center' : 'items-start';
   const textAlignClass = breakpoint === 'S' ? 'text-center' : '';
   
+  // Body text size: 16px on S/M, 20px on L/XL/HD
+  const bodyTextSize = breakpoint === 'S' || breakpoint === 'M' ? 'text-[16px]' : 'text-[20px]';
+  const bodyTracking = breakpoint === 'S' || breakpoint === 'M' ? 'tracking-[-0.32px]' : 'tracking-[-0.4px]';
+  
   const headline = (
     <div className={`content-stretch flex flex-col gap-[40px] ${alignClass} relative shrink-0 w-full`} data-name="headline group">
-      <div className={`font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] relative shrink-0 text-[#003b3c] tracking-[-1.16px] w-full ${textAlignClass}`}>
+      <div className={`font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] relative shrink-0 text-[#003b3c] ${tracking} w-full ${textAlignClass}`}>
         <p className={`mb-0 ${fontSize}`}>Knowledge is</p>
         <p className={`text-[#009296] ${fontSize}`}>power.</p>
       </div>
@@ -1261,30 +1201,21 @@ function EducationSection({ breakpoint }: { breakpoint: Breakpoint }) {
     </div>
   );
 
-  const body = (
-    <>
-      <p className="mb-0">Andrew personally hosts over 100 educational videos, explaining the science behind every product. No secrets. No hidden ingredients. Complete transparency.</p>
-      <p className="mb-0">&nbsp;</p>
-      <p>Every label lists every ingredient in plain English. Every product comes with Andrew's personal guarantee. Because when you understand what you're taking, you can make better decisions for your health.</p>
-    </>
-  );
-
   if (breakpoint === 'S') {
-    // S breakpoint: simple stacked layout without StickyContent
     return (
       <div className="bg-white w-full" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
         <div className="flex flex-col gap-[80px]">
-          {/* Headline - 60px padding */}
           <div className="px-[60px]">
             <div className={`content-stretch flex flex-col gap-[40px] ${alignClass} relative shrink-0 w-full`}>
               {headline}
               <div className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] text-[16px] tracking-[-0.32px] w-full ${textAlignClass}`}>
-                {body}
+                <p className="mb-0">Andrew personally hosts over 100 educational videos, explaining the science behind every product. No secrets. No hidden ingredients. Complete transparency.</p>
+                <p className="mb-0">&nbsp;</p>
+                <p>Every label lists every ingredient in plain English. Every product comes with Andrew's personal guarantee. Because when you understand what you're taking, you can make better decisions for your health.</p>
               </div>
             </div>
           </div>
           
-          {/* Images - 20px padding only */}
           <div className="flex flex-col gap-[20px] w-full px-[20px]">
             <div className="aspect-[789/800] bg-[#ccd8d8] overflow-clip rounded-[20px] shrink-0 w-full" />
             <QuoteBlock 
@@ -1298,22 +1229,77 @@ function EducationSection({ breakpoint }: { breakpoint: Breakpoint }) {
   }
 
   return (
-    <TwoColumnSection
-      breakpoint={breakpoint}
-      bgColor="white"
-      paddingTop={paddingTop}
-      paddingBottom={paddingBottom}
-      leftContent={<StickyContent headline={headline} body={body} breakpoint={breakpoint} />}
-      rightContent={
-        <AnimatedImageColumn breakpoint={breakpoint}>
-          <div className="aspect-[789/800] bg-[#ccd8d8] overflow-clip rounded-[20px] shrink-0 w-full" />
-          <QuoteBlock 
-            quote={`"I believe an informed customer is the best customer."`}
-            author="- Andrew Lessman"
-          />
-        </AnimatedImageColumn>
-      }
-    />
+    <div className="bg-white relative shrink-0 w-full" style={{ paddingTop, paddingBottom }}>
+      <div className="size-full">
+        <div className="content-stretch flex gap-[110px] md:gap-[40px] lg:gap-[40px] items-start px-[176px] md:px-[40px] lg:px-[120px] relative w-full">
+          <motion.div 
+            ref={ref}
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6 }}
+            className="content-stretch flex flex-col gap-[60px] md:gap-[40px] items-start relative shrink-0 w-[431px] md:w-auto md:flex-1 lg:w-[431px]"
+          >
+            {headline}
+            <div className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.4] not-italic relative shrink-0 text-[#003b3c] ${bodyTextSize} ${bodyTracking} w-full`}>
+              <p className="mb-0">Andrew personally hosts over 100 educational videos, explaining the science behind every product. No secrets. No hidden ingredients. Complete transparency.</p>
+              <p className="mb-0">&nbsp;</p>
+              <p>Every label lists every ingredient in plain English. Every product comes with Andrew's personal guarantee. Because when you understand what you're taking, you can make better decisions for your health.</p>
+            </div>
+          </motion.div>
+          
+          <AnimatedImageColumn breakpoint={breakpoint}>
+            <div className="aspect-[789/800] bg-[#ccd8d8] overflow-clip rounded-[20px] shrink-0 w-full" />
+            <QuoteBlock 
+              quote={`"I believe an informed customer is the best customer."`}
+              author="- Andrew Lessman"
+            />
+          </AnimatedImageColumn>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// VIDEO SECTION
+// ============================================================================
+
+function VideoSection({ breakpoint }: { breakpoint: Breakpoint }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.3 });
+  
+  return (
+    <div className="w-full aspect-video relative overflow-hidden">
+      <iframe
+        src="https://player.vimeo.com/video/1151210441?background=1&autoplay=1&loop=1&muted=1&title=0&byline=0&portrait=0&speed=1"
+        className="absolute top-0 left-0 w-full h-full"
+        style={{ border: 0 }}
+        allow="autoplay; fullscreen; picture-in-picture"
+        title="ProCaps Manufacturing Video"
+      />
+      
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-[#002525]/50 mix-blend-multiply" />
+      
+      {/* Centered headline */}
+      <div className="absolute inset-0 flex items-center justify-center px-4">
+        <motion.h2 
+          ref={ref}
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.7 }}
+          className={`font-['STIX_Two_Text:Regular',sans-serif] font-normal leading-[1.1] text-white text-center ${
+            breakpoint === 'S' 
+              ? 'text-[48px] tracking-[-0.96px]' 
+              : 'text-[72px] lg:text-[120px] tracking-[-1.44px] lg:tracking-[-2.4px]'
+          }`}
+        >
+          Solar powered.
+          <br />
+          Future focused.
+        </motion.h2>
+      </div>
+    </div>
   );
 }
 
@@ -1345,15 +1331,144 @@ export default function OurStoryPage() {
     return () => window.removeEventListener('resize', updateBreakpoint);
   }, []);
 
+  // Content for first OurStoryBlock (Founder owned. Always.)
+  const bodySize = breakpoint === 'XL' || breakpoint === 'HD' ? 'text-[20px]' : 'text-[16px]';
+  
+  const founderBodyContent = (
+    <div className={`flex flex-col gap-[16px]`}>
+      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] ${bodySize}`}>
+        Andrew Lessman—biochemist, law student, and elite decathlon athlete—founded ProCaps in 1979 after realizing most supplements were low quality and made without regard to scientific research.
+      </p>
+      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] ${bodySize}`}>
+        He created the world's first 100% pure, additive-free vitamins for his own athletic needs. The company remains privately owned with no shareholders or board of directors—just Andrew's unwavering commitment to your health.
+      </p>
+    </div>
+  );
+  
+  const founderImageSlot = (
+    <div className="flex flex-col gap-[20px] w-full">
+      <img 
+        src={imgAndrewLessman} 
+        alt="Andrew Lessman" 
+        className="w-full h-auto rounded-[20px]"
+      />
+      <QuoteBlock 
+        quote={`"I'd rather focus on prevention than illness."`}
+        author="- Andrew Lessman"
+      />
+    </div>
+  );
+
+  // Content for second OurStoryBlock (Environmental Leadership)
+  const environmentalBodyContent = (
+    <div className={`flex flex-col gap-[16px]`}>
+      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] ${bodySize}`}>
+        Our Henderson, Nevada facility features one of the largest private solar installations in the world, generating over 25 million kWh of clean energy annually.
+      </p>
+      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] ${bodySize}`}>
+        LEED Gold certified for environmental excellence, our operations prevent over 15,000 tons of CO₂ emissions each year—equivalent to taking 3,000 cars off the road.
+      </p>
+    </div>
+  );
+  
+  const environmentalImageSlot = (
+    <div className="flex flex-col gap-[20px] w-full">
+      <img 
+        src={imgEarthFromSpace} 
+        alt="Earth from space showing vibrant teal oceans" 
+        className="w-full h-auto rounded-[20px]"
+      />
+      <QuoteBlock 
+        quote={`"We're not just making supplements. We're protecting the planet for future generations."`}
+        author="- Andrew Lessman"
+      />
+    </div>
+  );
+
+  // Content for third OurStoryBlock (Education & Transparency)
+  const educationBodyContent = (
+    <div className={`flex flex-col gap-[16px]`}>
+      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] ${bodySize}`}>
+        Andrew personally hosts over 100 educational videos, explaining the science behind every product. No secrets. No hidden ingredients. Complete transparency.
+      </p>
+      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] ${bodySize}`}>
+        Every label lists every ingredient in plain English. Every product comes with Andrew's personal guarantee. Because when you understand what you're taking, you can make better decisions for your health.
+      </p>
+    </div>
+  );
+  
+  const educationImageSlot = (
+    <div className="flex flex-col gap-[20px] w-full">
+      <img 
+        src={imgAndrewEducation} 
+        alt="Andrew Lessman discussing supplement education" 
+        className="w-full h-auto rounded-[20px]"
+      />
+      <QuoteBlock 
+        quote={`"I believe an informed customer is the best customer."`}
+        author="- Andrew Lessman"
+      />
+    </div>
+  );
+
   return (
     <div className="bg-white flex flex-col items-start relative w-full overflow-x-hidden" data-name="ourstory desktop">
       <Hero breakpoint={breakpoint} />
-      <FounderSection breakpoint={breakpoint} />
+      
+      <OurStoryBlock 
+        breakpoint={breakpoint}
+        eyebrow="MEET ANDREW LESSMAN"
+        headline={
+          <>
+            Founder owned.
+            <br />
+            <span className="text-[#009296]">Always.</span>
+          </>
+        }
+        bodyContent={founderBodyContent}
+        imageSlot={founderImageSlot}
+        imageOnRight={true}
+      />
+      
       <ValuesSection breakpoint={breakpoint} />
       <ByTheNumbersSection breakpoint={breakpoint} />
-      <EnvironmentalSection breakpoint={breakpoint} />
+      
+      {/* Full-width video section */}
+      <VideoSection breakpoint={breakpoint} />
+      
+      <OurStoryBlock 
+        breakpoint={breakpoint}
+        eyebrow="ENVIRONMENTAL LEADERSHIP"
+        headline={
+          <>
+            We supplement health.
+            <br />
+            <span className="text-[#009296]">And the planet.</span>
+          </>
+        }
+        bodyContent={environmentalBodyContent}
+        imageSlot={environmentalImageSlot}
+        imageOnRight={true}
+        paddingTop="pt-[60px]"
+      />
+      
       <TimelineSection breakpoint={breakpoint} />
-      <EducationSection breakpoint={breakpoint} />
+      
+      <OurStoryBlock 
+        breakpoint={breakpoint}
+        eyebrow="EDUCATION & TRANSPARENCY"
+        headline={
+          <>
+            Knowledge is
+            <br />
+            <span className="text-[#009296]">power.</span>
+          </>
+        }
+        bodyContent={educationBodyContent}
+        imageSlot={educationImageSlot}
+        imageOnRight={true}
+        paddingTop="pt-[60px]"
+      />
     </div>
   );
 }

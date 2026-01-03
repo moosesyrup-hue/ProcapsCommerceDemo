@@ -141,7 +141,7 @@ function PhactCopy({ breakpoint }: { breakpoint: Breakpoint }) {
 
   return (
     <div className={`content-stretch flex flex-col gap-[20px] items-start relative shrink-0 text-[#003b3c] w-full ${spacing.textAlign}`}>
-      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 text-[0px] ${typography.headlineSize} ${typography.headlineTracking} w-full`}>
+      <p className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] relative shrink-0 ${typography.headlineSize} ${typography.headlineTracking} w-full`}>
         <span>The most rigorously tested, </span>
         <span className="font-['STIX_Two_Text:Italic',sans-serif] font-normal italic text-[#009296]">all-in-one</span>
         <span>{` cleansing experience.`}</span>

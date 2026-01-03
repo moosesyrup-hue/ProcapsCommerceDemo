@@ -9,6 +9,7 @@ import QuickView from "./QuickView";
 import FilterSidebar from "./FilterSidebar";
 import CollectionBanner from "./CollectionBanner";
 import CategoryCarousel from "./CategoryCarousel";
+import ProductCard from "./ProductCard";
 import { getCategoryBanner } from "../config/categoryData";
 
 // Icon Components
@@ -104,91 +105,8 @@ function Filters({ filtersVisible, onToggleFilters, activeFilterCount }: { filte
   );
 }
 
-// Product Card Component
-function ProductCard({ hasImage = true, onQuickView, headline }: { hasImage?: boolean; onQuickView?: () => void; headline?: React.ReactNode }) {
-  // Default headline
-  const defaultHeadline = (
-    <>
-      <span>An </span>
-      <span className="font-['STIX_Two_Text:Italic',sans-serif] italic text-[#009296]">Unparalleled </span>
-      Natural Source of Fiber
-    </>
-  );
-
-  return (
-    <div className="basis-0 bg-[#F6F2EC] grow h-full rounded-[10px] flex flex-col">
-      <div className="box-border flex flex-col items-center justify-between pb-[10px] md:pb-[20px] pt-[30px] md:pt-[40px] px-[10px] md:px-[20px] hd:px-[20px] h-full">
-        {/* Stars + Headline */}
-        <div className="w-full shrink-0">
-          <div className="box-border flex flex-col gap-[10px] md:gap-[20px] items-center px-[10px] md:px-[20px] hd:px-[25px] py-0">
-            {/* Ratings */}
-            <div className="flex gap-px items-start justify-center w-full">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="relative size-[14px] md:size-[24px]">
-                  <div className="absolute bottom-[9.55%] left-[2.45%] right-[2.45%] top-0">
-                    <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 23 22">
-                      <path d={svgPaths.p33530f00} fill="#F1A33A" />
-                    </svg>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            {/* Headline */}
-            <p className="product-headline font-['STIX_Two_Text:Regular',sans-serif] leading-[1.2] text-[#003b3c] text-center tracking-[-0.4px] xxl:tracking-[-0.44px] hd:tracking-[-0.56px]">
-              {headline ? headline : defaultHeadline}
-            </p>
-          </div>
-        </div>
-
-        {/* Image */}
-        <div className="aspect-square overflow-clip relative w-full">
-          {hasImage ? (
-            <img 
-              alt="" 
-              className="absolute inset-0 object-cover size-full" 
-              src={imgImage} 
-            />
-          ) : (
-            <div className="bg-[#e5ddd3] flex items-center justify-center size-full">
-              <div className="size-[66px]">
-                <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 66 66">
-                  <path d={svgPaths.pdc9e330} fill="#B9B1A8" />
-                </svg>
-              </div>
-            </div>
-          )}
-          
-          {/* Cart Button */}
-          {onQuickView && (
-            <button 
-              onClick={onQuickView}
-              className="absolute bottom-[0.49px] right-0 hover:opacity-80 transition-opacity cursor-pointer"
-            >
-              <div className="size-[50px]">
-                <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 50 50">
-                  <path d={svgPaths.ped05680} fill="white" />
-                </svg>
-              </div>
-              <div className="absolute bottom-[13.49px] right-[13px] size-[24px] pointer-events-none">
-                <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
-                  <g>
-                    <path d={svgPaths.p28485100} fill="#003B3C" stroke="#003B3C" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-                    <path d={svgPaths.pd438b00} fill="#003B3C" stroke="#003B3C" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-                    <path d={svgPaths.p88a8300} stroke="#003B3C" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-                  </g>
-                </svg>
-              </div>
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // Product Grid Component
-function ProductGrid({ filtersVisible, onQuickView }: { filtersVisible: boolean; onQuickView: () => void }) {
+function ProductGrid({ filtersVisible, onQuickView, onProductClick }: { filtersVisible: boolean; onQuickView: () => void; onProductClick?: () => void }) {
   const products = [
     { hasImage: true },
     { hasImage: false },
@@ -224,7 +142,7 @@ function ProductGrid({ filtersVisible, onQuickView }: { filtersVisible: boolean;
         <div className="grid grid-cols-2 gap-x-[10px] gap-y-[20px] md:gap-[20px] w-full lg:hidden">
           {products.map((product, i) => (
             <div key={i} className="flex flex-col gap-[20px]">
-              <ProductCard hasImage={product.hasImage} onQuickView={onQuickView} headline={getHeadline(i)} />
+              <ProductCard hasImage={product.hasImage} onQuickView={onQuickView} onCardClick={onProductClick} headline={getHeadline(i)} />
               {/* Product Info */}
               <div className="box-border flex flex-col gap-[20px] items-start pr-[20px] text-[#003b3c]">
                 <div className="flex flex-col gap-[10px] items-start leading-[1.4] text-[16px] w-full">
@@ -248,7 +166,7 @@ function ProductGrid({ filtersVisible, onQuickView }: { filtersVisible: boolean;
           }`}>
             {products.slice(0, desktopColumns).map((product, i) => (
               <div key={i} className="self-stretch">
-                <ProductCard hasImage={product.hasImage} onQuickView={onQuickView} headline={getHeadline(i)} />
+                <ProductCard hasImage={product.hasImage} onQuickView={onQuickView} onCardClick={onProductClick} headline={getHeadline(i)} />
               </div>
             ))}
           </div>
@@ -279,7 +197,7 @@ function ProductGrid({ filtersVisible, onQuickView }: { filtersVisible: boolean;
           }`}>
             {products.slice(desktopColumns, desktopColumns * 2).map((product, i) => (
               <div key={i} className="self-stretch">
-                <ProductCard hasImage={product.hasImage} onQuickView={onQuickView} headline={getHeadline(i + desktopColumns)} />
+                <ProductCard hasImage={product.hasImage} onQuickView={onQuickView} onCardClick={onProductClick} headline={getHeadline(i + desktopColumns)} />
               </div>
             ))}
           </div>
@@ -315,13 +233,15 @@ export default function CollectionPage({
   setCartItems,
   onOpenCart,
   category = 'digestive-health',
-  onNavigateToCategory
+  onNavigateToCategory,
+  onNavigateToProduct
 }: { 
   cartItems: any[];
   setCartItems: React.Dispatch<React.SetStateAction<any[]>>;
   onOpenCart: () => void;
   category?: string;
-  onNavigateToCategory?: (category: string) => void;
+  onNavigateToCategory: (category: string) => void;
+  onNavigateToProduct?: (productId: string) => void;
 }) {
   const [filtersVisible, setFiltersVisible] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -435,65 +355,69 @@ export default function CollectionPage({
       {/* Specials Tabs - Only show on specials page */}
       {category === 'specials' && (
         <div className="relative shrink-0 w-full border-b border-[#D9E2E2]">
-          <div className="box-border flex gap-[10px] md:gap-[20px] items-center px-[20px] md:px-[40px] pt-[20px] pb-0 overflow-x-auto">
+          <div className="box-border flex gap-[40px] md:gap-[60px] items-center px-[20px] md:px-[40px] overflow-x-auto">
             <button
               onClick={() => setActiveSpecialType('all')}
-              className={`px-[20px] py-[12px] rounded-t-[8px] transition-all whitespace-nowrap ${
-                activeSpecialType === 'all'
-                  ? 'bg-white border-t-2 border-x-2 border-[#009296] font-medium'
-                  : 'bg-transparent hover:bg-[#F6F2EC]'
+              className={`py-[16px] transition-all whitespace-nowrap relative ${
+                activeSpecialType === 'all' ? '' : 'hover:opacity-60'
               }`}
             >
-              <span className={`font-['Inter',sans-serif] text-[14px] md:text-[16px] ${
+              <span className={`font-['Inter',sans-serif] text-[14px] md:text-[16px] transition-colors ${
                 activeSpecialType === 'all' ? 'text-[#009296]' : 'text-[#003b3c]'
               }`}>
                 All Specials
               </span>
+              {activeSpecialType === 'all' && (
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#009296]" />
+              )}
             </button>
             
             <button
               onClick={() => setActiveSpecialType('todays-specials')}
-              className={`px-[20px] py-[12px] rounded-t-[8px] transition-all whitespace-nowrap ${
-                activeSpecialType === 'todays-specials'
-                  ? 'bg-white border-t-2 border-x-2 border-[#009296] font-medium'
-                  : 'bg-transparent hover:bg-[#F6F2EC]'
+              className={`py-[16px] transition-all whitespace-nowrap relative ${
+                activeSpecialType === 'todays-specials' ? '' : 'hover:opacity-60'
               }`}
             >
-              <span className={`font-['Inter',sans-serif] text-[14px] md:text-[16px] ${
+              <span className={`font-['Inter',sans-serif] text-[14px] md:text-[16px] transition-colors ${
                 activeSpecialType === 'todays-specials' ? 'text-[#009296]' : 'text-[#003b3c]'
               }`}>
                 Today's Specials
               </span>
+              {activeSpecialType === 'todays-specials' && (
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#009296]" />
+              )}
             </button>
             
             <button
               onClick={() => setActiveSpecialType('monthly-specials')}
-              className={`px-[20px] py-[12px] rounded-t-[8px] transition-all whitespace-nowrap ${
-                activeSpecialType === 'monthly-specials'
-                  ? 'bg-white border-t-2 border-x-2 border-[#009296] font-medium'
-                  : 'bg-transparent hover:bg-[#F6F2EC]'
+              className={`py-[16px] transition-all whitespace-nowrap relative ${
+                activeSpecialType === 'monthly-specials' ? '' : 'hover:opacity-60'
               }`}
             >
-              <span className={`font-['Inter',sans-serif] text-[14px] md:text-[16px] ${
+              <span className={`font-['Inter',sans-serif] text-[14px] md:text-[16px] transition-colors ${
                 activeSpecialType === 'monthly-specials' ? 'text-[#009296]' : 'text-[#003b3c]'
               }`}>
                 Monthly Specials
               </span>
+              {activeSpecialType === 'monthly-specials' && (
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#009296]" />
+              )}
             </button>
             
             <button
               onClick={() => setActiveSpecialType('winter-specials')}
-              className={`px-[20px] py-[12px] rounded-t-[8px] transition-all whitespace-nowrap ${
-                activeSpecialType === 'winter-specials'
-                  ? 'bg-white border-t-2 border-x-2 border-[#009296] font-medium'
-                  : 'bg-transparent hover:bg-[#F6F2EC]'
+              className={`py-[16px] transition-all whitespace-nowrap relative ${
+                activeSpecialType === 'winter-specials' ? '' : 'hover:opacity-60'
               }`}
             >
-              <span className={`font-['Inter',sans-serif] text-[14px] md:text-[16px] ${
+              <span className={`font-['Inter',sans-serif] text-[14px] md:text-[16px] transition-colors ${
                 activeSpecialType === 'winter-specials' ? 'text-[#009296]' : 'text-[#003b3c]'
               }`}>
                 Winter Specials
               </span>
+              {activeSpecialType === 'winter-specials' && (
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#009296]" />
+              )}
             </button>
           </div>
         </div>
@@ -502,6 +426,38 @@ export default function CollectionPage({
       {/* Category Carousel - Only show on "all-products" page */}
       {category === 'all-products' && onNavigateToCategory && (
         <CategoryCarousel onNavigateToCategory={onNavigateToCategory} />
+      )}
+      
+      {/* Body Part Carousel - Show on parent body-part page */}
+      {category === 'body-part' && onNavigateToCategory && (
+        <CategoryCarousel 
+          type="body-part"
+          onNavigateToCategory={(subCategory) => onNavigateToCategory(`body-part/${subCategory}`)} 
+        />
+      )}
+      
+      {/* Body Function Carousel - Show on parent body-function page */}
+      {category === 'body-function' && onNavigateToCategory && (
+        <CategoryCarousel 
+          type="body-function"
+          onNavigateToCategory={(subCategory) => onNavigateToCategory(`body-function/${subCategory}`)} 
+        />
+      )}
+      
+      {/* Health Issues Carousel - Show on parent health-issues page */}
+      {category === 'health-issues' && onNavigateToCategory && (
+        <CategoryCarousel 
+          type="health-issues"
+          onNavigateToCategory={(subCategory) => onNavigateToCategory(`health-issues/${subCategory}`)} 
+        />
+      )}
+      
+      {/* Product Category Carousel - Show on parent product-category page */}
+      {category === 'product-category' && onNavigateToCategory && (
+        <CategoryCarousel 
+          type="product-category"
+          onNavigateToCategory={(subCategory) => onNavigateToCategory(`product-category/${subCategory}`)} 
+        />
       )}
       
       <Filters 
@@ -532,7 +488,11 @@ export default function CollectionPage({
         
         {/* Product Grid - adjusts width */}
         <div className="flex-1 transition-all duration-300">
-          <ProductGrid filtersVisible={filtersVisible} onQuickView={() => setQuickViewOpen(true)} />
+          <ProductGrid 
+            filtersVisible={filtersVisible} 
+            onQuickView={() => setQuickViewOpen(true)} 
+            onProductClick={() => onNavigateToProduct?.('fibermucil')} 
+          />
         </div>
       </div>
     </>

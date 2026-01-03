@@ -76,13 +76,13 @@ export default function QuickView({ product, onClose, onAddToCart, onViewDetails
       {/* Header - Fixed */}
       <div className="flex-none border-b border-[#D9E2E2] px-[30px] py-[24px]">
         <div className="flex items-center justify-between gap-[20px]">
-          <h2 className="font-['STIX_Two_Text',sans-serif] text-[24px] text-[#003b3c]" style={{ fontWeight: 500 }}>
+          <h2 className="font-['STIX_Two_Text',sans-serif] text-xl text-[#003b3c]" style={{ fontWeight: 500 }}>
             Quick View
           </h2>
           <div className="flex items-center gap-[20px]">
             <button
               onClick={onViewDetails}
-              className="font-['Inter',sans-serif] text-[14px] text-[#003b3c] underline hover:opacity-70 transition-opacity"
+              className="font-['Inter',sans-serif] text-sm text-[#003b3c] underline hover:opacity-70 transition-opacity"
             >
               Product Details
             </button>
@@ -113,14 +113,14 @@ export default function QuickView({ product, onClose, onAddToCart, onViewDetails
 
             <div className="flex-1 min-w-0">
               {product.isSpecial && (
-                <p className="font-['Inter',sans-serif] text-[12px] text-[#D84315] uppercase tracking-[1.2px] mb-[8px]">
+                <p className="font-['Inter',sans-serif] text-xs text-[#D84315] uppercase tracking-[1.2px] mb-[8px]">
                   TODAY'S SPECIAL
                 </p>
               )}
-              <h3 className="font-['Inter',sans-serif] font-medium text-[20px] text-[#003b3c] mb-[8px]">
+              <h3 className="font-['Inter',sans-serif] font-medium text-lg text-[#003b3c] mb-[8px]">
                 {product.name}
               </h3>
-              <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] leading-[1.4]">
+              <p className="font-['Inter',sans-serif] text-sm text-[#406c6d] leading-[1.4]">
                 {product.description}
               </p>
             </div>
@@ -128,7 +128,7 @@ export default function QuickView({ product, onClose, onAddToCart, onViewDetails
 
           {/* Count Selector */}
           <div>
-            <p className="font-['Inter',sans-serif] text-[14px] text-[#003b3c] mb-[12px]">
+            <p className="font-['Inter',sans-serif] text-sm text-[#003b3c] mb-[12px]">
               Choose your count:
             </p>
             <div className="flex gap-[10px] flex-wrap">
@@ -138,7 +138,7 @@ export default function QuickView({ product, onClose, onAddToCart, onViewDetails
                   onClick={() => setSelectedCount(count.value)}
                   className={`
                     h-[44px] px-[24px] rounded-[999px] border transition-all duration-200
-                    font-['Inter',sans-serif] text-[14px]
+                    font-['Inter',sans-serif] text-sm
                     ${selectedCount === count.value
                       ? 'bg-[#009296] border-[#009296] text-white'
                       : 'bg-white border-[#D9E2E2] text-[#003b3c] hover:border-[#009296]'
@@ -153,7 +153,7 @@ export default function QuickView({ product, onClose, onAddToCart, onViewDetails
 
           {/* Purchase Type */}
           <div>
-            <p className="font-['Inter',sans-serif] text-[14px] text-[#003b3c] mb-[12px]">
+            <p className="font-['Inter',sans-serif] text-sm text-[#003b3c] mb-[12px]">
               Purchase type:
             </p>
             
@@ -186,15 +186,15 @@ export default function QuickView({ product, onClose, onAddToCart, onViewDetails
                         )}
                       </div>
                     </div>
-                    <p className="font-['Inter',sans-serif] font-medium text-[16px] text-[#003b3c]">
+                    <p className="font-['Inter',sans-serif] font-medium text-base text-[#003b3c]">
                       One-Time Purchase
                     </p>
                   </div>
                   <div className="flex items-center gap-[10px] shrink-0">
-                    <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] line-through text-right">
+                    <p className="font-['Inter',sans-serif] text-sm text-[#406c6d] line-through text-right">
                       ${basePrice.toFixed(2)}
                     </p>
-                    <p className="font-['Inter',sans-serif] font-medium text-[16px] text-[#D84315] text-right min-w-[60px]">
+                    <p className="font-['Inter',sans-serif] font-medium text-base text-[#D84315] text-right min-w-[60px]">
                       ${oneTimePrice.toFixed(2)}
                     </p>
                   </div>
@@ -232,25 +232,25 @@ export default function QuickView({ product, onClose, onAddToCart, onViewDetails
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-['Inter',sans-serif] font-medium text-[16px] text-[#003b3c] mb-[4px]">
+                        <p className="font-['Inter',sans-serif] font-medium text-base text-[#003b3c] mb-[4px]">
                           Subscribe & Save 10% Extra
                         </p>
-                        <p className="font-['Inter',sans-serif] text-[12px] text-[#406c6d]">
+                        <p className="font-['Inter',sans-serif] text-xs text-[#406c6d]">
                           Special price + 10% autoship discount
                         </p>
                       </div>
                     </div>
                     <div className="flex items-start gap-[10px] shrink-0">
                       <div className="flex items-center h-[24px]">
-                        <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] line-through text-right">
+                        <p className="font-['Inter',sans-serif] text-sm text-[#406c6d] line-through text-right">
                           ${basePrice.toFixed(2)}
                         </p>
                       </div>
                       <div className="flex flex-col items-end">
-                        <p className="font-['Inter',sans-serif] font-medium text-[16px] text-[#D84315] leading-[1.5] text-right min-w-[60px]">
+                        <p className="font-['Inter',sans-serif] font-medium text-base text-[#D84315] leading-[1.5] text-right min-w-[60px]">
                           ${subscribePrice.toFixed(2)}
                         </p>
-                        <p className="font-['Inter',sans-serif] text-[12px] text-[#406c6d] text-right">
+                        <p className="font-['Inter',sans-serif] text-xs text-[#406c6d] text-right">
                           /shipment
                         </p>
                       </div>
@@ -269,7 +269,7 @@ export default function QuickView({ product, onClose, onAddToCart, onViewDetails
                   <div style={{ overflow: 'hidden' }}>
                     <div className="px-[16px] pb-[16px]">
                       <div className="pt-[16px] border-t border-[#D9E2E2]">
-                        <p className="font-['Inter',sans-serif] text-[14px] text-[#003b3c] mb-[12px]">
+                        <p className="font-['Inter',sans-serif] text-sm text-[#003b3c] mb-[12px]">
                           Delivery frequency:
                         </p>
                         
@@ -284,7 +284,7 @@ export default function QuickView({ product, onClose, onAddToCart, onViewDetails
                               }}
                               className={`
                                 flex-1 h-[40px] rounded-[6px] border transition-all duration-200
-                                font-['Inter',sans-serif] text-[14px]
+                                font-['Inter',sans-serif] text-sm
                                 flex items-center justify-center
                                 ${frequency === days
                                   ? 'bg-[#009296] border-[#009296] text-white'
@@ -301,25 +301,25 @@ export default function QuickView({ product, onClose, onAddToCart, onViewDetails
                         <div className="flex flex-col gap-[8px]">
                           <div className="flex items-start gap-[8px]">
                             <Check className="w-[16px] h-[16px] text-[#009296] shrink-0 mt-[2px]" />
-                            <p className="font-['Inter',sans-serif] text-[12px] text-[#003b3c] leading-[1.4]">
+                            <p className="font-['Inter',sans-serif] text-xs text-[#003b3c] leading-[1.4]">
                               Save 10% + Free shipping
                             </p>
                           </div>
                           <div className="flex items-start gap-[8px]">
                             <Check className="w-[16px] h-[16px] text-[#009296] shrink-0 mt-[2px]" />
-                            <p className="font-['Inter',sans-serif] text-[12px] text-[#003b3c] leading-[1.4]">
+                            <p className="font-['Inter',sans-serif] text-xs text-[#003b3c] leading-[1.4]">
                               Easy to use account portal
                             </p>
                           </div>
                           <div className="flex items-start gap-[8px]">
                             <Check className="w-[16px] h-[16px] text-[#009296] shrink-0 mt-[2px]" />
-                            <p className="font-['Inter',sans-serif] text-[12px] text-[#003b3c] leading-[1.4]">
+                            <p className="font-['Inter',sans-serif] text-xs text-[#003b3c] leading-[1.4]">
                               Reminders before each order
                             </p>
                           </div>
                           <div className="flex items-start gap-[8px]">
                             <Check className="w-[16px] h-[16px] text-[#009296] shrink-0 mt-[2px]" />
-                            <p className="font-['Inter',sans-serif] text-[12px] text-[#003b3c] leading-[1.4]">
+                            <p className="font-['Inter',sans-serif] text-xs text-[#003b3c] leading-[1.4]">
                               Pause or cancel anytime
                             </p>
                           </div>
@@ -365,7 +365,7 @@ export default function QuickView({ product, onClose, onAddToCart, onViewDetails
               </svg>
             </button>
             
-            <p className="font-['Inter',sans-serif] font-medium text-[16px] text-[#003b3c] min-w-[30px] text-center">
+            <p className="font-['Inter',sans-serif] font-medium text-base text-[#003b3c] min-w-[30px] text-center">
               {quantity}
             </p>
             
@@ -419,7 +419,7 @@ export default function QuickView({ product, onClose, onAddToCart, onViewDetails
             {isAdding && (
               <Check className="w-[20px] h-[20px] text-white" strokeWidth={3} />
             )}
-            <span className="font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase">
+            <span className="font-['Inter',sans-serif] font-medium text-base text-white tracking-[1.92px] uppercase">
               {isAdding ? 'ITEM ADDED' : 'ADD TO CART'}
             </span>
           </button>

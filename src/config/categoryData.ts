@@ -289,6 +289,601 @@ export const categoryData: Record<string, CategoryBannerConfig> = {
     imageBackgroundColor: '#e5ddd3',
     svgFillColor: '#B9B1A8',
   },
+
+  // BODY PART - Parent category
+  'body-part': {
+    title: 'Body Part',
+    description: 'Target specific areas of your body with supplements designed to support optimal function and health.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  // Body Part Subcategories
+  'body-part/brain-and-nerves': {
+    title: 'Brain & Nerves',
+    description: 'Support cognitive function, mental clarity, and nervous system health.',
+    imageSrc: imgAllProducts, // TODO: Replace with actual image
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+  },
+
+  'body-part/cardiovascular-system': {
+    title: 'Cardiovascular System',
+    description: 'Comprehensive support for your heart and circulatory health.',
+    imageSrc: imgCardiovascular,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+  },
+
+  'body-part/digestive-system': {
+    title: 'Digestive System',
+    description: 'Maintain optimal digestive function and gut health.',
+    imageSrc: imgDigestiveHealth,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+  },
+
+  'body-part/eyes': {
+    title: 'Eyes',
+    description: 'Protect and nourish your vision with targeted eye health support.',
+    imageSrc: imgVisionHealth,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+  },
+
+  'body-part/hair-skin-and-nails': {
+    title: 'Hair, Skin & Nails',
+    description: 'Nourish your beauty from within with essential nutrients.',
+    imageSrc: imgBeauty,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+  },
+
+  'body-part/heart': {
+    title: 'Heart',
+    description: 'Support your heart\'s vital function with science-backed nutrients.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-part/immune-system': {
+    title: 'Immune System',
+    description: 'Strengthen your body\'s natural defenses and immune response.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-part/joints-and-bones': {
+    title: 'Joints & Bones',
+    description: 'Maintain strong bones and flexible joints for lifelong mobility.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-part/kidneys': {
+    title: 'Kidneys',
+    description: 'Support kidney function and urinary tract health.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-part/liver': {
+    title: 'Liver',
+    description: 'Support your liver\'s vital detoxification and metabolic functions.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-part/lungs': {
+    title: 'Lungs',
+    description: 'Support respiratory health and optimal lung function.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-part/muscles': {
+    title: 'Muscles',
+    description: 'Support muscle strength, recovery, and performance.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-part/prostate': {
+    title: 'Prostate',
+    description: 'Targeted support for prostate health and function.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-part/thyroid': {
+    title: 'Thyroid',
+    description: 'Support healthy thyroid function and metabolic balance.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  // BODY FUNCTION - Parent category
+  'body-function': {
+    title: 'Body Function',
+    description: 'Support your body\'s essential functions with targeted nutritional supplements designed to optimize performance.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  // Body Function Subcategories
+  'body-function/antioxidant-protection': {
+    title: 'Antioxidant Protection',
+    description: 'Defend against oxidative stress and free radical damage.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-function/blood-sugar-support': {
+    title: 'Blood Sugar Support',
+    description: 'Maintain healthy blood sugar levels naturally.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-function/bone-density': {
+    title: 'Bone Density',
+    description: 'Support strong, healthy bones throughout life.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-function/cellular-energy': {
+    title: 'Cellular Energy',
+    description: 'Fuel your cells for optimal energy production.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-function/circulation': {
+    title: 'Circulation',
+    description: 'Support healthy blood flow and cardiovascular function.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-function/detoxification': {
+    title: 'Detoxification',
+    description: 'Support your body\'s natural cleansing processes.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-function/digestive-health': {
+    title: 'Digestive Health',
+    description: 'Optimize digestive function and gut wellness.',
+    imageSrc: imgDigestiveHealth,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+  },
+
+  'body-function/hormonal-balance': {
+    title: 'Hormonal Balance',
+    description: 'Support healthy hormone levels naturally.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-function/immune-function': {
+    title: 'Immune Function',
+    description: 'Strengthen your body\'s natural immune response.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-function/joint-flexibility': {
+    title: 'Joint Flexibility',
+    description: 'Maintain joint mobility and comfort.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-function/memory-and-focus': {
+    title: 'Memory & Focus',
+    description: 'Support cognitive performance and mental clarity.',
+    imageSrc: imgAllProducts, // TODO: Replace with actual image
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+  },
+
+  'body-function/metabolism': {
+    title: 'Metabolism',
+    description: 'Support healthy metabolic function and energy balance.',
+    imageSrc: imgWeightManagement,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+  },
+
+  'body-function/muscle-recovery': {
+    title: 'Muscle Recovery',
+    description: 'Support muscle repair and post-exercise recovery.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'body-function/vision-health': {
+    title: 'Vision Health',
+    description: 'Support healthy vision and eye function.',
+    imageSrc: imgVisionHealth,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+  },
+
+  // HEALTH ISSUES - Parent category
+  'health-issues': {
+    title: 'Health Issues',
+    description: 'Address specific health concerns with targeted nutritional support designed to help you feel your best.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  // Health Issues Subcategories
+  'health-issues/allergies': {
+    title: 'Allergies',
+    description: 'Support your body\'s response to environmental allergens.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'health-issues/anxiety-and-stress': {
+    title: 'Anxiety & Stress',
+    description: 'Natural support for emotional balance and stress management.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'health-issues/arthritis': {
+    title: 'Arthritis',
+    description: 'Support joint comfort and mobility.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'health-issues/blood-pressure': {
+    title: 'Blood Pressure',
+    description: 'Support healthy blood pressure levels naturally.',
+    imageSrc: imgCardiovascular,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+  },
+
+  'health-issues/cholesterol': {
+    title: 'Cholesterol',
+    description: 'Support healthy cholesterol levels and cardiovascular wellness.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'health-issues/cognitive-decline': {
+    title: 'Cognitive Decline',
+    description: 'Support brain health and cognitive function as you age.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'health-issues/diabetes-support': {
+    title: 'Diabetes Support',
+    description: 'Nutritional support for healthy blood sugar management.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'health-issues/fatigue': {
+    title: 'Fatigue',
+    description: 'Natural energy support to help you power through your day.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'health-issues/inflammation': {
+    title: 'Inflammation',
+    description: 'Support your body\'s healthy inflammatory response.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'health-issues/insomnia': {
+    title: 'Insomnia',
+    description: 'Natural support for restful, restorative sleep.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'health-issues/joint-pain': {
+    title: 'Joint Pain',
+    description: 'Support joint comfort and reduce discomfort naturally.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'health-issues/poor-circulation': {
+    title: 'Poor Circulation',
+    description: 'Support healthy blood flow throughout your body.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'health-issues/weight-management': {
+    title: 'Weight Management',
+    description: 'Support healthy weight goals with balanced nutrition.',
+    imageSrc: imgWeightManagement,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+  },
+
+  'health-issues/weak-immunity': {
+    title: 'Weak Immunity',
+    description: 'Strengthen your immune system naturally.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  // PRODUCT CATEGORY - Parent category
+  'product-category': {
+    title: 'Product Categories',
+    description: 'Explore our complete range of premium supplements organized by category to help you find exactly what you need.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  // Product Category Subcategories (reusing existing category data)
+  'product-category/anti-aging': {
+    title: 'Anti-Aging',
+    description: 'Support healthy aging with scientifically formulated nutrients.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'product-category/beauty': {
+    title: 'Beauty',
+    description: 'Nourish your skin, hair, and nails from within.',
+    imageSrc: imgBeauty,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+  },
+
+  'product-category/beverages': {
+    title: 'Beverages',
+    description: 'Delicious and nutritious drinks to support your wellness.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'product-category/bone-and-skeletal-health': {
+    title: 'Bone & Skeletal Health',
+    description: 'Build and maintain strong bones throughout your life.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'product-category/brain-health': {
+    title: 'Brain Health',
+    description: 'Support cognitive function, memory, and mental clarity.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'product-category/cardiovascular-health': {
+    title: 'Cardiovascular Health',
+    description: 'Promote heart health and circulatory system wellness.',
+    imageSrc: imgCardiovascular,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+  },
+
+  'product-category/circulation': {
+    title: 'Circulation',
+    description: 'Support healthy blood flow throughout your body.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'product-category/digestive-health': {
+    title: 'Digestive Health',
+    description: 'Maintaining a healthy digestive system is crucial for your overall health.',
+    imageSrc: imgDigestiveHealth,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+  },
+
+  'product-category/energy': {
+    title: 'Energy',
+    description: 'Natural energy support for your active lifestyle.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'product-category/immune-health': {
+    title: 'Immune Health',
+    description: 'Strengthen your body\'s natural defense system.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'product-category/individual-vitamins-and-minerals': {
+    title: 'Individual Vitamins & Minerals',
+    description: 'Essential nutrients in their most effective forms.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'product-category/joint-health': {
+    title: 'Joint Health',
+    description: 'Support joint comfort, flexibility, and mobility.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'product-category/meals-and-proteins': {
+    title: 'Meals & Proteins',
+    description: 'Complete nutrition to fuel your body.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'product-category/multivitamins': {
+    title: 'Multivitamins',
+    description: 'Comprehensive daily nutrition in one formula.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'product-category/pet-products': {
+    title: 'Pet Products',
+    description: 'Premium supplements for your furry family members.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'product-category/sleep-and-relaxation': {
+    title: 'Sleep & Relaxation',
+    description: 'Natural support for restful sleep and relaxation.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'product-category/stress-and-mood': {
+    title: 'Stress & Mood',
+    description: 'Support emotional balance and stress resilience.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'product-category/sweeteners': {
+    title: 'Sweeteners',
+    description: 'Healthy alternatives to refined sugar.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
+
+  'product-category/vision-health': {
+    title: 'Vision Health',
+    description: 'Protect and support your eye health.',
+    imageSrc: imgVisionHealth,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+  },
+
+  'product-category/weight-management': {
+    title: 'Weight Management',
+    description: 'Healthy weight support through balanced nutrition.',
+    imageSrc: imgWeightManagement,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+  },
+
+  'product-category/other': {
+    title: 'Other',
+    description: 'Additional specialized formulas for unique health needs.',
+    svgPath: svgPaths.pdc9e330,
+    backgroundColor: '#F6F2EC',
+    imageBackgroundColor: '#e5ddd3',
+    svgFillColor: '#B9B1A8',
+  },
 };
 
 /**

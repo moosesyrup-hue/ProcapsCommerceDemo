@@ -36,12 +36,14 @@ export interface ShopSection {
   id: string;
   title: string;
   items: string[];
+  icon?: string; // Icon name from lucide-react
 }
 
 export const shopSections: ShopSection[] = [
   {
     id: 'categories',
     title: 'Categories',
+    icon: 'Package',
     items: [
       'Anti-Aging',
       'Antioxidants',
@@ -70,6 +72,7 @@ export const shopSections: ShopSection[] = [
   {
     id: 'bodyPart',
     title: 'Body Part',
+    icon: 'Heart',
     items: [
       'Arteries',
       'Bladder',
@@ -102,6 +105,7 @@ export const shopSections: ShopSection[] = [
   {
     id: 'bodyFunction',
     title: 'Body Function',
+    icon: 'Zap',
     items: [
       'Breathing or Respiration',
       'Cell protection',
@@ -127,6 +131,7 @@ export const shopSections: ShopSection[] = [
   {
     id: 'healthIssues',
     title: 'Health Issues',
+    icon: 'ShieldCheck',
     items: [
       'Joint Pain and Stiffness',
       'Heart and Blood Vessel Health',

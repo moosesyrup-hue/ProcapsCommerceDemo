@@ -9,12 +9,24 @@ import { motion, AnimatePresence } from 'motion/react';
 
 interface CartItem {
   id: string;
+  productId?: string;
   name: string;
   count: string;
   price: number;
   originalPrice?: number;
   quantity: number;
   image: string;
+  purchaseType?: 'one-time' | 'autoship' | 'flexpay';
+  
+  // Autoship specific
+  deliveryFrequency?: number;
+  autoshipDiscount?: number;
+  
+  // FlexPay specific
+  flexPayInstallments?: number;
+  flexPayAmount?: number;
+  
+  // Legacy field for backward compatibility
   frequency?: string;
 }
 
@@ -30,7 +42,7 @@ function Header({ itemCount, onViewCart, onClose, hideViewCart }: { itemCount: n
   return (
     <div className="sticky top-0 z-10 bg-white border-b border-[#D9E2E2] px-[30px] py-[24px]">
       <div className="flex items-center justify-between gap-[20px]">
-        <h2 className="font-['STIX_Two_Text',sans-serif] text-[24px] text-[#003b3c]" style={{ fontWeight: 500 }}>
+        <h2 className="font-['STIX_Two_Text',sans-serif] text-xl text-[#003b3c]" style={{ fontWeight: 500 }}>
           Your cart ({itemCount})
         </h2>
         <div className="flex items-center gap-[20px]">
@@ -59,24 +71,53 @@ function ProductImage({ src, alt }: { src: string; alt: string }) {
   );
 }
 
-function ProductTitleCount({ name, count, frequency }: { name: string; count: string; frequency?: string }) {
+function ProductTitleCount({ name, count, purchaseType, deliveryFrequency, flexPayInstallments, flexPayAmount, frequency }: { 
+  name: string; 
+  count: string; 
+  purchaseType?: 'one-time' | 'autoship' | 'flexpay';
+  deliveryFrequency?: number;
+  flexPayInstallments?: number;
+  flexPayAmount?: number;
+  frequency?: string;
+}) {
   return (
     <div className="content-stretch flex flex-col gap-[10px] items-start leading-[1.4] relative shrink-0 w-full">
-      <p className="font-['Inter',sans-serif] font-medium relative shrink-0 text-[#003b3c] text-[16px] w-full">
+      <p className="font-['Inter',sans-serif] font-medium relative shrink-0 text-[#003b3c] text-base w-full">
         {name}
       </p>
-      <p className="font-['Inter',sans-serif] font-normal relative shrink-0 text-[#406c6d] text-[14px] w-full">
+      <p className="font-['Inter',sans-serif] font-normal relative shrink-0 text-[#406c6d] text-sm w-full">
         {count}
       </p>
-      {frequency && (
+      
+      {/* Autoship Badge */}
+      {(purchaseType === 'autoship' || frequency) && (
         <div className="flex items-center gap-[6px]">
           <div className="bg-[#009296] text-white px-[8px] py-[2px] rounded-[4px]">
-            <p className="font-['Inter',sans-serif] text-[11px] uppercase tracking-[0.5px]">
+            <p className="font-['Inter',sans-serif] text-xs uppercase tracking-[0.5px]">
               Autoship
             </p>
           </div>
-          <p className="font-['Inter',sans-serif] text-[12px] text-[#009296]">
-            {frequency}
+          <p className="font-['Inter',sans-serif] text-xs text-[#009296]">
+            {frequency || `Every ${deliveryFrequency} days`}
+          </p>
+        </div>
+      )}
+      
+      {/* FlexPay Badge */}
+      {purchaseType === 'flexpay' && flexPayInstallments && flexPayAmount && (
+        <div className="flex flex-col gap-[4px]">
+          <div className="flex items-center gap-[6px]">
+            <div className="bg-[#7B61FF] text-white px-[8px] py-[2px] rounded-[4px]">
+              <p className="font-['Inter',sans-serif] text-xs uppercase tracking-[0.5px]">
+                FlexPay
+              </p>
+            </div>
+            <p className="font-['Inter',sans-serif] text-xs text-[#7B61FF]">
+              {flexPayInstallments} payments of ${flexPayAmount.toFixed(2)}
+            </p>
+          </div>
+          <p className="font-['Inter',sans-serif] text-xs text-[#406c6d]">
+            First payment charged today
           </p>
         </div>
       )}
@@ -138,7 +179,7 @@ function QuantitySelector({
   return (
     <div className="box-border content-stretch flex gap-[12px] items-center pb-0 pt-[20px] px-0 relative shrink-0">
       <IconRemove onClick={onDecrease} disabled={quantity <= 1} />
-      <p className="font-['Inter',sans-serif] font-medium leading-[1.4] relative shrink-0 text-[#003b3c] text-[16px] min-w-[20px] text-center">
+      <p className="font-['Inter',sans-serif] font-medium leading-[1.4] relative shrink-0 text-[#003b3c] text-base min-w-[20px] text-center">
         {quantity}
       </p>
       <IconAdd onClick={onIncrease} />
@@ -149,11 +190,11 @@ function QuantitySelector({
 function Price({ price, originalPrice }: { price: number; originalPrice?: number }) {
   return (
     <div className="content-stretch flex flex-col gap-[10px] items-end leading-[1.4] relative shrink-0 text-right">
-      <p className="font-['Inter',sans-serif] font-medium relative shrink-0 text-[#D84315] text-[16px]">
+      <p className="font-['Inter',sans-serif] font-medium relative shrink-0 text-[#D84315] text-base">
         ${price.toFixed(2)}
       </p>
       {originalPrice && originalPrice > price && (
-        <p className="font-['Inter',sans-serif] font-normal line-through relative shrink-0 text-[#406c6d] text-[14px]">
+        <p className="font-['Inter',sans-serif] font-normal line-through relative shrink-0 text-[#406c6d] text-sm">
           ${originalPrice.toFixed(2)}
         </p>
       )}
@@ -166,7 +207,15 @@ function ProductItem({ item, onUpdateQuantity }: { item: CartItem; onUpdateQuant
     <div className="content-stretch flex gap-[20px] items-start relative shrink-0 w-full">
       <ProductImage src={item.image} alt={item.name} />
       <div className="basis-0 content-stretch flex flex-col grow items-start justify-between min-h-px min-w-px relative self-stretch shrink-0">
-        <ProductTitleCount name={item.name} count={item.count} frequency={item.frequency} />
+        <ProductTitleCount 
+          name={item.name} 
+          count={item.count} 
+          purchaseType={item.purchaseType}
+          deliveryFrequency={item.deliveryFrequency}
+          flexPayInstallments={item.flexPayInstallments}
+          flexPayAmount={item.flexPayAmount}
+          frequency={item.frequency}
+        />
         <QuantitySelector
           quantity={item.quantity}
           onIncrease={() => onUpdateQuantity(item.id, item.quantity + 1)}
@@ -210,7 +259,7 @@ function FreeShippingProgress({ subtotal }: { subtotal: number }) {
       {/* Icon and Message */}
       <div className="flex items-center gap-[10px] w-full">
         <ShippingIcon />
-        <p className="font-['Inter',sans-serif] text-[14px] leading-[1.4] text-[#003b3c]">
+        <p className="font-['Inter',sans-serif] text-sm leading-[1.4] text-[#003b3c]">
           {hasUnlockedFreeShipping ? (
             <span className="font-medium">You've unlocked free shipping!</span>
           ) : (
@@ -310,12 +359,12 @@ function EmptyCartState({ onClose }: { onClose: () => void }) {
       </div>
       
       {/* Headline */}
-      <h2 className="font-['STIX_Two_Text',sans-serif] text-[#003b3c] text-[28px] tracking-[-0.28px] leading-[1.2] mb-[16px]" style={{ fontWeight: 500, fontStyle: 'normal' }}>
+      <h2 className="font-['STIX_Two_Text',sans-serif] text-[#003b3c] text-2xl tracking-[-0.28px] leading-[1.2] mb-[16px]" style={{ fontWeight: 500, fontStyle: 'normal' }}>
         Your cart is ready for you
       </h2>
       
       {/* Body Text */}
-      <p className="font-['Inter',sans-serif] text-[#406c6d] text-[16px] leading-[1.4] mb-[40px] max-w-[360px]">
+      <p className="font-['Inter',sans-serif] text-[#406c6d] text-base leading-[1.4] mb-[40px] max-w-[360px]">
         Ready to start your health journey? Browse our products to find the perfect supplements for your goals.
       </p>
       
@@ -324,7 +373,7 @@ function EmptyCartState({ onClose }: { onClose: () => void }) {
         onClick={onClose}
         className="bg-[#009296] hover:bg-[#007d81] transition-colors h-[50px] rounded-[999px] px-[20px] sm:px-[40px]"
       >
-        <span className="font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase">
+        <span className="font-['Inter',sans-serif] font-medium text-base text-white tracking-[1.92px] uppercase">
           Continue Shopping
         </span>
       </button>
@@ -332,8 +381,9 @@ function EmptyCartState({ onClose }: { onClose: () => void }) {
   );
 }
 
-function TotalAndCheckout({ total, onCheckout }: {
+function TotalAndCheckout({ total, onViewCart, onCheckout }: {
   total: number;
+  onViewCart: () => void;
   onCheckout: () => void;
 }) {
   return (
@@ -341,10 +391,10 @@ function TotalAndCheckout({ total, onCheckout }: {
       <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 w-full">
         {/* Total */}
         <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-          <p className="font-['Inter',sans-serif] font-medium leading-[1.4] relative shrink-0 text-[#003b3c] text-[16px]">
+          <p className="font-['Inter',sans-serif] font-medium leading-[1.4] relative shrink-0 text-[#003b3c] text-base">
             Total
           </p>
-          <p className="font-['Inter',sans-serif] font-medium leading-[1.4] relative shrink-0 text-[#003b3c] text-[16px]">
+          <p className="font-['Inter',sans-serif] font-medium leading-[1.4] relative shrink-0 text-[#003b3c] text-base">
             USD ${total.toFixed(2)}
           </p>
         </div>
@@ -356,7 +406,7 @@ function TotalAndCheckout({ total, onCheckout }: {
         >
           <div className="flex flex-row justify-center size-full">
             <div className="box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center px-[39px] py-[15px] relative w-full">
-              <p className="font-['Inter',sans-serif] font-medium leading-[normal] relative shrink-0 text-[16px] text-center text-white tracking-[1.92px] uppercase">
+              <p className="font-['Inter',sans-serif] font-medium leading-[normal] relative shrink-0 text-base text-center text-white tracking-[1.92px] uppercase">
                 CHECKOUT
               </p>
             </div>
@@ -392,7 +442,7 @@ export default function MiniCart({ items, onUpdateQuantity, onClose, onViewCart,
           <Header itemCount={items.length} onViewCart={onViewCart} onClose={onClose} />
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto px-[30px] py-[30px]">
+          <div className="flex-1 overflow-y-auto px-[30px] py-[30px] mini-cart-scroll">
             <div className="mb-[30px]">
               <FreeShippingProgress subtotal={subtotal} />
             </div>
@@ -401,7 +451,7 @@ export default function MiniCart({ items, onUpdateQuantity, onClose, onViewCart,
 
           {/* Footer */}
           <div className="sticky bottom-0 bg-white border-t border-[#D9E2E2] px-[30px] py-[20px]">
-            <TotalAndCheckout total={total} onCheckout={onCheckout} />
+            <TotalAndCheckout total={total} onViewCart={onViewCart} onCheckout={onCheckout} />
           </div>
         </>
       )}

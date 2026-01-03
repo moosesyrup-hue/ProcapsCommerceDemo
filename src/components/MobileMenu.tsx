@@ -30,7 +30,7 @@ import {
   MobileMenuHeader, 
   MobileMenuMain, 
   MobileMenuShop, 
-  MobileMenuButtons 
+  MobileMenuAccount 
 } from './mobile-menu';
 import { animationConfig, layoutConfig } from '../data/mobileMenuData';
 
@@ -40,8 +40,13 @@ interface MobileMenuProps {
   onNavigate?: (category: string) => void;
   onIngredientsClick?: () => void;
   onOurStoryClick?: () => void;
-  onRegister?: () => void;
-  onSignIn?: () => void;
+  isLoggedIn?: boolean;
+  userData?: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  } | null;
+  onAccountClick?: () => void;
 }
 
 export default function MobileMenu({ 
@@ -50,8 +55,9 @@ export default function MobileMenu({
   onNavigate, 
   onIngredientsClick, 
   onOurStoryClick,
-  onRegister,
-  onSignIn
+  isLoggedIn,
+  userData,
+  onAccountClick
 }: MobileMenuProps) {
   // State management via custom hook
   const {
@@ -73,19 +79,19 @@ export default function MobileMenu({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: animationConfig.backdropDuration }}
-            className="fixed inset-0 bg-black/40 z-50 m:block hidden"
+            className="fixed inset-0 bg-black/50 z-50"
             onClick={handleClose}
           />
           
           {/* Menu Panel */}
           <motion.div
-            initial={{ opacity: 0, x: 0 }}
+            initial={{ opacity: 0, x: '-100%' }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 0 }}
+            exit={{ opacity: 0, x: '-100%' }}
             transition={{ duration: animationConfig.menuPanelDuration }}
             className="fixed inset-0 m:inset-y-0 m:left-0 m:right-auto bg-white z-50 flex flex-col m:shadow-2xl"
             style={{ 
-              width: window.innerWidth >= 768 ? layoutConfig.panelWidth : '100%' 
+              width: window.innerWidth >= 768 ? layoutConfig.panelWidth : '90%' 
             }}
             data-name="mobile menu overlay"
           >
@@ -123,11 +129,15 @@ export default function MobileMenu({
               )}
             </div>
 
-            {/* Bottom Buttons - Only shown on main menu */}
+            {/* Account Section - Only shown on main menu */}
             {menuLevel === 'main' && (
-              <MobileMenuButtons
-                onRegister={onRegister}
-                onSignIn={onSignIn}
+              <MobileMenuAccount
+                isLoggedIn={isLoggedIn || false}
+                userData={userData}
+                onAccountClick={() => {
+                  handleClose();
+                  onAccountClick?.();
+                }}
               />
             )}
           </motion.div>

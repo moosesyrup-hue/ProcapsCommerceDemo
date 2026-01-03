@@ -18,7 +18,7 @@
 import { useState, useEffect } from 'react';
 
 export type MenuLevel = 'main' | 'shop';
-export type ExpandedSection = 'categories' | 'bodyPart' | 'bodyFunction' | 'healthIssues' | null;
+export type ExpandedSection = 'categories' | 'bodyPart' | 'bodyFunction' | 'healthIssues' | 'account' | null;
 
 interface UseMobileMenuProps {
   isOpen: boolean;
