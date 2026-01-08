@@ -4,9 +4,10 @@ import { headerData } from '../../data/headerData';
 interface HeaderBannerProps {
   isMobileTablet: boolean;
   isDesktop: boolean;
+  onDetailsClick?: () => void;
 }
 
-export default function HeaderBanner({ isMobileTablet, isDesktop }: HeaderBannerProps) {
+export default function HeaderBanner({ isMobileTablet, isDesktop, onDetailsClick }: HeaderBannerProps) {
   const { freeShippingBanner } = headerData;
 
   return (
@@ -21,7 +22,13 @@ export default function HeaderBanner({ isMobileTablet, isDesktop }: HeaderBanner
               {isMobileTablet && freeShippingBanner.mobileText}
               {isDesktop && (
                 <>
-                  {freeShippingBanner.desktopText}<span className="underline">{freeShippingBanner.desktopLinkText}</span>
+                  {freeShippingBanner.desktopText}
+                  <span 
+                    className="underline cursor-pointer hover:text-[#48E1DC] transition-colors"
+                    onClick={onDetailsClick}
+                  >
+                    {freeShippingBanner.desktopLinkText}
+                  </span>
                 </>
               )}
             </p>

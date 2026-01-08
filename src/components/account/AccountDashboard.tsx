@@ -3,15 +3,16 @@ import AccountOverview from './AccountOverview';
 import ProfileSection from './ProfileSection';
 import OrdersSection from './OrdersSection';
 import SubscriptionsSection from './SubscriptionsSection';
+import FlexpaySection from './FlexpaySection';
 import FavoritesSection from './FavoritesSection';
 
 interface AccountDashboardProps {
   userEmail: string;
   onClose?: () => void;
-  initialTab?: 'overview' | 'orders' | 'profile' | 'autoship' | 'favorites';
+  initialTab?: 'overview' | 'orders' | 'profile' | 'autoship' | 'flexpay' | 'favorites';
 }
 
-type TabType = 'overview' | 'orders' | 'profile' | 'autoship' | 'favorites';
+type TabType = 'overview' | 'orders' | 'profile' | 'autoship' | 'flexpay' | 'favorites';
 type CustomerType = 'existing' | 'new';
 
 export default function AccountDashboard({ userEmail, onClose, initialTab }: AccountDashboardProps) {
@@ -33,6 +34,7 @@ export default function AccountDashboard({ userEmail, onClose, initialTab }: Acc
     { id: 'orders' as TabType, label: 'Orders' },
     { id: 'profile' as TabType, label: 'Profile' },
     { id: 'autoship' as TabType, label: 'Autoship' },
+    { id: 'flexpay' as TabType, label: 'Flexpay' },
     { id: 'favorites' as TabType, label: 'Favorites' },
   ];
 
@@ -95,6 +97,7 @@ export default function AccountDashboard({ userEmail, onClose, initialTab }: Acc
         {activeTab === 'orders' && <OrdersSection isNewCustomer={customerType === 'new'} initialOrderId={initialOrderId} />}
         {activeTab === 'profile' && <ProfileSection userEmail={userEmail} isNewCustomer={customerType === 'new'} />}
         {activeTab === 'autoship' && <SubscriptionsSection isNewCustomer={customerType === 'new'} />}
+        {activeTab === 'flexpay' && <FlexpaySection isNewCustomer={customerType === 'new'} />}
         {activeTab === 'favorites' && <FavoritesSection isNewCustomer={customerType === 'new'} />}
       </div>
 

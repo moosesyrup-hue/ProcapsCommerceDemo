@@ -7,9 +7,10 @@ interface ProductCardProps {
   onQuickView?: () => void;
   onCardClick?: () => void;
   headline?: React.ReactNode;
+  imageSrc?: string;
 }
 
-export default function ProductCard({ hasImage = true, onQuickView, onCardClick, headline }: ProductCardProps) {
+export default function ProductCard({ hasImage = true, onQuickView, onCardClick, headline, imageSrc }: ProductCardProps) {
   // Default headline
   const defaultHeadline = (
     <>
@@ -54,7 +55,7 @@ export default function ProductCard({ hasImage = true, onQuickView, onCardClick,
             <img 
               alt="" 
               className="absolute inset-0 object-cover size-full group-hover:scale-105 transition-transform duration-300" 
-              src={imgImage} 
+              src={imageSrc ? imageSrc : imgImage} 
             />
           ) : (
             <div className="bg-[#e5ddd3] flex items-center justify-center size-full">

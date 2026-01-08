@@ -1,44 +1,73 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import GlobalHeader from './components/GlobalHeader';
+import GlobalFooter from './components/GlobalFooter';
 import Homepage from './components/Homepage';
-import CheckoutPage from './components/CheckoutPage';
-import CartPage from './components/CartPage';
-import OrderConfirmationPage from './components/OrderConfirmationPage';
-import FindMySupplementsPage from './components/FindMySupplementsPage';
 import CollectionPage from './components/CollectionPage';
 import ProductDetailPage from './components/ProductDetailPage';
-import FAQPage from './components/FAQPage';
-import PrivacyPolicyPage from './components/PrivacyPolicyPage';
-import TermsOfUsePage from './components/TermsOfUsePage';
-import ShippingReturnsPage from './components/ShippingReturnsPage';
-import HelpPage from './components/HelpPage';
+import CartPage from './pages/CartPage';
+import CheckoutPage from './components/CheckoutPage';
+import OrderConfirmationPage from './pages/OrderConfirmationPage';
+import FindMySupplementsPage from './pages/FindMySupplementsPage';
+import FAQPage from './pages/FAQPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsOfUsePage from './pages/TermsOfUsePage';
+import ShippingReturnsPage from './pages/ShippingReturnsPage';
+import HelpPage from './pages/HelpPage';
 import IngredientsPage from './components/IngredientsPage';
 import IngredientCollectionPage from './components/IngredientCollectionPage';
 import OurStoryPage from './components/OurStoryPage';
 import AccountDashboard from './components/account/AccountDashboard';
-import GlobalHeader from './components/GlobalHeader';
-import GlobalFooter from './components/GlobalFooter';
 import MiniCart from './components/MiniCart';
 import MobileMenu from './components/MobileMenu';
 import AccountTray from './components/AccountTray';
+import ChatWithAndrew from './components/chat/ChatWithAndrew';
+import AndrewWellnessGuide from './andrew-wellness-guide';
+import ComponentEditor from './components/ComponentEditor';
+import CollectionPageEditable from './components/CollectionPageEditable';
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from './components/ui/sheet';
 import { Toaster } from './components/ui/sonner';
 import imgImage from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png";
 
 export default function App() {
   // Routing state
-  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'product' | 'cart' | 'checkout' | 'order-confirmation' | 'find-supplements' | 'faq' | 'privacy-policy' | 'terms-of-use' | 'shipping-returns' | 'help' | 'ingredients' | 'ingredient-collection' | 'our-story' | 'account'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'product' | 'cart' | 'checkout' | 'order-confirmation' | 'find-supplements' | 'faq' | 'privacy-policy' | 'terms-of-use' | 'shipping-returns' | 'help' | 'ingredients' | 'ingredient-collection' | 'our-story' | 'account' | 'wellness-guide'>('home');
   const [selectedCategory, setSelectedCategory] = useState<string>('digestive-health');
   const [selectedIngredient, setSelectedIngredient] = useState<string>('Vitamin C');
   const [selectedProductId, setSelectedProductId] = useState<string>('');
-  const [accountTab, setAccountTab] = useState<'overview' | 'orders' | 'profile' | 'autoship' | 'favorites'>('overview');
+  const [accountTab, setAccountTab] = useState<'overview' | 'orders' | 'profile' | 'autoship' | 'flexpay' | 'favorites'>('overview');
   
   // UI state
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [accountTrayOpen, setAccountTrayOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [bannerEditorOpen, setBannerEditorOpen] = useState(false);
+  const [collectionPageEditorOpen, setCollectionPageEditorOpen] = useState(false);
   
   // Help page reset key - increments to reset the page when navigating to it
   const [helpPageKey, setHelpPageKey] = useState(0);
+  
+  // Keyboard shortcuts for Editors
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Component Editor (Ctrl/Cmd + Shift + B)
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        setBannerEditorOpen(true);
+      }
+      // Collection Page Editor (Ctrl/Cmd + Shift + C)
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'c') {
+        e.preventDefault();
+        // Toggle editing mode when on collection page
+        if (currentPage === 'collection') {
+          setCollectionPageEditorOpen(prev => !prev);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentPage]);
   
   // User/Auth state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -158,6 +187,11 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
+  const handleWellnessGuideClick = () => {
+    setCurrentPage('wellness-guide');
+    window.scrollTo(0, 0);
+  };
+
   // Cart handlers
   const handleUpdateQuantity = (id: string, quantity: number) => {
     if (quantity === 0) {
@@ -221,6 +255,8 @@ export default function App() {
         lastName: 'Lessman',
         email: DEMO_REGISTERED_EMAIL
       });
+      // Store email in localStorage so chat can access it
+      localStorage.setItem('userEmail', DEMO_REGISTERED_EMAIL);
       return true;
     }
     return false;
@@ -234,12 +270,16 @@ export default function App() {
       lastName: data.lastName,
       email: data.email
     });
+    // Store email in localStorage so chat can access it
+    localStorage.setItem('userEmail', data.email);
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserData(null);
     setAccountTrayOpen(false);
+    // Clear email from localStorage
+    localStorage.removeItem('userEmail');
   };
 
   return (
@@ -262,6 +302,8 @@ export default function App() {
           onIngredientsClick={handleIngredientsClick}
           onHelpClick={handleHelpClick}
           onOurStoryClick={handleOurStoryClick}
+          onDetailsClick={() => setChatOpen(true)}
+          onWellnessGuideClick={handleWellnessGuideClick}
         />
       )}
 
@@ -323,21 +365,39 @@ export default function App() {
           onCategoryClick={handleCategoryClick}
         />
       ) : currentPage === 'collection' ? (
-        <CollectionPage 
-          cartItems={cartItems}
-          setCartItems={setCartItems}
-          onOpenCart={() => setCartOpen(true)}
-          category={selectedCategory}
-          onNavigateToCategory={(category) => {
-            setSelectedCategory(category);
-            window.scrollTo(0, 0);
-          }}
-          onNavigateToProduct={(productId) => {
-            setSelectedProductId(productId);
-            setCurrentPage('product');
-            window.scrollTo(0, 0);
-          }}
-        />
+        collectionPageEditorOpen ? (
+          <CollectionPageEditable 
+            cartItems={cartItems}
+            setCartItems={setCartItems}
+            onOpenCart={() => setCartOpen(true)}
+            category={selectedCategory}
+            onNavigateToCategory={(category) => {
+              setSelectedCategory(category);
+              window.scrollTo(0, 0);
+            }}
+            onNavigateToProduct={(productId) => {
+              setSelectedProductId(productId);
+              setCurrentPage('product');
+              window.scrollTo(0, 0);
+            }}
+          />
+        ) : (
+          <CollectionPage 
+            cartItems={cartItems}
+            setCartItems={setCartItems}
+            onOpenCart={() => setCartOpen(true)}
+            category={selectedCategory}
+            onNavigateToCategory={(category) => {
+              setSelectedCategory(category);
+              window.scrollTo(0, 0);
+            }}
+            onNavigateToProduct={(productId) => {
+              setSelectedProductId(productId);
+              setCurrentPage('product');
+              window.scrollTo(0, 0);
+            }}
+          />
+        )
       ) : currentPage === 'product' ? (
         <ProductDetailPage 
           cartItems={cartItems}
@@ -412,6 +472,8 @@ export default function App() {
         <OurStoryPage />
       ) : currentPage === 'account' ? (
         <AccountDashboard userEmail={userData?.email || ''} initialTab={accountTab} />
+      ) : currentPage === 'wellness-guide' ? (
+        <AndrewWellnessGuide />
       ) : (
         <OrderConfirmationPage 
           orderData={orderData}
@@ -431,7 +493,7 @@ export default function App() {
       )}
 
       {/* Global Footer - Hide on checkout, order confirmation, and find-supplements */}
-      {currentPage !== 'checkout' && currentPage !== 'order-confirmation' && currentPage !== 'find-supplements' && <GlobalFooter onFAQClick={handleFAQClick} onPrivacyPolicyClick={handlePrivacyPolicyClick} onTermsOfUseClick={handleTermsOfUseClick} onMyAccountClick={() => setAccountTrayOpen(true)} onShippingReturnsClick={handleShippingReturnsClick} onTrackOrderClick={() => setAccountTrayOpen(true)} onContactClick={handleHelpClick} onOurStoryClick={handleOurStoryClick} />}
+      {currentPage !== 'checkout' && currentPage !== 'order-confirmation' && currentPage !== 'find-supplements' && <GlobalFooter onFAQClick={handleFAQClick} onPrivacyPolicyClick={handlePrivacyPolicyClick} onTermsOfUseClick={handleTermsOfUseClick} onMyAccountClick={() => setAccountTrayOpen(true)} onShippingReturnsClick={handleShippingReturnsClick} onTrackOrderClick={() => setAccountTrayOpen(true)} onContactClick={handleHelpClick} onOurStoryClick={handleOurStoryClick} onWellnessGuideClick={handleWellnessGuideClick} />}
 
       {/* MiniCart Sheet */}
       <Sheet open={cartOpen} onOpenChange={setCartOpen}>
@@ -447,6 +509,12 @@ export default function App() {
           />
         </SheetContent>
       </Sheet>
+
+      {/* Chat with Andrew */}
+      <ChatWithAndrew isOpen={chatOpen} onClose={() => setChatOpen(false)} />
+
+      {/* Component Editor */}
+      <ComponentEditor isOpen={bannerEditorOpen} onClose={() => setBannerEditorOpen(false)} />
 
       {/* Toaster */}
       <Toaster />

@@ -14,6 +14,16 @@ import imgCardiovascular from "figma:asset/b1f564f479c6c5508b63df5d116b737af344d
 import imgWeightManagement from "figma:asset/e22a5dae0c39c44393e94eabfc13c48b707c7e06.png";
 import imgAllProducts from "figma:asset/c3a51cf5e0f05ab9016327d22ec28ea4ef6fcd02.png";
 import imgVisionHealth from "figma:asset/d6a744d8ff1946177a6e3fd0edd10cda227a66ef.png";
+import imgImmuneHealth from "figma:asset/d6e6effceb1fb77e5c6a6a0ac379f2bb5591c63f.png";
+import imgBrainHealth from "figma:asset/c447cb3e25fcd1681138aa0f348aad64e91dd9f3.png";
+import imgBoneHealth from "figma:asset/1cd75b7612ae19799db9dcf39ef4a2d0c46078d1.png";
+import imgMealsProteins from "figma:asset/24015ce33a8c9c777617585ae6c02b8af07dcf53.png";
+import imgPetProducts from "figma:asset/8cf9f27a24a62e93d951934dd85e06242bbfe2c4.png";
+import imgJointHealth from "figma:asset/dc0933e5ceae50cab915956e70858e8a6041c0b1.png";
+import imgSleepRelaxation from "figma:asset/5be05455bd83a47649ecf082fc4f6317e7ad1bb6.png";
+import imgStressMood from "figma:asset/4c50e6ade2b5b9683b7b518c68cbf78d6558e528.png";
+import imgIndividualVitamins from "figma:asset/6cfddcd51398a2f5267c3dbe88b1e23b74d73f9c.png";
+import imgSweeteners from "figma:asset/d36cd87dc04a7e4651f4ee5e3ce2134b23d663cd.png";
 
 export interface CategoryBannerConfig {
   title: string;
@@ -127,20 +137,18 @@ export const categoryData: Record<string, CategoryBannerConfig> = {
   'bone-and-skeletal-health': {
     title: 'Bone & Skeletal Health',
     description: 'Build and maintain strong bones throughout your life.',
-    svgPath: svgPaths.pdc9e330, // TODO: Replace with actual SVG/image
+    imageSrc: imgBoneHealth,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   // BRAIN HEALTH - Placeholder (ready for content)
   'brain-health': {
     title: 'Brain Health',
     description: 'Support cognitive function, memory, and mental clarity.',
-    svgPath: svgPaths.pdc9e330, // TODO: Replace with actual SVG/image
+    imageSrc: imgBrainHealth,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   // CARDIOVASCULAR HEALTH - Placeholder (ready for content)
@@ -176,40 +184,36 @@ export const categoryData: Record<string, CategoryBannerConfig> = {
   'immune-health': {
     title: 'Immune Health',
     description: 'Strengthen your body\'s natural defense system.',
-    svgPath: svgPaths.pdc9e330, // TODO: Replace with actual SVG/image
+    imageSrc: imgImmuneHealth,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   // INDIVIDUAL VITAMINS & MINERALS - Placeholder (ready for content)
   'individual-vitamins-and-minerals': {
     title: 'Individual Vitamins & Minerals',
     description: 'Essential nutrients in their most effective forms.',
-    svgPath: svgPaths.pdc9e330, // TODO: Replace with actual SVG/image
+    imageSrc: imgIndividualVitamins,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   // JOINT HEALTH - Placeholder (ready for content)
   'joint-health': {
     title: 'Joint Health',
     description: 'Support joint comfort, flexibility, and mobility.',
-    svgPath: svgPaths.pdc9e330, // TODO: Replace with actual SVG/image
+    imageSrc: imgJointHealth,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   // MEALS & PROTEINS - Placeholder (ready for content)
   'meals-and-proteins': {
     title: 'Meals & Proteins',
     description: 'Complete nutrition to fuel your body.',
-    svgPath: svgPaths.pdc9e330, // TODO: Replace with actual SVG/image
+    imageSrc: imgMealsProteins,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   // MULTIVITAMINS - Placeholder (ready for content)
@@ -226,40 +230,36 @@ export const categoryData: Record<string, CategoryBannerConfig> = {
   'pet-products': {
     title: 'Pet Products',
     description: 'Premium supplements for your furry family members.',
-    svgPath: svgPaths.pdc9e330, // TODO: Replace with actual SVG/image
+    imageSrc: imgPetProducts,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   // SLEEP & RELAXATION - Placeholder (ready for content)
   'sleep-and-relaxation': {
     title: 'Sleep & Relaxation',
     description: 'Natural support for restful sleep and relaxation.',
-    svgPath: svgPaths.pdc9e330, // TODO: Replace with actual SVG/image
+    imageSrc: imgSleepRelaxation,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   // STRESS & MOOD - Placeholder (ready for content)
   'stress-and-mood': {
     title: 'Stress & Mood',
     description: 'Support emotional balance and stress resilience.',
-    svgPath: svgPaths.pdc9e330, // TODO: Replace with actual SVG/image
+    imageSrc: imgStressMood,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   // SWEETENERS - Placeholder (ready for content)
   'sweeteners': {
     title: 'Sweeteners',
     description: 'Healthy alternatives to refined sugar.',
-    svgPath: svgPaths.pdc9e330, // TODO: Replace with actual SVG/image
+    imageSrc: imgSweeteners,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   // VISION HEALTH - Placeholder (ready for content)
@@ -304,7 +304,7 @@ export const categoryData: Record<string, CategoryBannerConfig> = {
   'body-part/brain-and-nerves': {
     title: 'Brain & Nerves',
     description: 'Support cognitive function, mental clarity, and nervous system health.',
-    imageSrc: imgAllProducts, // TODO: Replace with actual image
+    imageSrc: imgBrainHealth,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
   },
@@ -362,10 +362,9 @@ export const categoryData: Record<string, CategoryBannerConfig> = {
   'body-part/joints-and-bones': {
     title: 'Joints & Bones',
     description: 'Maintain strong bones and flexible joints for lifelong mobility.',
-    svgPath: svgPaths.pdc9e330,
+    imageSrc: imgBoneHealth,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   'body-part/kidneys': {
@@ -730,19 +729,17 @@ export const categoryData: Record<string, CategoryBannerConfig> = {
   'product-category/bone-and-skeletal-health': {
     title: 'Bone & Skeletal Health',
     description: 'Build and maintain strong bones throughout your life.',
-    svgPath: svgPaths.pdc9e330,
+    imageSrc: imgBoneHealth,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   'product-category/brain-health': {
     title: 'Brain Health',
     description: 'Support cognitive function, memory, and mental clarity.',
-    svgPath: svgPaths.pdc9e330,
+    imageSrc: imgBrainHealth,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   'product-category/cardiovascular-health': {
@@ -782,37 +779,33 @@ export const categoryData: Record<string, CategoryBannerConfig> = {
   'product-category/immune-health': {
     title: 'Immune Health',
     description: 'Strengthen your body\'s natural defense system.',
-    svgPath: svgPaths.pdc9e330,
+    imageSrc: imgImmuneHealth,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   'product-category/individual-vitamins-and-minerals': {
     title: 'Individual Vitamins & Minerals',
     description: 'Essential nutrients in their most effective forms.',
-    svgPath: svgPaths.pdc9e330,
+    imageSrc: imgIndividualVitamins,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   'product-category/joint-health': {
     title: 'Joint Health',
     description: 'Support joint comfort, flexibility, and mobility.',
-    svgPath: svgPaths.pdc9e330,
+    imageSrc: imgJointHealth,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   'product-category/meals-and-proteins': {
     title: 'Meals & Proteins',
     description: 'Complete nutrition to fuel your body.',
-    svgPath: svgPaths.pdc9e330,
+    imageSrc: imgMealsProteins,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   'product-category/multivitamins': {
@@ -827,37 +820,33 @@ export const categoryData: Record<string, CategoryBannerConfig> = {
   'product-category/pet-products': {
     title: 'Pet Products',
     description: 'Premium supplements for your furry family members.',
-    svgPath: svgPaths.pdc9e330,
+    imageSrc: imgPetProducts,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   'product-category/sleep-and-relaxation': {
     title: 'Sleep & Relaxation',
     description: 'Natural support for restful sleep and relaxation.',
-    svgPath: svgPaths.pdc9e330,
+    imageSrc: imgSleepRelaxation,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   'product-category/stress-and-mood': {
     title: 'Stress & Mood',
     description: 'Support emotional balance and stress resilience.',
-    svgPath: svgPaths.pdc9e330,
+    imageSrc: imgStressMood,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   'product-category/sweeteners': {
     title: 'Sweeteners',
     description: 'Healthy alternatives to refined sugar.',
-    svgPath: svgPaths.pdc9e330,
+    imageSrc: imgSweeteners,
     backgroundColor: '#F6F2EC',
     imageBackgroundColor: '#e5ddd3',
-    svgFillColor: '#B9B1A8',
   },
 
   'product-category/vision-health': {

@@ -19,6 +19,7 @@ import QuickView from './QuickView';
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "./ui/sheet";
 import { motion } from 'motion/react';
 import { StorySection } from './StorySection';
+import { useEffect } from 'react';
 
 type Breakpoint = 'S' | 'M' | 'L' | 'XL' | 'HD';
 
@@ -330,14 +331,121 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
 
 // Hero Section with headline
 function HeroSection({ product, breakpoint }: { product: Product; breakpoint: Breakpoint }) {
+  const [headline, setHeadline] = useState<string>("Mother Nature's answer to comfortable, effective <span class=\"font-['STIX_Two_Text:Italic',sans-serif] italic text-[#009296]\">fiber.</span>");
+  const [showToolbar, setShowToolbar] = useState(false);
+  const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
+  const headlineRef = useRef<HTMLHeadingElement>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+  
   const headlineSize = breakpoint === 'S' ? 'text-[38px]' : breakpoint === 'M' ? 'text-[48px]' : breakpoint === 'HD' ? 'text-[92px]' : 'text-[72px]';
   const headlineTracking = breakpoint === 'S' ? 'tracking-[-0.76px]' : breakpoint === 'M' ? 'tracking-[-0.96px]' : breakpoint === 'HD' ? 'tracking-[-1.84px]' : 'tracking-[-1.44px]';
   const headlineMaxW = breakpoint === 'S' ? 'max-w-[327px]' : breakpoint === 'M' ? 'max-w-[688px]' : 'max-w-[1150px]';
   const padding = breakpoint === 'S' ? 'px-[24px] py-[60px]' : breakpoint === 'M' ? 'px-[40px] py-[80px]' : 'px-[40px] py-[110px]';
 
+  // Initialize content only once
+  useEffect(() => {
+    if (headlineRef.current && !isInitialized) {
+      headlineRef.current.innerHTML = headline;
+      setIsInitialized(true);
+    }
+  }, [headline, isInitialized]);
+
+  const handleHeadlineChange = () => {
+    if (headlineRef.current) {
+      setHeadline(headlineRef.current.innerHTML);
+    }
+  };
+
+  const handleTextSelection = () => {
+    const selection = window.getSelection();
+    if (selection && selection.toString().length > 0) {
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      setToolbarPosition({
+        top: rect.top - 50,
+        left: rect.left + rect.width / 2
+      });
+      setShowToolbar(true);
+    } else {
+      setShowToolbar(false);
+    }
+  };
+
+  const makeItalic = () => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    const selectedText = range.toString();
+    
+    if (!selectedText) return;
+
+    // Add italic formatting with teal color
+    const span = document.createElement('span');
+    span.className = "font-['STIX_Two_Text:Italic',sans-serif] italic text-[#009296]";
+    span.textContent = selectedText;
+    range.deleteContents();
+    range.insertNode(span);
+
+    // Update state
+    if (headlineRef.current) {
+      setHeadline(headlineRef.current.innerHTML);
+    }
+
+    // Clear selection and hide toolbar
+    selection.removeAllRanges();
+    setShowToolbar(false);
+  };
+
+  const makeRegular = () => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    const selectedText = range.toString();
+    
+    if (!selectedText) return;
+
+    // Find the parent span element if the selection is within one
+    let node = range.commonAncestorContainer;
+    let parentSpan = null;
+    
+    // Traverse up to find the italic span
+    while (node && node !== headlineRef.current) {
+      if (node.nodeType === Node.ELEMENT_NODE && 
+          (node as HTMLElement).tagName === 'SPAN' &&
+          (node as HTMLElement).classList.contains('italic')) {
+        parentSpan = node as HTMLElement;
+        break;
+      }
+      node = node.parentNode;
+    }
+
+    if (parentSpan) {
+      // Replace the entire span with its text content
+      const textNode = document.createTextNode(parentSpan.textContent || '');
+      parentSpan.parentNode?.replaceChild(textNode, parentSpan);
+    } else {
+      // If not in a span, just replace the selection with plain text
+      const textNode = document.createTextNode(selectedText);
+      range.deleteContents();
+      range.insertNode(textNode);
+    }
+
+    // Update state
+    if (headlineRef.current) {
+      setHeadline(headlineRef.current.innerHTML);
+    }
+
+    // Clear selection and hide toolbar
+    selection.removeAllRanges();
+    setShowToolbar(false);
+  };
+
   return (
-    <div className={`w-full flex items-center justify-center ${padding}`}>
+    <div className={`w-full flex items-center justify-center ${padding} relative`}>
       <motion.h1 
+        ref={headlineRef}
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ 
@@ -345,10 +453,37 @@ function HeroSection({ product, breakpoint }: { product: Product; breakpoint: Br
           ease: [0.16, 1, 0.3, 1], // Custom ease curve for smooth, elegant motion
           delay: 0.2 
         }}
-        className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] text-[#003b3c] text-center ${headlineSize} ${headlineTracking} ${headlineMaxW}`}
-      >
-        Mother Nature's answer to comfortable, effective <span className="font-['STIX_Two_Text:Italic',sans-serif] italic text-[#009296]">fiber.</span>
-      </motion.h1>
+        contentEditable
+        suppressContentEditableWarning
+        dir="ltr"
+        onInput={handleHeadlineChange}
+        onMouseUp={handleTextSelection}
+        onKeyUp={handleTextSelection}
+        className={`font-['STIX_Two_Text:Medium',sans-serif] font-medium leading-[1.1] text-[#003b3c] text-center cursor-text hover:bg-[#F7F2EC]/40 focus:bg-[#F7F2EC]/60 px-[12px] py-[8px] rounded-[4px] transition-colors outline-none ${headlineSize} ${headlineTracking} ${headlineMaxW}`}
+      />
+      
+      {/* Formatting Toolbar */}
+      {showToolbar && (
+        <div 
+          className="fixed z-50 bg-[#003b3c] rounded-[6px] shadow-lg px-[8px] py-[4px] -translate-x-1/2 flex gap-[4px]"
+          style={{ top: `${toolbarPosition.top}px`, left: `${toolbarPosition.left}px` }}
+        >
+          <button
+            onClick={makeItalic}
+            className="px-[12px] py-[6px] text-white hover:bg-[#009296] rounded-[4px] transition-colors font-['STIX_Two_Text:Italic',sans-serif] italic text-[14px]"
+            title="Make italic (teal)"
+          >
+            Italic
+          </button>
+          <button
+            onClick={makeRegular}
+            className="px-[12px] py-[6px] text-white hover:bg-[#009296] rounded-[4px] transition-colors text-[14px]"
+            title="Make regular (dark)"
+          >
+            Regular
+          </button>
+        </div>
+      )}
     </div>
   );
 }

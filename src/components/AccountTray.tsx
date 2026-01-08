@@ -16,7 +16,7 @@ interface AccountTrayProps {
   onLogin: (email: string, password: string) => boolean;
   onSignup: (data: { firstName: string; lastName: string; email: string; password: string; marketingOptIn: boolean }) => void;
   onLogout: () => void;
-  onNavigateToAccount?: (tab?: 'overview' | 'orders' | 'profile' | 'autoship' | 'favorites') => void;
+  onNavigateToAccount?: (tab?: 'overview' | 'orders' | 'profile' | 'autoship' | 'flexpay' | 'favorites') => void;
   onNavigateToHelp?: () => void;
 }
 
@@ -608,6 +608,22 @@ export default function AccountTray({
                         >
                           <span className="font-['Inter',sans-serif] text-[20px] font-normal text-[#003b3c] group-hover:text-[#009296] transition-colors">
                             Autoship
+                          </span>
+                        </button>
+                      </div>
+
+                      <div className="px-[4px] py-[2px]">
+                        <button 
+                          onClick={() => {
+                            if (onNavigateToAccount) {
+                              onNavigateToAccount('flexpay');
+                              onClose();
+                            }
+                          }}
+                          className="group transition-colors"
+                        >
+                          <span className="font-['Inter',sans-serif] text-[20px] font-normal text-[#003b3c] group-hover:text-[#009296] transition-colors">
+                            Flexpay
                           </span>
                         </button>
                       </div>

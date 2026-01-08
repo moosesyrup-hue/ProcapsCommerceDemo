@@ -17,6 +17,7 @@ interface GlobalFooterProps {
   onTrackOrderClick?: () => void;
   onContactClick?: () => void;
   onOurStoryClick?: () => void;
+  onWellnessGuideClick?: () => void;
 }
 
 export default function GlobalFooter({ 
@@ -27,7 +28,8 @@ export default function GlobalFooter({
   onShippingReturnsClick, 
   onTrackOrderClick, 
   onContactClick, 
-  onOurStoryClick 
+  onOurStoryClick,
+  onWellnessGuideClick
 }: GlobalFooterProps) {
   const [breakpoint, setBreakpoint] = useState<'S' | 'M' | 'L' | 'XL' | 'HD'>('M');
 
@@ -138,6 +140,7 @@ export default function GlobalFooter({
             <FooterLegal 
               onTermsOfUseClick={onTermsOfUseClick}
               onPrivacyPolicyClick={onPrivacyPolicyClick}
+              onWellnessGuideClick={onWellnessGuideClick}
             />
             <FDADisclaimer breakpoint={breakpoint} />
           </div>

@@ -40,24 +40,10 @@ export const headerData: HeaderConfig = {
     desktopLinkText: 'Details',
   },
   navigation: [
-    {
-      label: 'SHOP',
-      key: 'shop',
-    },
-    {
-      label: 'QUALITY',
-      key: 'quality',
-    },
-    {
-      label: 'OUR STORY',
-      key: 'ourStory',
-      onClick: 'onOurStoryClick',
-    },
-    {
-      label: 'SPECIALS',
-      key: 'specials',
-      onClick: 'onSpecialsClick',
-    },
+    { key: 'shop', label: 'Shop' },
+    { key: 'quality', label: 'Quality' },
+    { key: 'ourStory', label: 'OUR STORY' },
+    { key: 'specials', label: 'SPECIALS' },
   ],
   breakpoints: {
     mobile: 768,

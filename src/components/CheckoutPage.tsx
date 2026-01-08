@@ -1482,6 +1482,9 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
       setIsLoggedIn(true);
       setIsVerified(true);
       
+      // Store email in localStorage so chat can access it
+      localStorage.setItem('userEmail', email);
+      
       // Reset form state
       setShowNewAddressForm(false);
       setShowNewPaymentForm(false);

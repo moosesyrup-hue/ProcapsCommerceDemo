@@ -22,6 +22,8 @@ interface GlobalHeaderProps {
   onIngredientsClick?: () => void;
   onHelpClick?: () => void;
   onOurStoryClick?: () => void;
+  onDetailsClick?: () => void;
+  onWellnessGuideClick?: () => void;
 }
 
 export default function GlobalHeader({
@@ -33,6 +35,7 @@ export default function GlobalHeader({
   onAccountClick,
   onIngredientsClick,
   onOurStoryClick,
+  onDetailsClick,
 }: GlobalHeaderProps) {
   const { breakpoint, isMobileTablet, isDesktop } = useBreakpoint(headerData.breakpoints);
   
@@ -77,6 +80,7 @@ export default function GlobalHeader({
     onSpecialsClick,
     onAccountClick,
     onOurStoryClick,
+    onDetailsClick,
   };
 
   return (

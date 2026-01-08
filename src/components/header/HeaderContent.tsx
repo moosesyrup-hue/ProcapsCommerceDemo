@@ -26,6 +26,8 @@ interface HeaderContentProps {
   onSpecialsClick: () => void;
   onAccountClick: () => void;
   onOurStoryClick?: () => void;
+  onDetailsClick?: () => void;
+  onWellnessGuideClick?: () => void;
 }
 
 export default function HeaderContent({
@@ -44,6 +46,8 @@ export default function HeaderContent({
   onSpecialsClick,
   onAccountClick,
   onOurStoryClick,
+  onDetailsClick,
+  onWellnessGuideClick,
 }: HeaderContentProps) {
   const sectionClasses = "bg-[#009296] px-[20px] md:px-[40px] pt-[15px]";
 
@@ -51,7 +55,7 @@ export default function HeaderContent({
     <>
       {/* Free Shipping Banner */}
       <div className={sectionClasses}>
-        <HeaderBanner isMobileTablet={isMobileTablet} isDesktop={isDesktop} />
+        <HeaderBanner isMobileTablet={isMobileTablet} isDesktop={isDesktop} onDetailsClick={onDetailsClick} />
       </div>
 
       {/* Navigation Section */}
@@ -76,6 +80,7 @@ export default function HeaderContent({
                 onOtherNavHover={onOtherNavHover}
                 onSpecialsClick={onSpecialsClick}
                 onOurStoryClick={onOurStoryClick}
+                onWellnessGuideClick={onWellnessGuideClick}
               />
             )}
 

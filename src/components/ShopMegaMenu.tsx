@@ -310,8 +310,12 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
                       <button
                         key={item.name}
                         onClick={() => {
-                          // Convert category name to slug (all categories go to collection page)
-                          const categorySlug = item.name.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and');
+                          // Convert category name to slug
+                          const itemSlug = item.name.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and');
+                          // For body-part, body-function, health-issues, prepend parent category
+                          const categorySlug = activeSubmenu === 'categories' 
+                            ? `product-category/${itemSlug}`
+                            : `${activeSubmenu}/${itemSlug}`;
                           onNavigate?.(categorySlug);
                           onClose?.();
                         }}
@@ -339,8 +343,12 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
                       <button
                         key={item.name}
                         onClick={() => {
-                          // Convert category name to slug (all categories go to collection page)
-                          const categorySlug = item.name.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and');
+                          // Convert category name to slug
+                          const itemSlug = item.name.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and');
+                          // For body-part, body-function, health-issues, prepend parent category
+                          const categorySlug = activeSubmenu === 'categories' 
+                            ? `product-category/${itemSlug}`
+                            : `${activeSubmenu}/${itemSlug}`;
                           onNavigate?.(categorySlug);
                           onClose?.();
                         }}
