@@ -25,7 +25,7 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
     { id: 'body-function', label: 'Body Function', icon: Zap, hasChevron: true, description: 'Support key processes' },
     { id: 'health-issues', label: 'Health Issue', icon: ShieldCheck, hasChevron: true, description: 'Address specific concerns' },
     { id: 'ingredients', label: 'Ingredients', icon: Leaf, hasChevron: false },
-    // { id: 'vitamin-calculator', label: 'Vitamin Calculator', icon: Calculator, hasChevron: false }, // Hidden for demo
+    { id: 'vitamin-calculator', label: 'Vitamin Calculator', icon: Calculator, hasChevron: false },
     { id: 'shop-all', label: 'Shop All Products', icon: ArrowRight, hasChevron: false },
   ];
 

@@ -35,6 +35,7 @@ interface CartItem {
   flexPayInstallments?: number;
   flexPayAmount?: number;
   frequency?: string;
+  isTodaysSpecial?: boolean;
 }
 
 interface CheckoutPageProps {
@@ -1392,6 +1393,25 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
   const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const freeShippingThreshold = 25;
   
+  // Calculate quantity discount (SAME LOGIC AS CART PAGE)
+  const getQuantityDiscountPercent = (units: number): number => {
+    if (units >= 9) return 20;
+    if (units >= 6) return 15;
+    if (units >= 4) return 10;
+    if (units >= 2) return 5;
+    return 0;
+  };
+  
+  // Filter out Today's Special items for discount calculation
+  const eligibleItems = items.filter(item => !item.isTodaysSpecial);
+  const eligibleItemCount = eligibleItems.reduce((sum, item) => sum + item.quantity, 0);
+  const eligibleSubtotal = eligibleItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  
+  const quantityDiscountPercent = getQuantityDiscountPercent(eligibleItemCount);
+  const quantityDiscountAmount = (eligibleSubtotal * quantityDiscountPercent) / 100;
+  
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  
   // Calculate shipping based on selected method
   let shipping = 0;
   switch (shippingMethod) {
@@ -1406,9 +1426,30 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
       break;
   }
   
-  const tax = subtotal * 0.08;
-  const discount = promoApplied ? subtotal * 0.1 : 0;
-  const total = subtotal + shipping + tax - discount;
+  // Calculate tax on subtotal after quantity discount
+  const subtotalAfterQuantityDiscount = subtotal - quantityDiscountAmount;
+  const tax = subtotalAfterQuantityDiscount * 0.08;
+  const discount = promoApplied ? subtotalAfterQuantityDiscount * 0.1 : 0;
+  
+  // Calculate "Due Today" - what customer actually pays at checkout
+  const dueToday = items.reduce((sum, item) => {
+    if ((item.purchaseType === 'flexpay' || item.purchaseType === 'autoship-flexpay') && item.flexPayAmount) {
+      // For FlexPay items, only charge the first payment
+      return sum + (item.flexPayAmount * item.quantity);
+    } else {
+      // For regular and autoship items, charge full price
+      return sum + (item.price * item.quantity);
+    }
+  }, 0);
+  
+  // Calculate "Total Product Value" - full price of all items
+  const totalProductValue = subtotal;
+  
+  const total = subtotal - quantityDiscountAmount + shipping + tax - discount;
+  const totalDueToday = dueToday - quantityDiscountAmount + shipping + tax - discount;
+
+  // Check if cart has any FlexPay items
+  const hasFlexPayItems = items.some(item => item.purchaseType === 'flexpay' || item.purchaseType === 'autoship-flexpay');
 
   const remaining = Math.max(0, freeShippingThreshold - subtotal);
   const progress = Math.min(100, (subtotal / freeShippingThreshold) * 100);
@@ -2142,7 +2183,7 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
             <ChevronLeft className={`w-[16px] h-[16px] text-[#003b3c] transition-transform ${showOrderSummary ? '-rotate-90' : 'rotate-90'}`} />
           </div>
           <span className="font-['Inter',sans-serif] font-medium text-[16px] text-[#003b3c]">
-            ${total.toFixed(2)}
+            ${(hasFlexPayItems ? totalDueToday : total).toFixed(2)}
           </span>
         </button>
         
@@ -2165,6 +2206,12 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
               promoError={promoError}
               setPromoError={setPromoError}
               handleApplyPromo={handleApplyPromo}
+              dueToday={dueToday}
+              totalProductValue={totalProductValue}
+              hasFlexPayItems={hasFlexPayItems}
+              totalItems={totalItems}
+              quantityDiscountAmount={quantityDiscountAmount}
+              quantityDiscountPercent={quantityDiscountPercent}
             />
           </div>
         )}
@@ -2958,6 +3005,12 @@ export default function CheckoutPage({ items, onUpdateQuantity, onContinueShoppi
                 promoError={promoError}
                 setPromoError={setPromoError}
                 handleApplyPromo={handleApplyPromo}
+                dueToday={dueToday}
+                totalProductValue={totalProductValue}
+                hasFlexPayItems={hasFlexPayItems}
+                totalItems={totalItems}
+                quantityDiscountAmount={quantityDiscountAmount}
+                quantityDiscountPercent={quantityDiscountPercent}
               />
             </div>
           </div>
@@ -3021,6 +3074,12 @@ function OrderSummary({
   promoError,
   setPromoError,
   handleApplyPromo,
+  dueToday,
+  totalProductValue,
+  hasFlexPayItems,
+  totalItems,
+  quantityDiscountAmount,
+  quantityDiscountPercent,
 }: {
   items: CartItem[];
   onUpdateQuantity: (id: string, quantity: number) => void;
@@ -3038,6 +3097,12 @@ function OrderSummary({
   promoError: string;
   setPromoError: (error: string) => void;
   handleApplyPromo: () => void;
+  dueToday: number;
+  totalProductValue: number;
+  hasFlexPayItems: boolean;
+  totalItems: number;
+  quantityDiscountAmount: number;
+  quantityDiscountPercent: number;
 }) {
   return (
     <div className="space-y-[24px] pt-[20px]">
@@ -3083,7 +3148,7 @@ function OrderSummary({
                 </p>
                 
                 {/* Autoship Badge */}
-                {(item.purchaseType === 'autoship' || item.frequency) && (
+                {(item.purchaseType === 'autoship' || item.purchaseType === 'autoship-flexpay' || item.frequency) && (
                   <div className="flex items-center gap-[6px] mt-[6px]">
                     <div className="bg-[#009296] text-white px-[6px] py-[2px] rounded-[4px]">
                       <p className="font-['Inter',sans-serif] text-[10px] uppercase tracking-[0.5px]">
@@ -3097,7 +3162,7 @@ function OrderSummary({
                 )}
                 
                 {/* FlexPay Badge */}
-                {item.purchaseType === 'flexpay' && item.flexPayInstallments && item.flexPayAmount && (
+                {(item.purchaseType === 'flexpay' || item.purchaseType === 'autoship-flexpay') && item.flexPayInstallments && item.flexPayAmount && (
                   <div className="flex flex-col gap-[4px] mt-[6px]">
                     <div className="flex items-center gap-[6px]">
                       <div className="bg-[#7B61FF] text-white px-[6px] py-[2px] rounded-[4px]">
@@ -3128,7 +3193,7 @@ function OrderSummary({
             </div>
             
             {/* Autoship Benefits - Show for autoship items */}
-            {(item.purchaseType === 'autoship' || item.frequency) && (
+            {(item.purchaseType === 'autoship' || item.purchaseType === 'autoship-flexpay' || item.frequency) && (
               <div className="bg-[#F5F9F9] rounded-[8px] p-[12px] ml-[96px]">
                 <div className="space-y-[4px]">
                   <p className="font-['Inter',sans-serif] text-[11px] text-[#003b3c] leading-[1.5]">
@@ -3147,7 +3212,7 @@ function OrderSummary({
             )}
             
             {/* FlexPay Details - Show for flexpay items */}
-            {item.purchaseType === 'flexpay' && item.flexPayInstallments && item.flexPayAmount && (
+            {(item.purchaseType === 'flexpay' || item.purchaseType === 'autoship-flexpay') && item.flexPayInstallments && item.flexPayAmount && (
               <div className="bg-[#F5F5FF] rounded-[8px] p-[12px] ml-[96px]">
                 <div className="space-y-[4px]">
                   <p className="font-['Inter',sans-serif] text-[11px] text-[#003b3c] leading-[1.5]">
@@ -3207,12 +3272,18 @@ function OrderSummary({
       {/* Price Breakdown */}
       <div className="space-y-[12px]">
         <div className="flex items-center justify-between">
-          <span className="font-['Inter',sans-serif] text-[14px] l:text-[15px] xl:text-[16px] text-[#406c6d]">Subtotal</span>
+          <span className="font-['Inter',sans-serif] text-[14px] l:text-[15px] xl:text-[16px] text-[#406c6d]">Subtotal ({totalItems} {totalItems === 1 ? 'item' : 'items'})</span>
           <span className="font-['Inter',sans-serif] text-[14px] l:text-[15px] xl:text-[16px] text-[#003b3c]">${subtotal.toFixed(2)}</span>
         </div>
+        {quantityDiscountAmount > 0 && (
+          <div className="flex items-center justify-between">
+            <span className="font-['Inter',sans-serif] text-[14px] l:text-[15px] xl:text-[16px] text-[#009296]">Quantity Discount ({quantityDiscountPercent}%)</span>
+            <span className="font-['Inter',sans-serif] text-[14px] l:text-[15px] xl:text-[16px] text-[#009296]">-${quantityDiscountAmount.toFixed(2)}</span>
+          </div>
+        )}
         {discount > 0 && (
           <div className="flex items-center justify-between">
-            <span className="font-['Inter',sans-serif] text-[14px] l:text-[15px] xl:text-[16px] text-[#406c6d]">Discount</span>
+            <span className="font-['Inter',sans-serif] text-[14px] l:text-[15px] xl:text-[16px] text-[#406c6d]">Promo Code</span>
             <span className="font-['Inter',sans-serif] text-[14px] l:text-[15px] xl:text-[16px] text-[#009296]">-${discount.toFixed(2)}</span>
           </div>
         )}
@@ -3231,11 +3302,27 @@ function OrderSummary({
       {/* Divider */}
       <div className="border-t border-[#D9E2E2]"></div>
 
-      {/* Total */}
+      {/* Main Total - "Due Today" if FlexPay items, "Order Total" otherwise */}
       <div className="flex items-center justify-between">
-        <span className="font-['Inter',sans-serif] font-medium text-[16px] l:text-[18px] xl:text-[20px] text-[#003b3c]">Total</span>
-        <span className="font-['Inter',sans-serif] font-medium text-[20px] l:text-[22px] xl:text-[24px] text-[#003b3c]">USD ${total.toFixed(2)}</span>
+        <span className="font-['Inter',sans-serif] font-medium text-[16px] l:text-[18px] xl:text-[20px] text-[#003b3c]">
+          {hasFlexPayItems ? 'Due Today' : 'Order Total'}
+        </span>
+        <span className="font-['Inter',sans-serif] font-medium text-[20px] l:text-[22px] xl:text-[24px] text-[#003b3c]">
+          USD ${(hasFlexPayItems ? dueToday + shipping + tax - discount : total).toFixed(2)}
+        </span>
       </div>
+
+      {/* Order Total - Secondary (only show if there are FlexPay items) */}
+      {hasFlexPayItems && (
+        <div className="flex items-center justify-between">
+          <span className="font-['Inter',sans-serif] text-[14px] l:text-[15px] xl:text-[16px] text-[#406c6d]">
+            Order Total
+          </span>
+          <span className="font-['Inter',sans-serif] text-[14px] l:text-[15px] xl:text-[16px] text-[#406c6d]">
+            USD ${total.toFixed(2)}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

@@ -71,7 +71,10 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const [showStickyButton, setShowStickyButton] = useState(false);
-  const [purchaseType, setPurchaseType] = useState<'one-time' | 'autoship' | 'flexpay'>('one-time');
+  
+  // New checkbox-based states instead of purchaseType radio
+  const [isAutoship, setIsAutoship] = useState(false);
+  const [isFlexPay, setIsFlexPay] = useState(false);
   const [deliveryFrequency, setDeliveryFrequency] = useState(30);
   const [flexPayInstallments, setFlexPayInstallments] = useState(2);
 
@@ -94,34 +97,36 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
   // Variant options based on servings
   const variantOptions = ['60', '180', '360', '1000'];
   
-  // Calculate current prices for sticky button
+  // Calculate current prices - NO autoship discount
   const currentVariantPrice = VARIANT_PRICING[selectedVariant];
   const basePrice = currentVariantPrice.sale;
   const msrpPrice = currentVariantPrice.msrp;
-  let unitPrice = basePrice;
-  if (purchaseType === 'autoship') {
-    unitPrice = basePrice * 0.9; // 10% off
-  }
+  const unitPrice = basePrice; // Same price regardless of autoship
   const subtotal = unitPrice * quantity;
   
-  const handleAddToCart = (purchaseType: 'one-time' | 'autoship' | 'flexpay', deliveryFrequency: number, flexPayInstallments: number) => {
+  const handleAddToCart = () => {
     // Get accurate pricing based on selected variant
     const currentVariantPrice = VARIANT_PRICING[selectedVariant];
     const basePrice = currentVariantPrice.sale; // Sale price (e.g., $14.90 for 60ct)
     const msrpPrice = currentVariantPrice.msrp; // MSRP (e.g., $19.90 for 60ct)
     
-    // Calculate final price based on purchase type
-    let finalPrice = basePrice;
-    let autoshipDiscount = 0;
+    // Price is always the base price - no autoship discount
+    const finalPrice = basePrice;
     
-    if (purchaseType === 'autoship') {
-      finalPrice = basePrice * 0.9; // 10% off sale price
-      autoshipDiscount = basePrice - finalPrice;
+    // Determine purchase type based on checkbox states
+    let purchaseType: 'one-time' | 'autoship' | 'flexpay' | 'autoship-flexpay';
+    if (isAutoship && isFlexPay) {
+      purchaseType = 'autoship-flexpay';
+    } else if (isAutoship) {
+      purchaseType = 'autoship';
+    } else if (isFlexPay) {
+      purchaseType = 'flexpay';
+    } else {
+      purchaseType = 'one-time';
     }
-    // FlexPay uses base sale price, no additional discount
     
     const newItem = {
-      id: `${product.id}-${purchaseType}-${selectedVariant}${purchaseType === 'autoship' ? `-${deliveryFrequency}` : ''}${purchaseType === 'flexpay' ? `-${flexPayInstallments}` : ''}`,
+      id: `${product.id}-${purchaseType}-${selectedVariant}${isAutoship ? `-${deliveryFrequency}` : ''}${isFlexPay ? `-${flexPayInstallments}` : ''}`,
       productId: product.id,
       name: product.name,
       count: `Count: ${selectedVariant} capsules`,
@@ -132,13 +137,12 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
       purchaseType: purchaseType,
       
       // Autoship specific
-      ...(purchaseType === 'autoship' && {
-        deliveryFrequency: deliveryFrequency,
-        autoshipDiscount: autoshipDiscount
+      ...(isAutoship && {
+        deliveryFrequency: deliveryFrequency
       }),
       
       // FlexPay specific
-      ...(purchaseType === 'flexpay' && {
+      ...(isFlexPay && {
         flexPayInstallments: flexPayInstallments,
         flexPayAmount: basePrice / flexPayInstallments // Per-payment amount based on sale price
       })
@@ -238,8 +242,10 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
           currentImageIndex={currentImageIndex}
           setCurrentImageIndex={setCurrentImageIndex}
           productImages={productImages}
-          purchaseType={purchaseType}
-          setPurchaseType={setPurchaseType}
+          isAutoship={isAutoship}
+          setIsAutoship={setIsAutoship}
+          isFlexPay={isFlexPay}
+          setIsFlexPay={setIsFlexPay}
           deliveryFrequency={deliveryFrequency}
           setDeliveryFrequency={setDeliveryFrequency}
           flexPayInstallments={flexPayInstallments}
@@ -301,9 +307,10 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
           {/* Button container */}
           <div className="relative px-[24px] pb-[24px] pt-[24px]">
             <AddToCartButton 
-              onClick={() => handleAddToCart(purchaseType, deliveryFrequency, flexPayInstallments)} 
+              onClick={handleAddToCart} 
               total={subtotal}
-              purchaseType={purchaseType}
+              isAutoship={isAutoship}
+              isFlexPay={isFlexPay}
               deliveryFrequency={deliveryFrequency}
               flexPayInstallments={flexPayInstallments}
               breakpoint={breakpoint} 
@@ -502,8 +509,10 @@ function TopSection({
   currentImageIndex,
   setCurrentImageIndex,
   productImages,
-  purchaseType,
-  setPurchaseType,
+  isAutoship,
+  setIsAutoship,
+  isFlexPay,
+  setIsFlexPay,
   deliveryFrequency,
   setDeliveryFrequency,
   flexPayInstallments,
@@ -543,8 +552,10 @@ function TopSection({
           quantity={quantity}
           setQuantity={setQuantity}
           handleAddToCart={handleAddToCart}
-          purchaseType={purchaseType}
-          setPurchaseType={setPurchaseType}
+          isAutoship={isAutoship}
+          setIsAutoship={setIsAutoship}
+          isFlexPay={isFlexPay}
+          setIsFlexPay={setIsFlexPay}
           deliveryFrequency={deliveryFrequency}
           setDeliveryFrequency={setDeliveryFrequency}
           flexPayInstallments={flexPayInstallments}
@@ -827,8 +838,10 @@ function RightColumn({
   quantity, 
   setQuantity, 
   handleAddToCart,
-  purchaseType,
-  setPurchaseType,
+  isAutoship,
+  setIsAutoship,
+  isFlexPay,
+  setIsFlexPay,
   deliveryFrequency,
   setDeliveryFrequency,
   flexPayInstallments,
@@ -840,17 +853,11 @@ function RightColumn({
   const isTablet = breakpoint === 'M';
   const maxWidth = isMobile || isTablet ? 'max-w-none' : 'max-w-[800px]';
   
-  // Calculate current prices
+  // Calculate current prices - NO autoship discount
   const currentVariantPrice = VARIANT_PRICING[selectedVariant];
   const basePrice = currentVariantPrice.sale;
   const msrpPrice = currentVariantPrice.msrp;
-  
-  // Apply purchase type discount/modification
-  let unitPrice = basePrice;
-  if (purchaseType === 'autoship') {
-    unitPrice = basePrice * 0.9; // 10% off
-  }
-  // FlexPay uses base price, no discount
+  const unitPrice = basePrice; // Same price regardless
   
   const subtotal = unitPrice * quantity;
   const savings = (msrpPrice * quantity) - subtotal;
@@ -890,8 +897,10 @@ function RightColumn({
       {/* Purchase Options - 32px spacing on mobile (functional section), 40px on desktop */}
       <div className={isMobile ? 'mt-[32px]' : 'mt-[40px]'}>
         <PurchaseOptions 
-          purchaseType={purchaseType}
-          setPurchaseType={setPurchaseType}
+          isAutoship={isAutoship}
+          setIsAutoship={setIsAutoship}
+          isFlexPay={isFlexPay}
+          setIsFlexPay={setIsFlexPay}
           deliveryFrequency={deliveryFrequency}
           setDeliveryFrequency={setDeliveryFrequency}
           flexPayInstallments={flexPayInstallments}
@@ -914,7 +923,8 @@ function RightColumn({
           <AddToCartButton 
             onClick={handleAddToCart} 
             total={subtotal}
-            purchaseType={purchaseType}
+            isAutoship={isAutoship}
+            isFlexPay={isFlexPay}
             deliveryFrequency={deliveryFrequency}
             flexPayInstallments={flexPayInstallments}
             breakpoint={breakpoint} 
@@ -1068,119 +1078,69 @@ function VariantSelector({ selectedVariant, setSelectedVariant, breakpoint }: an
   );
 }
 
-// Purchase Options - WITH PRICES
-function PurchaseOptions({ purchaseType, setPurchaseType, deliveryFrequency, setDeliveryFrequency, flexPayInstallments, setFlexPayInstallments, basePrice, msrpPrice, breakpoint }: any) {
+// Purchase Options - NEW CHECKBOX DESIGN
+function PurchaseOptions({ isAutoship, setIsAutoship, isFlexPay, setIsFlexPay, deliveryFrequency, setDeliveryFrequency, flexPayInstallments, setFlexPayInstallments, basePrice, msrpPrice, breakpoint }: any) {
   const isMobile = breakpoint === 'S';
   const labelSize = isMobile ? 'text-[14px]' : 'text-[16px]';
-  const titleSize = isMobile ? 'text-[16px]' : 'text-[20px]';
-  const priceSize = isMobile ? 'text-[16px]' : 'text-[20px]';
+  const titleSize = isMobile ? 'text-[16px]' : 'text-[18px]';
+  const priceSize = isMobile ? 'text-[18px]' : 'text-[24px]';
   const strikethroughSize = isMobile ? 'text-[14px]' : 'text-[16px]';
   const subtitleSize = isMobile ? 'text-[14px]' : 'text-[16px]';
-  const autoshipPrice = basePrice * 0.9; // 10% off
+  
+  const savings = msrpPrice - basePrice;
   
   return (
-    <div className="flex flex-col gap-[16px] w-full">
-      <p className={`font-['Inter:Medium',sans-serif] font-medium leading-[1.6] text-[#003b3c] ${labelSize}`}>
-        Purchase options:
-      </p>
+    <div className="flex flex-col gap-[20px] w-full">
+      {/* Price Display - Always visible at top */}
+      <div className="flex items-baseline gap-[12px]">
+        <p className={`font-['Inter:Medium',sans-serif] font-medium ${priceSize} leading-[1.2] text-[#D84315]`}>
+          ${basePrice.toFixed(2)}
+        </p>
+        <p className={`font-['Inter:Regular',sans-serif] font-normal ${strikethroughSize} leading-[1.2] text-[#406c6d] line-through`}>
+          ${msrpPrice.toFixed(2)}
+        </p>
+        <p className={`font-['Inter:Medium',sans-serif] font-medium ${strikethroughSize} leading-[1.2] text-[#009296]`}>
+          Save ${savings.toFixed(2)}
+        </p>
+      </div>
       
       <div className="flex flex-col gap-[12px]">
-        {/* One-Time Purchase */}
-        <button
-          onClick={() => setPurchaseType('one-time')}
-          className={`
-            border-2 rounded-[8px] p-[16px] text-left transition-all duration-200
-            ${purchaseType === 'one-time'
-              ? 'border-[#009296] bg-[#f2fafa]'
-              : 'border-[#D9E2E2] hover:border-[#009296]'
-            }
-          `}
-        >
-          <div className="flex items-center justify-between gap-[16px]">
-            <div className="flex items-center gap-[12px]">
-              {/* Radio Button */}
-              <div className="relative w-[20px] h-[20px] shrink-0">
-                <div className={`
-                  w-full h-full rounded-full border-2 transition-all duration-200
-                  ${purchaseType === 'one-time'
-                    ? 'border-[#009296]'
-                    : 'border-[#D9E2E2]'
-                  }
-                `}>
-                  {purchaseType === 'one-time' && (
-                    <div className="w-[10px] h-[10px] rounded-full bg-[#009296] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-                  )}
-                </div>
-              </div>
-              <p className={`font-['Inter:Medium',sans-serif] font-medium ${titleSize} text-[#003b3c]`}>
-                One-Time Purchase
-              </p>
-            </div>
-            
-            {/* Price Display */}
-            <div className="flex items-center gap-[8px] shrink-0">
-              <p className={`font-['Inter:Medium',sans-serif] font-medium ${priceSize} leading-[1.2] text-[#D84315]`}>
-                ${basePrice.toFixed(2)}
-              </p>
-              <p className={`font-['Inter:Regular',sans-serif] font-normal ${strikethroughSize} leading-[1.2] text-[#406c6d] line-through`}>
-                ${msrpPrice.toFixed(2)}
-              </p>
-            </div>
-          </div>
-        </button>
-
-        {/* Autoship & Save */}
+        {/* Autoship Checkbox Card */}
         <div
           className={`
             border-2 rounded-[8px] transition-all duration-200
-            ${purchaseType === 'autoship'
+            ${isAutoship
               ? 'border-[#009296] bg-[#f2fafa]'
               : 'border-[#D9E2E2] hover:border-[#009296]'
             }
           `}
         >
           <button
-            onClick={() => setPurchaseType('autoship')}
+            onClick={() => setIsAutoship(!isAutoship)}
             className="w-full p-[16px] text-left"
           >
-            <div className="flex items-start justify-between gap-[16px]">
-              <div className="flex items-start gap-[12px]">
-                {/* Radio Button */}
-                <div className="relative w-[20px] h-[20px] shrink-0 mt-[2px]">
-                  <div className={`
-                    w-full h-full rounded-full border-2 transition-all duration-200
-                    ${purchaseType === 'autoship'
-                      ? 'border-[#009296]'
-                      : 'border-[#D9E2E2]'
-                    }
-                  `}>
-                    {purchaseType === 'autoship' && (
-                      <div className="w-[10px] h-[10px] rounded-full bg-[#009296] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-                    )}
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className={`font-['Inter:Medium',sans-serif] font-medium ${titleSize} text-[#003b3c] mb-[4px]`}>
-                    Autoship & Save 10%
-                  </p>
-                  <p className={`font-['Inter:Regular',sans-serif] ${subtitleSize} text-[#406c6d]`}>
-                    Never run out, save on every order
-                  </p>
+            <div className="flex items-start gap-[12px]">
+              {/* Checkbox */}
+              <div className="relative w-[20px] h-[20px] shrink-0 mt-[2px]">
+                <div className={`
+                  w-full h-full rounded-[4px] border-2 transition-all duration-200 flex items-center justify-center
+                  ${isAutoship
+                    ? 'border-[#009296] bg-[#009296]'
+                    : 'border-[#D9E2E2] bg-white'
+                  }
+                `}>
+                  {isAutoship && (
+                    <Check className="w-[14px] h-[14px] text-white" strokeWidth={3} />
+                  )}
                 </div>
               </div>
               
-              {/* Price Display */}
-              <div className="flex flex-col items-end gap-[2px] shrink-0">
-                <div className="flex items-center gap-[8px]">
-                  <p className={`font-['Inter:Medium',sans-serif] font-medium ${priceSize} leading-[1.2] text-[#D84315]`}>
-                    ${autoshipPrice.toFixed(2)}
-                  </p>
-                  <p className={`font-['Inter:Regular',sans-serif] font-normal ${strikethroughSize} leading-[1.2] text-[#406c6d] line-through`}>
-                    ${basePrice.toFixed(2)}
-                  </p>
-                </div>
-                <p className="font-['Inter:Regular',sans-serif] font-normal text-[14px] leading-[1.2] text-[#406c6d]">
-                  /payment
+              <div className="flex-1 min-w-0">
+                <p className={`font-['Inter:Medium',sans-serif] font-medium ${titleSize} text-[#003b3c] mb-[4px]`}>
+                  Autoship
+                </p>
+                <p className={`font-['Inter:Regular',sans-serif] ${subtitleSize} text-[#406c6d]`}>
+                  Flexible delivery that works for you
                 </p>
               </div>
             </div>
@@ -1190,7 +1150,7 @@ function PurchaseOptions({ purchaseType, setPurchaseType, deliveryFrequency, set
           <div
             style={{
               display: 'grid',
-              gridTemplateRows: purchaseType === 'autoship' ? '1fr' : '0fr',
+              gridTemplateRows: isAutoship ? '1fr' : '0fr',
               transition: 'grid-template-rows 300ms ease-in-out'
             }}
           >
@@ -1230,7 +1190,7 @@ function PurchaseOptions({ purchaseType, setPurchaseType, deliveryFrequency, set
                     <div className="flex items-start gap-[8px]">
                       <Check className="w-[16px] h-[16px] text-[#009296] shrink-0 mt-[2px]" />
                       <p className="font-['Inter:Regular',sans-serif] text-[12px] text-[#003b3c] leading-[1.4]">
-                        Extra 10% savings on every order
+                        Never run out of your essential supplements
                       </p>
                     </div>
                     <div className="flex items-start gap-[8px]">
@@ -1252,52 +1212,53 @@ function PurchaseOptions({ purchaseType, setPurchaseType, deliveryFrequency, set
           </div>
         </div>
 
-        {/* FlexPay */}
+        {/* FlexPay Checkbox Card */}
         <div
           className={`
             border-2 rounded-[8px] transition-all duration-200
-            ${purchaseType === 'flexpay'
+            ${isFlexPay
               ? 'border-[#009296] bg-[#f2fafa]'
               : 'border-[#D9E2E2] hover:border-[#009296]'
             }
           `}
         >
           <button
-            onClick={() => setPurchaseType('flexpay')}
+            onClick={() => setIsFlexPay(!isFlexPay)}
             className="w-full p-[16px] text-left"
           >
             <div className="flex items-start justify-between gap-[16px]">
               <div className="flex items-start gap-[12px]">
-                {/* Radio Button */}
+                {/* Checkbox */}
                 <div className="relative w-[20px] h-[20px] shrink-0 mt-[2px]">
                   <div className={`
-                    w-full h-full rounded-full border-2 transition-all duration-200
-                    ${purchaseType === 'flexpay'
-                      ? 'border-[#009296]'
-                      : 'border-[#D9E2E2]'
+                    w-full h-full rounded-[4px] border-2 transition-all duration-200 flex items-center justify-center
+                    ${isFlexPay
+                      ? 'border-[#009296] bg-[#009296]'
+                      : 'border-[#D9E2E2] bg-white'
                     }
                   `}>
-                    {purchaseType === 'flexpay' && (
-                      <div className="w-[10px] h-[10px] rounded-full bg-[#009296] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                    {isFlexPay && (
+                      <Check className="w-[14px] h-[14px] text-white" strokeWidth={3} />
                     )}
                   </div>
                 </div>
+                
                 <div className="flex-1 min-w-0">
                   <p className={`font-['Inter:Medium',sans-serif] font-medium ${titleSize} text-[#003b3c] mb-[4px]`}>
                     FlexPay
                   </p>
                   <p className={`font-['Inter:Regular',sans-serif] ${subtitleSize} text-[#406c6d]`}>
-                    Split into interest-free installments
+                    Split into easy installments
                   </p>
                 </div>
               </div>
               
               {/* Price Display */}
               <div className="flex flex-col items-end gap-[2px] shrink-0">
-                <p className={`font-['Inter:Medium',sans-serif] font-medium ${priceSize} leading-[1.2] text-[#D84315]`}>
+                <p className={`font-['Inter:Medium',sans-serif] font-medium text-[16px] leading-[1.2] text-[#009296]`}>
                   ${(basePrice / flexPayInstallments).toFixed(2)}
                 </p>
-                <p className="font-['Inter:Regular',sans-serif] font-normal text-[14px] leading-[1.2] text-[#406c6d]">
+                <p className="font-['Inter:Regular',sans-serif] font-normal text-[12px] leading-[1.2] text-[#406c6d]">
                   ×{flexPayInstallments} payments
                 </p>
               </div>
@@ -1308,7 +1269,7 @@ function PurchaseOptions({ purchaseType, setPurchaseType, deliveryFrequency, set
           <div
             style={{
               display: 'grid',
-              gridTemplateRows: purchaseType === 'flexpay' ? '1fr' : '0fr',
+              gridTemplateRows: isFlexPay ? '1fr' : '0fr',
               transition: 'grid-template-rows 300ms ease-in-out'
             }}
           >
@@ -1321,7 +1282,7 @@ function PurchaseOptions({ purchaseType, setPurchaseType, deliveryFrequency, set
                   
                   {/* Installment Buttons */}
                   <div className="flex gap-[10px] mb-[16px]">
-                    {[2, 3, 4].map((installments) => (
+                    {[2, 3, 4, 5].map((installments) => (
                       <button
                         key={installments}
                         onClick={(e) => {
@@ -1415,6 +1376,7 @@ function QuantitySelector({ quantity, setQuantity, breakpoint }: any) {
 // NEW: Order Summary Component
 function OrderSummary({ unitPrice, quantity, subtotal, savings, msrpPrice, purchaseType, flexPayInstallments, breakpoint }: any) {
   const labelSize = breakpoint === 'S' ? 'text-[14px]' : 'text-[16px]';
+  const redPriceSize = breakpoint === 'S' ? 'text-[16px]' : 'text-[24px]';
   const priceSize = breakpoint === 'S' ? 'text-[20px]' : 'text-[24px]';
   
   const flexPayPerPayment = subtotal / flexPayInstallments;
@@ -1428,7 +1390,7 @@ function OrderSummary({ unitPrice, quantity, subtotal, savings, msrpPrice, purch
             Price per bottle:
           </p>
           <div className="flex items-center gap-[10px]">
-            <p className={`font-['Inter:Medium',sans-serif] font-medium text-[#D84315] ${labelSize}`}>
+            <p className={`font-['Inter:Medium',sans-serif] font-medium text-[#D84315] ${redPriceSize}`}>
               ${unitPrice.toFixed(2)}
             </p>
             {purchaseType === 'autoship' && (
@@ -1496,21 +1458,21 @@ function OrderSummary({ unitPrice, quantity, subtotal, savings, msrpPrice, purch
   );
 }
 
-// Add to Cart Button - NOW WITH TOTAL
-function AddToCartButton({ onClick, total, purchaseType, deliveryFrequency, flexPayInstallments, breakpoint }: any) {
+// Add to Cart Button - NOW WITH CHECKBOX STATES
+function AddToCartButton({ onClick, total, isAutoship, isFlexPay, deliveryFrequency, flexPayInstallments, breakpoint }: any) {
   const buttonHeight = breakpoint === 'S' ? 'h-[52px]' : 'h-[50px]';
   const textSize = 'text-[16px]';
   
   const flexPayPerPayment = total / flexPayInstallments;
   
   let buttonText = `Add to Cart — $${total.toFixed(2)}`;
-  if (purchaseType === 'flexpay') {
+  if (isFlexPay) {
     buttonText = `Pay $${flexPayPerPayment.toFixed(2)} Today`;
   }
   
   return (
     <button
-      onClick={() => onClick(purchaseType, deliveryFrequency, flexPayInstallments)}
+      onClick={onClick}
       className={`bg-[#009296] ${buttonHeight} rounded-[999px] w-full font-['Inter:Medium',sans-serif] font-medium ${textSize} tracking-[1.6px] uppercase text-white hover:bg-[#007a7d] transition-colors`}
     >
       {buttonText}

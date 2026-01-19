@@ -16,7 +16,7 @@ interface CartItem {
   originalPrice?: number;
   quantity: number;
   image: string;
-  purchaseType?: 'one-time' | 'autoship' | 'flexpay';
+  purchaseType?: 'one-time' | 'autoship' | 'flexpay' | 'autoship-flexpay';
   
   // Autoship specific
   deliveryFrequency?: number;
@@ -28,6 +28,9 @@ interface CartItem {
   
   // Legacy field for backward compatibility
   frequency?: string;
+  
+  // Today's Special flag
+  isTodaysSpecial?: boolean;
 }
 
 interface MiniCartProps {
@@ -46,6 +49,14 @@ function Header({ itemCount, onViewCart, onClose, hideViewCart }: { itemCount: n
           Your cart ({itemCount})
         </h2>
         <div className="flex items-center gap-[20px]">
+          {!hideViewCart && (
+            <button 
+              onClick={onViewCart}
+              className="font-['Inter',sans-serif] text-sm text-[#009296] hover:text-[#007d81] transition-colors underline"
+            >
+              View Cart
+            </button>
+          )}
           <button 
             onClick={onClose}
             className="p-[8px] hover:bg-[#f5f5f5] rounded-full transition-colors"
@@ -74,12 +85,15 @@ function ProductImage({ src, alt }: { src: string; alt: string }) {
 function ProductTitleCount({ name, count, purchaseType, deliveryFrequency, flexPayInstallments, flexPayAmount, frequency }: { 
   name: string; 
   count: string; 
-  purchaseType?: 'one-time' | 'autoship' | 'flexpay';
+  purchaseType?: 'one-time' | 'autoship' | 'flexpay' | 'autoship-flexpay';
   deliveryFrequency?: number;
   flexPayInstallments?: number;
   flexPayAmount?: number;
   frequency?: string;
 }) {
+  const showAutoship = purchaseType === 'autoship' || purchaseType === 'autoship-flexpay' || frequency;
+  const showFlexPay = purchaseType === 'flexpay' || purchaseType === 'autoship-flexpay';
+  
   return (
     <div className="content-stretch flex flex-col gap-[10px] items-start leading-[1.4] relative shrink-0 w-full">
       <p className="font-['Inter',sans-serif] font-medium relative shrink-0 text-[#003b3c] text-base w-full">
@@ -90,7 +104,7 @@ function ProductTitleCount({ name, count, purchaseType, deliveryFrequency, flexP
       </p>
       
       {/* Autoship Badge */}
-      {(purchaseType === 'autoship' || frequency) && (
+      {showAutoship && (
         <div className="flex items-center gap-[6px]">
           <div className="bg-[#009296] text-white px-[8px] py-[2px] rounded-[4px]">
             <p className="font-['Inter',sans-serif] text-xs uppercase tracking-[0.5px]">
@@ -104,7 +118,7 @@ function ProductTitleCount({ name, count, purchaseType, deliveryFrequency, flexP
       )}
       
       {/* FlexPay Badge */}
-      {purchaseType === 'flexpay' && flexPayInstallments && flexPayAmount && (
+      {showFlexPay && flexPayInstallments && flexPayAmount && (
         <div className="flex flex-col gap-[4px]">
           <div className="flex items-center gap-[6px]">
             <div className="bg-[#7B61FF] text-white px-[8px] py-[2px] rounded-[4px]">
@@ -117,7 +131,7 @@ function ProductTitleCount({ name, count, purchaseType, deliveryFrequency, flexP
             </p>
           </div>
           <p className="font-['Inter',sans-serif] text-xs text-[#406c6d]">
-            First payment charged today
+            First payment charged today. Then <span className="font-semibold">${flexPayAmount.toFixed(2)}</span> every 30 days for {flexPayInstallments - 1} more {flexPayInstallments - 1 === 1 ? 'payment' : 'payments'}
           </p>
         </div>
       )}
@@ -188,12 +202,16 @@ function QuantitySelector({
 }
 
 function Price({ price, originalPrice }: { price: number; originalPrice?: number }) {
+  const hasDiscount = originalPrice && originalPrice > price;
+  
   return (
-    <div className="content-stretch flex flex-col gap-[10px] items-end leading-[1.4] relative shrink-0 text-right">
-      <p className="font-['Inter',sans-serif] font-medium relative shrink-0 text-[#D84315] text-base">
+    <div className="content-stretch flex flex-col gap-[4px] items-end leading-[1.4] relative shrink-0 text-right">
+      <p className={`font-['Inter',sans-serif] font-medium relative shrink-0 text-base ${
+        hasDiscount ? 'text-[#ba282a]' : 'text-[#003b3c]'
+      }`}>
         ${price.toFixed(2)}
       </p>
-      {originalPrice && originalPrice > price && (
+      {hasDiscount && (
         <p className="font-['Inter',sans-serif] font-normal line-through relative shrink-0 text-[#406c6d] text-sm">
           ${originalPrice.toFixed(2)}
         </p>
@@ -381,38 +399,60 @@ function EmptyCartState({ onClose }: { onClose: () => void }) {
   );
 }
 
-function TotalAndCheckout({ total, onViewCart, onCheckout }: {
-  total: number;
-  onViewCart: () => void;
+function TotalAndCheckout({ totalItems, finalTotal, totalDueToday, hasFlexPayItems, quantityDiscountPercent, onCheckout }: {
+  totalItems: number;
+  finalTotal: number;
+  totalDueToday: number;
+  hasFlexPayItems: boolean;
+  quantityDiscountPercent: number;
   onCheckout: () => void;
 }) {
   return (
-    <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 w-full bg-white pt-[10px]">
-      <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 w-full">
-        {/* Total */}
-        <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-          <p className="font-['Inter',sans-serif] font-medium leading-[1.4] relative shrink-0 text-[#003b3c] text-base">
-            Total
+    <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full bg-white pt-[10px]">
+      {/* Total with item count */}
+      <div className="w-full flex flex-col gap-[6px]">
+        <div className="flex items-center justify-between w-full">
+          <p className="font-['Inter',sans-serif] font-medium leading-[1.4] text-[#003b3c] text-base">
+            {hasFlexPayItems ? 'Due Today' : `Total (${totalItems} ${totalItems === 1 ? 'item' : 'items'})`}
           </p>
-          <p className="font-['Inter',sans-serif] font-medium leading-[1.4] relative shrink-0 text-[#003b3c] text-base">
-            USD ${total.toFixed(2)}
+          <p className="font-['Inter',sans-serif] font-medium leading-[1.4] text-[#003b3c] text-base">
+            ${(hasFlexPayItems ? totalDueToday : finalTotal).toFixed(2)}
           </p>
         </div>
-
-        {/* Checkout Button */}
-        <button
-          onClick={onCheckout}
-          className="bg-[#009296] hover:bg-[#007d81] transition-colors h-[50px] relative rounded-[999px] shrink-0 w-full"
-        >
-          <div className="flex flex-row justify-center size-full">
-            <div className="box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center px-[39px] py-[15px] relative w-full">
-              <p className="font-['Inter',sans-serif] font-medium leading-[normal] relative shrink-0 text-base text-center text-white tracking-[1.92px] uppercase">
-                CHECKOUT
-              </p>
-            </div>
+        
+        {/* Order Total - Secondary (only show if there are FlexPay items) */}
+        {hasFlexPayItems && (
+          <div className="flex items-center justify-between w-full">
+            <p className="font-['Inter',sans-serif] text-[13px] leading-[1.4] text-[#406c6d]">
+              Order Total
+            </p>
+            <p className="font-['Inter',sans-serif] text-[13px] leading-[1.4] text-[#406c6d]">
+              ${finalTotal.toFixed(2)}
+            </p>
           </div>
-        </button>
+        )}
+        
+        {/* Discount note - only show if discount is active and no FlexPay */}
+        {quantityDiscountPercent > 0 && !hasFlexPayItems && (
+          <p className="font-['Inter',sans-serif] text-[13px] leading-[1.4] text-[#009296]">
+            Includes {quantityDiscountPercent}% quantity discount
+          </p>
+        )}
       </div>
+
+      {/* Checkout Button */}
+      <button
+        onClick={onCheckout}
+        className="bg-[#009296] hover:bg-[#007d81] transition-colors h-[50px] relative rounded-[999px] shrink-0 w-full"
+      >
+        <div className="flex flex-row justify-center size-full">
+          <div className="box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center px-[39px] py-[15px] relative w-full">
+            <p className="font-['Inter',sans-serif] font-medium leading-[normal] relative shrink-0 text-base text-center text-white tracking-[1.92px] uppercase">
+              CHECKOUT
+            </p>
+          </div>
+        </div>
+      </button>
     </div>
   );
 }
@@ -420,8 +460,43 @@ function TotalAndCheckout({ total, onViewCart, onCheckout }: {
 export default function MiniCart({ items, onUpdateQuantity, onClose, onViewCart, onCheckout }: MiniCartProps) {
   // Calculate totals
   const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const shipping = 0; // Free shipping
-  const total = subtotal + shipping;
+  
+  // Calculate quantity discount (SAME LOGIC AS CART PAGE)
+  const getQuantityDiscountPercent = (units: number): number => {
+    if (units >= 9) return 20;
+    if (units >= 6) return 15;
+    if (units >= 4) return 10;
+    if (units >= 2) return 5;
+    return 0;
+  };
+  
+  // Filter out Today's Special items for discount calculation
+  const eligibleItems = items.filter(item => !item.isTodaysSpecial);
+  const eligibleItemCount = eligibleItems.reduce((sum, item) => sum + item.quantity, 0);
+  const eligibleSubtotal = eligibleItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  
+  const quantityDiscountPercent = getQuantityDiscountPercent(eligibleItemCount);
+  const quantityDiscountAmount = (eligibleSubtotal * quantityDiscountPercent) / 100;
+  
+  // Total items (for display)
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  
+  // Calculate "Due Today" - for FlexPay items
+  const dueToday = items.reduce((sum, item) => {
+    if ((item.purchaseType === 'flexpay' || item.purchaseType === 'autoship-flexpay') && item.flexPayAmount) {
+      return sum + (item.flexPayAmount * item.quantity);
+    } else {
+      return sum + (item.price * item.quantity);
+    }
+  }, 0);
+  
+  // Final total
+  const shipping = 0;
+  const total = subtotal - quantityDiscountAmount + shipping;
+  const totalDueToday = dueToday - quantityDiscountAmount + shipping;
+  
+  // Check if cart has any FlexPay items
+  const hasFlexPayItems = items.some(item => item.purchaseType === 'flexpay' || item.purchaseType === 'autoship-flexpay');
   
   const isEmpty = items.length === 0;
 
@@ -446,12 +521,13 @@ export default function MiniCart({ items, onUpdateQuantity, onClose, onViewCart,
             <div className="mb-[30px]">
               <FreeShippingProgress subtotal={subtotal} />
             </div>
+            
             <ProductList items={items} onUpdateQuantity={onUpdateQuantity} />
           </div>
 
           {/* Footer */}
           <div className="sticky bottom-0 bg-white border-t border-[#D9E2E2] px-[30px] py-[20px]">
-            <TotalAndCheckout total={total} onViewCart={onViewCart} onCheckout={onCheckout} />
+            <TotalAndCheckout totalItems={totalItems} finalTotal={total} totalDueToday={totalDueToday} hasFlexPayItems={hasFlexPayItems} quantityDiscountPercent={quantityDiscountPercent} onCheckout={onCheckout} />
           </div>
         </>
       )}

@@ -6,7 +6,7 @@
 
 import { motion } from 'motion/react';
 import ExpandableSection from './ExpandableSection';
-import { shopSections, shopLinks, animationConfig, layoutConfig } from '../../data/mobileMenuData';
+import { shopSubCategories, shopLinks, animationConfig, layoutConfig } from '../../data/mobileMenuData';
 import type { ExpandedSection } from '../../hooks/useMobileMenu';
 
 interface MobileMenuShopProps {
@@ -51,7 +51,7 @@ export default function MobileMenuShop({
   return (
     <div className="content-stretch flex flex-col gap-[16px] items-start w-full" data-name="menu">
       {/* Expandable Sections */}
-      {shopSections.map((section, index) => (
+      {shopSubCategories.map((section, index) => (
         <ExpandableSection
           key={section.id}
           id={section.id as ExpandedSection}
@@ -60,10 +60,10 @@ export default function MobileMenuShop({
           isExpanded={expandedSection === section.id}
           onToggle={() => onToggleSection(section.id as ExpandedSection)}
           onItemClick={(item) => {
-            if (section.id === 'categories') {
-              onNavigate?.(item);
-              onClose();
-            }
+            // Convert category name to slug (same as desktop mega menu)
+            const categorySlug = item.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and');
+            onNavigate?.(categorySlug);
+            onClose();
           }}
           customIndex={index}
           icon={section.icon}
@@ -74,7 +74,7 @@ export default function MobileMenuShop({
       {shopLinks.map((link, index) => (
         <motion.div
           key={link.id}
-          custom={shopSections.length + index}
+          custom={shopSubCategories.length + index}
           initial="hidden"
           animate="visible"
           variants={itemVariants}

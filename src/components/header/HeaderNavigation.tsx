@@ -6,6 +6,7 @@ interface HeaderNavigationProps {
   onOtherNavHover: () => void;
   onSpecialsClick: () => void;
   onOurStoryClick?: () => void;
+  onQualityClick?: () => void;
 }
 
 export default function HeaderNavigation({
@@ -14,6 +15,7 @@ export default function HeaderNavigation({
   onOtherNavHover,
   onSpecialsClick,
   onOurStoryClick,
+  onQualityClick,
 }: HeaderNavigationProps) {
   const { navigation } = headerData;
 
@@ -22,6 +24,8 @@ export default function HeaderNavigation({
       onSpecialsClick();
     } else if (item.key === 'ourStory' && onOurStoryClick) {
       onOurStoryClick();
+    } else if (item.key === 'quality' && onQualityClick) {
+      onQualityClick();
     }
   };
 
@@ -37,7 +41,7 @@ export default function HeaderNavigation({
     <div className="flex absolute left-0 top-1/2 -translate-y-1/2 gap-[40px] items-center font-['Inter',sans-serif] font-medium text-[16px] text-white uppercase tracking-[1.6px]">
       {navigation.map((item) => {
         const isShop = item.key === 'shop';
-        const isClickable = item.key === 'ourStory' || item.key === 'specials';
+        const isClickable = item.key === 'ourStory' || item.key === 'specials' || item.key === 'quality';
         
         const Element = isClickable ? 'button' : 'p';
         

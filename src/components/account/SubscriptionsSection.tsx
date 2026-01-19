@@ -62,11 +62,13 @@ interface Subscription {
   frequency: 'Every 30 days' | 'Every 45 days' | 'Every 60 days' | 'Every 90 days' | 'Every 120 days';
   nextDelivery: string;
   price: number;
-  status: 'Active' | 'Paused';
+  status: 'Active' | 'Paused' | 'Cancelled';
   quantity: number;
 }
 
 type ModalType = 'skip' | 'pause' | 'resume' | 'cancel' | null;
+type AutoshipStatus = 'All' | 'Active' | 'Paused' | 'Cancelled';
+type DateRange = 'all' | '30' | '60' | '90';
 
 interface UndoAction {
   type: 'skip' | 'pause' | 'resume';
@@ -191,6 +193,10 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
   const [datePickerOpen, setDatePickerOpen] = useState<Record<string, boolean>>({});
   const [selectedPaymentId, setSelectedPaymentId] = useState<Record<string, string>>({});
   const [selectedAddressId, setSelectedAddressId] = useState<Record<string, string>>({});
+  
+  // Filter states
+  const [activeStatus, setActiveStatus] = useState<AutoshipStatus>('All');
+  const [activeDateRange, setActiveDateRange] = useState<DateRange>('all');
   
   // Modal states
   const [showAddressModal, setShowAddressModal] = useState(false);
@@ -574,8 +580,33 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
     setSelectedSubscription(null);
   };
 
+  // Filter subscriptions based on active filters
+  const filteredSubscriptions = subscriptions.filter(sub => {
+    // Status filter
+    if (activeStatus !== 'All' && sub.status !== activeStatus) {
+      return false;
+    }
+
+    // Date range filter - based on next delivery
+    if (activeDateRange !== 'all') {
+      const deliveryDate = new Date(sub.nextDelivery);
+      const today = new Date();
+      const daysAgo = parseInt(activeDateRange);
+      const cutoffDate = new Date(today.setDate(today.getDate() - daysAgo));
+      
+      if (deliveryDate < cutoffDate) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+
   // Use empty array if new customer
-  const displaySubscriptions = isNewCustomer ? [] : subscriptions;
+  const displaySubscriptions = isNewCustomer ? [] : filteredSubscriptions;
+
+  // Status filter options
+  const statusOptions: AutoshipStatus[] = ['All', 'Active', 'Paused', 'Cancelled'];
 
   // Get responsive headline sizing based on breakpoint
   const headlineSize = breakpoint === 'HD' ? 'text-[72px]' : breakpoint === 'XL' ? 'text-[54px]' : breakpoint === 'L' ? 'text-[38px]' : breakpoint === 'M' ? 'text-[34px]' : 'text-[28px]';
@@ -589,6 +620,41 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
           Autoship
         </h1>
       </div>
+
+      {/* Filters */}
+      {subscriptions.length > 0 && (
+        <div className="mb-[24px] bg-white rounded-[8px] p-[16px] md:px-[40px] md:py-[20px]">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-[20px]">
+            {/* Status Tabs */}
+            <nav className="flex gap-[24px] md:gap-[40px] overflow-x-auto scrollbar-hide">
+              {statusOptions.map((status) => (
+                <button
+                  key={status}
+                  onClick={() => setActiveStatus(status)}
+                  className={`relative py-[16px] whitespace-nowrap transition-colors cursor-pointer focus:outline-none font-['Inter',sans-serif] text-[16px] ${
+                    activeStatus === status
+                      ? 'text-[#003b3c]'
+                      : 'text-[#406c6d] hover:text-[#003b3c]'
+                  }`}
+                >
+                  {status}
+                  {activeStatus === status && (
+                    <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#009296]" />
+                  )}
+                </button>
+              ))}
+            </nav>
+
+            {/* Date Range - Just Text with Arrow */}
+            <div className="lg:ml-auto">
+              <button className="flex items-center gap-[8px] font-['Inter',sans-serif] text-[16px] text-[#003b3c] hover:text-[#009296] transition-colors cursor-pointer focus:outline-none">
+                All Time
+                <ChevronDown className="size-[16px]" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {displaySubscriptions.length > 0 ? (
         <div className="space-y-[20px]">
@@ -1557,6 +1623,16 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
           setShowPaymentModal(false);
         }}
       />
+
+      <style>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 }

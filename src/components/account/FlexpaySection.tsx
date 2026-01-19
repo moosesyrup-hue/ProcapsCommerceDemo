@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { CreditCard, Calendar, AlertCircle, ChevronDown, ChevronUp, Check, Loader2, Clock, DollarSign } from 'lucide-react';
+import { CreditCard, Calendar, AlertCircle, ChevronDown, ChevronUp, Check, Loader2, Clock, DollarSign, X, Play } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner@2.0.3';
 import imgProduct from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png";
+import imgFlexpose from "figma:asset/28611aa46ce346832f5289fe520fea4c981d2d99.png";
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import PaymentMethodFormModal from '../shared/PaymentMethodFormModal';
 
@@ -34,6 +35,9 @@ interface FlexpayPlan {
   };
   orderDate: string;
 }
+
+type FlexpayStatus = 'All' | 'Active' | 'Completed' | 'Cancelled';
+type DateRange = 'all' | '30' | '60' | '90';
 
 // Mock payment methods
 const availablePaymentMethods = [
@@ -219,9 +223,16 @@ export default function FlexpaySection({ isNewCustomer = false }: FlexpaySection
   const [savedFields, setSavedFields] = useState<Record<string, boolean>>({});
   const [selectedPaymentId, setSelectedPaymentId] = useState<Record<string, string>>({});
   
+  // Video overlay state
+  const [showVideoOverlay, setShowVideoOverlay] = useState(false);
+  
   // Modal states
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [currentEditingPlanId, setCurrentEditingPlanId] = useState<string | null>(null);
+  
+  // Filter states
+  const [activeStatus, setActiveStatus] = useState<FlexpayStatus>('All');
+  const [activeDateRange, setActiveDateRange] = useState<DateRange>('all');
   
   const { breakpoint } = useBreakpoint();
   
@@ -238,6 +249,13 @@ export default function FlexpaySection({ isNewCustomer = false }: FlexpaySection
   // Check if all payments are completed
   const isFullyPaid = (plan: FlexpayPlan): boolean => {
     return plan.payments.every(p => p.status === 'Paid');
+  };
+
+  // Calculate remaining balance
+  const getRemainingBalance = (plan: FlexpayPlan): number => {
+    return plan.payments
+      .filter(p => p.status !== 'Paid')
+      .reduce((sum, payment) => sum + payment.amount, 0);
   };
 
   // Calculate relative days from now
@@ -322,21 +340,100 @@ export default function FlexpaySection({ isNewCustomer = false }: FlexpaySection
     setShowPaymentModal(true);
   };
 
+  // Get plan status
+  const getPlanStatus = (plan: FlexpayPlan): 'Active' | 'Completed' | 'Cancelled' => {
+    if (isFullyPaid(plan)) return 'Completed';
+    return 'Active';
+  };
+
+  // Filter plans based on active filters
+  const filteredPlans = flexpayPlans.filter(plan => {
+    // Status filter
+    if (activeStatus !== 'All') {
+      const planStatus = getPlanStatus(plan);
+      if (planStatus !== activeStatus) {
+        return false;
+      }
+    }
+
+    // Date range filter - based on order date
+    if (activeDateRange !== 'all') {
+      const orderDate = new Date(plan.orderDate);
+      const today = new Date();
+      const daysAgo = parseInt(activeDateRange);
+      const cutoffDate = new Date(today.setDate(today.getDate() - daysAgo));
+      
+      if (orderDate < cutoffDate) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+
   // Use empty array if new customer
-  const displayPlans = isNewCustomer ? [] : flexpayPlans;
+  const displayPlans = isNewCustomer ? [] : filteredPlans;
+
+  // Status filter options
+  const statusOptions: FlexpayStatus[] = ['All', 'Active', 'Completed', 'Cancelled'];
 
   // Get responsive headline sizing based on breakpoint
   const headlineSize = breakpoint === 'HD' ? 'text-[72px]' : breakpoint === 'XL' ? 'text-[54px]' : breakpoint === 'L' ? 'text-[38px]' : breakpoint === 'M' ? 'text-[34px]' : 'text-[28px]';
   const headlineTracking = breakpoint === 'HD' ? 'tracking-[-1.44px]' : breakpoint === 'XL' ? 'tracking-[-1.08px]' : breakpoint === 'L' ? 'tracking-[-0.76px]' : breakpoint === 'M' ? 'tracking-[-0.68px]' : 'tracking-[-0.56px]';
+  const flexImageHeight = breakpoint === 'HD' ? 'h-[72px]' : breakpoint === 'XL' ? 'h-[54px]' : breakpoint === 'L' ? 'h-[38px]' : breakpoint === 'M' ? 'h-[34px]' : 'h-[28px]';
 
   return (
     <div>
       {/* Page Title */}
       <div className="mb-[40px]">
-        <h1 className={`font-['STIX_Two_Text',sans-serif] font-medium leading-[1.1] ${headlineSize} ${headlineTracking} text-[#003b3c]`}>
-          Flexpay
-        </h1>
+        <div className="flex items-center gap-[12px]">
+          <h1 className={`font-['STIX_Two_Text',sans-serif] font-medium leading-[1.1] ${headlineSize} ${headlineTracking} text-[#003b3c]`}>
+            Flexpay
+          </h1>
+          <button
+            onClick={() => setShowVideoOverlay(true)}
+            className="group flex items-center justify-center bg-[#009296] hover:bg-[#007d81] rounded-full size-[40px] md:size-[48px] transition-all cursor-pointer focus:outline-none"
+            aria-label="Watch motivational video"
+          >
+            <Play className="size-[18px] md:size-[20px] text-white fill-white ml-[2px]" />
+          </button>
+        </div>
       </div>
+
+      {/* Filters */}
+      {flexpayPlans.length > 0 && (
+        <div className="mb-[24px] bg-white rounded-[8px] p-[16px] md:px-[40px] md:py-[20px]">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-[20px]">
+            {/* Status Tabs */}
+            <nav className="flex gap-[24px] md:gap-[40px] overflow-x-auto scrollbar-hide">
+              {statusOptions.map((status) => (
+                <button
+                  key={status}
+                  onClick={() => setActiveStatus(status)}
+                  className={`relative py-[16px] whitespace-nowrap transition-colors cursor-pointer focus:outline-none font-['Inter',sans-serif] text-[16px] ${
+                    activeStatus === status
+                      ? 'text-[#003b3c]'
+                      : 'text-[#406c6d] hover:text-[#003b3c]'
+                  }`}
+                >
+                  {status}
+                  {activeStatus === status && (
+                    <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#009296]" />
+                  )}
+                </button>
+              ))}
+            </nav>
+
+            {/* Date Range - Just Text with Arrow */}
+            <div className="lg:ml-auto">
+              <button className="flex items-center gap-[8px] font-['Inter',sans-serif] text-[16px] text-[#003b3c] hover:text-[#009296] transition-colors cursor-pointer focus:outline-none">
+                All Time
+                <ChevronDown className="size-[16px]" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {displayPlans.length > 0 ? (
         <div className="space-y-[20px]">
@@ -387,12 +484,28 @@ export default function FlexpaySection({ isNewCustomer = false }: FlexpaySection
 
                     {/* Price */}
                     <div className="text-left sm:text-right">
-                      <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] uppercase tracking-[0.05em] mb-[4px]">
-                        Total
-                      </p>
-                      <p className="font-['Inter',sans-serif] font-medium text-[#003b3c]">
-                        ${plan.totalAmount.toFixed(2)}
-                      </p>
+                      {fullyPaid ? (
+                        <>
+                          <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] uppercase tracking-[0.05em] mb-[4px]">
+                            Paid in Full
+                          </p>
+                          <p className="font-['Inter',sans-serif] font-medium text-[#003b3c]">
+                            ${plan.totalAmount.toFixed(2)}
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] uppercase tracking-[0.05em] mb-[4px]">
+                            Remaining
+                          </p>
+                          <p className="font-['Inter',sans-serif] font-medium text-[#003b3c]">
+                            ${getRemainingBalance(plan).toFixed(2)}
+                          </p>
+                          <p className="font-['Inter',sans-serif] text-[12px] text-[#708586] mt-[2px]">
+                            of ${plan.totalAmount.toFixed(2)} total
+                          </p>
+                        </>
+                      )}
                     </div>
                   </div>
 
@@ -624,6 +737,60 @@ export default function FlexpaySection({ isNewCustomer = false }: FlexpaySection
           setCurrentEditingPlanId(null);
         }}
       />
+
+      {/* Video Overlay Modal */}
+      <AnimatePresence>
+        {showVideoOverlay && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[9999] bg-black/90 flex items-center justify-center p-[20px]"
+            onClick={() => setShowVideoOverlay(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="relative w-full max-w-[1200px] aspect-video"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setShowVideoOverlay(false)}
+                className="absolute -top-[50px] right-0 size-[40px] flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full transition-all cursor-pointer focus:outline-none z-10"
+                aria-label="Close video"
+              >
+                <X className="size-[24px] text-white" />
+              </button>
+
+              {/* YouTube Video with Controls */}
+              <div className="w-full h-full rounded-[12px] overflow-hidden">
+                <iframe
+                  src="https://www.youtube.com/embed/JHiKDa4ip_Q?autoplay=1&controls=1&modestbranding=1&rel=0"
+                  className="w-full h-full"
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                  title="Gym Motivation Video"
+                  style={{ border: 'none' }}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <style>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 }

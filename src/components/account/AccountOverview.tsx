@@ -1,4 +1,4 @@
-import { Package, RefreshCw, Heart, ChevronDown, ChevronUp, SkipForward, Pause, Play, X, Calendar, AlertCircle } from 'lucide-react';
+import { Package, RefreshCw, Heart, ChevronDown, ChevronUp, SkipForward, Pause, Play, X, Calendar, AlertCircle, DollarSign } from 'lucide-react';
 import { toast } from 'sonner@2.0.3';
 import imgImage from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png";
 import { useBreakpoint } from '../../hooks/useBreakpoint';
@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 
 interface AccountOverviewProps {
   userEmail: string;
-  onNavigate: (tab: 'overview' | 'orders' | 'profile' | 'autoship' | 'favorites', orderId?: string) => void;
+  onNavigate: (tab: 'overview' | 'orders' | 'profile' | 'autoship' | 'flexpay' | 'favorites', orderId?: string) => void;
   isNewCustomer?: boolean;
 }
 
@@ -485,7 +485,7 @@ export default function AccountOverview({ userEmail, onNavigate, isNewCustomer =
       </div>
 
       {/* Quick Links */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-[16px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[16px]">
         <button
           onClick={() => onNavigate('orders')}
           className="bg-white rounded-[8px] p-[24px] hover:shadow-lg transition-shadow cursor-pointer focus:outline-none text-left"
@@ -509,6 +509,19 @@ export default function AccountOverview({ userEmail, onNavigate, isNewCustomer =
           </p>
           <p className="font-['Inter',sans-serif] text-[16px] text-[#406c6d]">
             Manage autoship
+          </p>
+        </button>
+
+        <button
+          onClick={() => onNavigate('flexpay')}
+          className="bg-white rounded-[8px] p-[24px] hover:shadow-lg transition-shadow cursor-pointer focus:outline-none text-left"
+        >
+          <DollarSign className="size-[24px] text-[#009296] mb-[12px]" />
+          <p className="font-['Inter',sans-serif] font-medium text-[#003b3c] mb-[4px] text-[20px]">
+            Flexpay
+          </p>
+          <p className="font-['Inter',sans-serif] text-[16px] text-[#406c6d]">
+            Payment plans
           </p>
         </button>
 

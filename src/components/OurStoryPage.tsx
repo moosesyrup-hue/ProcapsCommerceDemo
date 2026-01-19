@@ -1347,11 +1347,18 @@ export default function OurStoryPage() {
   
   const founderImageSlot = (
     <div className="flex flex-col gap-[20px] w-full">
-      <img 
-        src={imgAndrewLessman} 
-        alt="Andrew Lessman" 
-        className="w-full h-auto rounded-[20px]"
-      />
+      <div className="relative">
+        <img 
+          src={imgAndrewLessman} 
+          alt="Andrew Lessman" 
+          className="w-full h-auto rounded-[20px]"
+        />
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <span className="font-['Inter',sans-serif] text-white text-[14px] font-medium tracking-[1px]">
+            FPO
+          </span>
+        </div>
+      </div>
       <QuoteBlock 
         quote={`"I'd rather focus on prevention than illness."`}
         author="- Andrew Lessman"
@@ -1399,11 +1406,18 @@ export default function OurStoryPage() {
   
   const educationImageSlot = (
     <div className="flex flex-col gap-[20px] w-full">
-      <img 
-        src={imgAndrewEducation} 
-        alt="Andrew Lessman discussing supplement education" 
-        className="w-full h-auto rounded-[20px]"
-      />
+      <div className="relative">
+        <img 
+          src={imgAndrewEducation} 
+          alt="Andrew Lessman discussing supplement education" 
+          className="w-full h-auto rounded-[20px]"
+        />
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <span className="font-['Inter',sans-serif] text-white text-[14px] font-medium tracking-[1px]">
+            FPO
+          </span>
+        </div>
+      </div>
       <QuoteBlock 
         quote={`"I believe an informed customer is the best customer."`}
         author="- Andrew Lessman"

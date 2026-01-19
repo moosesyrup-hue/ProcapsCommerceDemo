@@ -212,47 +212,34 @@ export default function OrdersSection({ isNewCustomer = false, initialOrderId }:
 
       {/* Filters */}
       {orders.length > 0 && (
-        <div className="mb-[24px] bg-white rounded-[8px] p-[20px] md:p-[24px]">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-[16px]">
-            {/* Status Pills */}
-            <div className="flex flex-wrap gap-[8px]">
+        <div className="mb-[24px] bg-white rounded-[8px] p-[16px] md:px-[40px] md:py-[20px]">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-[20px]">
+            {/* Status Tabs */}
+            <nav className="flex gap-[24px] md:gap-[40px] overflow-x-auto scrollbar-hide">
               {statusOptions.map((status) => (
                 <button
                   key={status}
                   onClick={() => setActiveStatus(status)}
-                  className={`px-[16px] py-[8px] rounded-[8px] border transition-all cursor-pointer focus:outline-none ${
+                  className={`relative py-[16px] whitespace-nowrap transition-colors cursor-pointer focus:outline-none font-['Inter',sans-serif] text-[16px] ${
                     activeStatus === status
-                      ? 'bg-[#009296] border-[#009296] text-white'
-                      : 'bg-white border-[#D9E2E2] text-[#003b3c] hover:border-[#003b3c]'
+                      ? 'text-[#003b3c]'
+                      : 'text-[#406c6d] hover:text-[#003b3c]'
                   }`}
                 >
-                  <span className="font-['Inter',sans-serif] text-[14px] uppercase tracking-[0.05em]">
-                    {status}
-                  </span>
+                  {status}
+                  {activeStatus === status && (
+                    <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#009296]" />
+                  )}
                 </button>
               ))}
-            </div>
+            </nav>
 
-            {/* Date Range Dropdown */}
+            {/* Date Range - Just Text with Arrow */}
             <div className="lg:ml-auto">
-              <div className="relative">
-                <select
-                  value={activeDateRange}
-                  onChange={(e) => setActiveDateRange(e.target.value as DateRange)}
-                  className="w-full lg:w-auto h-[56px] pl-[16px] pr-[44px] border rounded-[8px] bg-white text-[#003b3c] font-['Inter',sans-serif] text-[16px] focus:outline-none transition-colors appearance-none cursor-pointer border-[#D9E2E2] hover:border-[#003b3c] focus:border-[#003b3c]"
-                >
-                  {dateRangeOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute right-[16px] top-1/2 -translate-y-1/2 pointer-events-none">
-                  <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
-                    <path d="M1 1.5L6 6.5L11 1.5" stroke="#406c6d" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-              </div>
+              <button className="flex items-center gap-[8px] font-['Inter',sans-serif] text-[16px] text-[#003b3c] hover:text-[#009296] transition-colors cursor-pointer focus:outline-none">
+                All Time
+                <ChevronDown className="size-[16px]" />
+              </button>
             </div>
           </div>
         </div>
@@ -401,6 +388,16 @@ export default function OrdersSection({ isNewCustomer = false, initialOrderId }:
           </div>
         </div>
       )}
+
+      <style>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 }

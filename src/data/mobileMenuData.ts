@@ -32,17 +32,17 @@ export const mainMenuItems: MainMenuItem[] = [
  * Shop Menu Sections
  * Expandable sections in the Shop submenu
  */
-export interface ShopSection {
+export interface ShopSubCategory {
   id: string;
   title: string;
   items: string[];
   icon?: string; // Icon name from lucide-react
 }
 
-export const shopSections: ShopSection[] = [
+export const shopSubCategories: ShopSubCategory[] = [
   {
     id: 'categories',
-    title: 'Categories',
+    title: 'Product Category',
     icon: 'Package',
     items: [
       'Anti-Aging',
@@ -130,7 +130,7 @@ export const shopSections: ShopSection[] = [
   },
   {
     id: 'healthIssues',
-    title: 'Health Issues',
+    title: 'Health Issue',
     icon: 'ShieldCheck',
     items: [
       'Joint Pain and Stiffness',

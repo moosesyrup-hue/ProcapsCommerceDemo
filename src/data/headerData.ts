@@ -41,9 +41,9 @@ export const headerData: HeaderConfig = {
   },
   navigation: [
     { key: 'shop', label: 'Shop' },
-    { key: 'quality', label: 'Quality' },
-    { key: 'ourStory', label: 'OUR STORY' },
-    { key: 'specials', label: 'SPECIALS' },
+    { key: 'quality', label: 'QUALITY', onClick: 'onQualityClick' },
+    { key: 'ourStory', label: 'OUR STORY', onClick: 'onOurStoryClick' },
+    { key: 'specials', label: 'SPECIALS', onClick: 'onSpecialsClick' },
   ],
   breakpoints: {
     mobile: 768,

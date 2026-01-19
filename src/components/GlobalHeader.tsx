@@ -22,8 +22,9 @@ interface GlobalHeaderProps {
   onIngredientsClick?: () => void;
   onHelpClick?: () => void;
   onOurStoryClick?: () => void;
+  onQualityClick?: () => void;
   onDetailsClick?: () => void;
-  onWellnessGuideClick?: () => void;
+  onVitaminCalculatorClick?: () => void;
 }
 
 export default function GlobalHeader({
@@ -35,7 +36,9 @@ export default function GlobalHeader({
   onAccountClick,
   onIngredientsClick,
   onOurStoryClick,
+  onQualityClick,
   onDetailsClick,
+  onVitaminCalculatorClick,
 }: GlobalHeaderProps) {
   const { breakpoint, isMobileTablet, isDesktop } = useBreakpoint(headerData.breakpoints);
   
@@ -58,6 +61,8 @@ export default function GlobalHeader({
       onSpecialsClick();
     } else if (pathOrCategory === 'ingredients') {
       onIngredientsClick?.();
+    } else if (pathOrCategory === 'vitamin-calculator') {
+      onVitaminCalculatorClick?.();
     } else {
       onNavigateToCollection?.(pathOrCategory);
     }
@@ -80,6 +85,7 @@ export default function GlobalHeader({
     onSpecialsClick,
     onAccountClick,
     onOurStoryClick,
+    onQualityClick,
     onDetailsClick,
   };
 

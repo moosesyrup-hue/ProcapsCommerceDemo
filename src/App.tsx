@@ -4,7 +4,7 @@ import GlobalFooter from './components/GlobalFooter';
 import Homepage from './components/Homepage';
 import CollectionPage from './components/CollectionPage';
 import ProductDetailPage from './components/ProductDetailPage';
-import CartPage from './pages/CartPage';
+import CartPage from './components/CartPage';
 import CheckoutPage from './components/CheckoutPage';
 import OrderConfirmationPage from './pages/OrderConfirmationPage';
 import FindMySupplementsPage from './pages/FindMySupplementsPage';
@@ -15,7 +15,9 @@ import ShippingReturnsPage from './pages/ShippingReturnsPage';
 import HelpPage from './pages/HelpPage';
 import IngredientsPage from './components/IngredientsPage';
 import IngredientCollectionPage from './components/IngredientCollectionPage';
+import VitaminCalculatorPage from './components/VitaminCalculatorPage';
 import OurStoryPage from './components/OurStoryPage';
+import QualityPage from './components/QualityPage';
 import AccountDashboard from './components/account/AccountDashboard';
 import MiniCart from './components/MiniCart';
 import MobileMenu from './components/MobileMenu';
@@ -30,7 +32,7 @@ import imgImage from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png";
 
 export default function App() {
   // Routing state
-  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'product' | 'cart' | 'checkout' | 'order-confirmation' | 'find-supplements' | 'faq' | 'privacy-policy' | 'terms-of-use' | 'shipping-returns' | 'help' | 'ingredients' | 'ingredient-collection' | 'our-story' | 'account' | 'wellness-guide'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'product' | 'cart' | 'checkout' | 'order-confirmation' | 'find-supplements' | 'faq' | 'privacy-policy' | 'terms-of-use' | 'shipping-returns' | 'help' | 'ingredients' | 'ingredient-collection' | 'vitamin-calculator' | 'our-story' | 'quality' | 'account' | 'wellness-guide'>('home');
   const [selectedCategory, setSelectedCategory] = useState<string>('digestive-health');
   const [selectedIngredient, setSelectedIngredient] = useState<string>('Vitamin C');
   const [selectedProductId, setSelectedProductId] = useState<string>('');
@@ -99,7 +101,7 @@ export default function App() {
       originalPrice?: number;
       quantity: number;
       image: string;
-      purchaseType?: 'one-time' | 'autoship' | 'flexpay';
+      purchaseType?: 'one-time' | 'autoship' | 'flexpay' | 'autoship-flexpay';
       deliveryFrequency?: number;
       autoshipDiscount?: number;
       flexPayInstallments?: number;
@@ -124,7 +126,46 @@ export default function App() {
     flexPayInstallments?: number;
     flexPayAmount?: number;
     frequency?: string;
-  }>>([]);
+    isTodaysSpecial?: boolean;
+  }>>([
+    // Demo items with sale prices to showcase MSRP strikethrough
+    {
+      id: 'demo-1',
+      productId: 'fibermucil',
+      name: 'Fibermucil™',
+      count: '60 Capsules',
+      price: 19.95,
+      originalPrice: 24.90,
+      quantity: 2,
+      image: imgImage,
+      purchaseType: 'one-time',
+      isTodaysSpecial: true  // Today's Special - excluded from quantity discount
+    },
+    {
+      id: 'demo-2',
+      productId: 'ultimate-antioxidant',
+      name: 'Ultimate Anti-Oxidant with Acai, Pomegranate & Noni',
+      count: '180 Capsules',
+      price: 39.95,
+      originalPrice: 49.90,
+      quantity: 1,
+      image: imgImage,
+      purchaseType: 'one-time'
+      // Regular sale item - included in quantity discount
+    },
+    {
+      id: 'demo-3',
+      productId: 'essential-1',
+      name: 'Essential-1® Multivitamin',
+      count: '360 Capsules',
+      price: 34.95,
+      originalPrice: 44.95,
+      quantity: 3,
+      image: imgImage,
+      purchaseType: 'one-time'
+      // Monthly Special (just a regular item) - included in quantity discount
+    }
+  ]);
 
   // Navigation handlers
   const handleLogoClick = () => {
@@ -184,6 +225,11 @@ export default function App() {
 
   const handleOurStoryClick = () => {
     setCurrentPage('our-story');
+    window.scrollTo(0, 0);
+  };
+
+  const handleQualityClick = () => {
+    setCurrentPage('quality');
     window.scrollTo(0, 0);
   };
 
@@ -302,8 +348,13 @@ export default function App() {
           onIngredientsClick={handleIngredientsClick}
           onHelpClick={handleHelpClick}
           onOurStoryClick={handleOurStoryClick}
+          onQualityClick={handleQualityClick}
           onDetailsClick={() => setChatOpen(true)}
           onWellnessGuideClick={handleWellnessGuideClick}
+          onVitaminCalculatorClick={() => {
+            setCurrentPage('vitamin-calculator');
+            window.scrollTo(0, 0);
+          }}
         />
       )}
 
@@ -442,6 +493,8 @@ export default function App() {
             window.scrollTo(0, 0);
           }}
         />
+      ) : currentPage === 'vitamin-calculator' ? (
+        <VitaminCalculatorPage />
       ) : currentPage === 'cart' ? (
         <CartPage
           cartItems={cartItems}
@@ -470,6 +523,8 @@ export default function App() {
         />
       ) : currentPage === 'our-story' ? (
         <OurStoryPage />
+      ) : currentPage === 'quality' ? (
+        <QualityPage />
       ) : currentPage === 'account' ? (
         <AccountDashboard userEmail={userData?.email || ''} initialTab={accountTab} />
       ) : currentPage === 'wellness-guide' ? (
@@ -492,8 +547,8 @@ export default function App() {
         />
       )}
 
-      {/* Global Footer - Hide on checkout, order confirmation, and find-supplements */}
-      {currentPage !== 'checkout' && currentPage !== 'order-confirmation' && currentPage !== 'find-supplements' && <GlobalFooter onFAQClick={handleFAQClick} onPrivacyPolicyClick={handlePrivacyPolicyClick} onTermsOfUseClick={handleTermsOfUseClick} onMyAccountClick={() => setAccountTrayOpen(true)} onShippingReturnsClick={handleShippingReturnsClick} onTrackOrderClick={() => setAccountTrayOpen(true)} onContactClick={handleHelpClick} onOurStoryClick={handleOurStoryClick} onWellnessGuideClick={handleWellnessGuideClick} />}
+      {/* Global Footer - Hide on checkout, order confirmation, find-supplements, and vitamin-calculator */}
+      {currentPage !== 'checkout' && currentPage !== 'order-confirmation' && currentPage !== 'find-supplements' && currentPage !== 'vitamin-calculator' && <GlobalFooter onFAQClick={handleFAQClick} onPrivacyPolicyClick={handlePrivacyPolicyClick} onTermsOfUseClick={handleTermsOfUseClick} onMyAccountClick={() => setAccountTrayOpen(true)} onShippingReturnsClick={handleShippingReturnsClick} onTrackOrderClick={() => setAccountTrayOpen(true)} onContactClick={handleHelpClick} onOurStoryClick={handleOurStoryClick} onWellnessGuideClick={handleWellnessGuideClick} />}
 
       {/* MiniCart Sheet */}
       <Sheet open={cartOpen} onOpenChange={setCartOpen}>
