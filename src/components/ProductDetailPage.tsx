@@ -145,7 +145,10 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
       ...(isFlexPay && {
         flexPayInstallments: flexPayInstallments,
         flexPayAmount: basePrice / flexPayInstallments // Per-payment amount based on sale price
-      })
+      }),
+      
+      // Today's Special flag
+      isTodaysSpecial: product.id === 'fibermucil' && purchaseType === 'one-time'
     };
     
     // Check if item already exists in cart (same product + purchase type + variant + frequency/installments)
@@ -211,7 +214,8 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
       price: 19.90,
       originalPrice: 24.90,
       quantity: config.quantity,
-      image: imgImage
+      image: imgImage,
+      isTodaysSpecial: config.purchaseType === 'one-time'
     };
     
     setCartItems([...cartItems, newItem]);

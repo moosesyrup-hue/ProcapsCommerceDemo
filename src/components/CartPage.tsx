@@ -148,7 +148,7 @@ function QuantityDiscountTiers({ totalUnits }: { totalUnits: number }) {
   const unitsToNext = nextTier ? nextTier.min - totalUnits : 0;
 
   return (
-    <div className="w-full bg-[#F5F9F9] rounded-[12px] p-[20px]">
+    <div className="w-full bg-[#F5F9F9] rounded-[12px] p-[16px]">
       {/* Main Status */}
       <div className="flex items-center gap-[10px] mb-[8px]">
         {currentDiscount > 0 ? (
@@ -165,50 +165,52 @@ function QuantityDiscountTiers({ totalUnits }: { totalUnits: number }) {
         )}
       </div>
 
-      {/* Next tier message */}
-      {nextTier && unitsToNext > 0 ? (
-        <p className="font-['Inter',sans-serif] text-sm leading-[1.4] text-[#003b3c] mb-[12px]">
-          Add <span className="font-medium">{unitsToNext} more {unitsToNext === 1 ? 'item' : 'items'}</span> to unlock {nextTier.discount}% off
-        </p>
-      ) : currentDiscount === 20 ? (
-        <p className="font-['Inter',sans-serif] text-sm leading-[1.4] text-[#003b3c] mb-[12px]">
-          <span className="font-medium">Maximum savings unlocked! 🌟</span>
-        </p>
-      ) : (
-        <p className="font-['Inter',sans-serif] text-sm leading-[1.4] text-[#003b3c] mb-[12px]">
-          Add <span className="font-medium">1 more item</span> to unlock 5% off
-        </p>
-      )}
-      
-      {/* Toggle button */}
-      <button
-        onClick={() => setShowAllTiers(!showAllTiers)}
-        className="flex items-center gap-[8px] font-['Inter',sans-serif] text-sm text-[#009296] hover:text-[#007a7e] transition-colors"
-      >
-        <span>{showAllTiers ? 'Hide tiers' : 'View all tiers'}</span>
-        <div className="relative shrink-0 size-[18px]">
-          <svg className="block size-full" fill="none" viewBox="0 0 18 18">
-            <circle cx="9" cy="9" r="8.5" stroke="currentColor" strokeWidth="1" />
-            {showAllTiers ? (
-              // Up arrow - centered at (9, 9)
-              <path d="M5.5 10.5 L9 7.5 L12.5 10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-            ) : (
-              // Down arrow - centered at (9, 9)
-              <path d="M5.5 7.5 L9 10.5 L12.5 7.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-            )}
-          </svg>
-        </div>
-      </button>
+      {/* Next tier message and toggle button - side by side */}
+      <div className="flex items-center justify-between gap-[12px]">
+        {nextTier && unitsToNext > 0 ? (
+          <p className="font-['Inter',sans-serif] text-sm leading-[1.4] text-[#003b3c]">
+            Add <span className="font-medium">{unitsToNext} more {unitsToNext === 1 ? 'item' : 'items'}</span> to unlock {nextTier.discount}% off
+          </p>
+        ) : currentDiscount === 20 ? (
+          <p className="font-['Inter',sans-serif] text-sm leading-[1.4] text-[#003b3c]">
+            <span className="font-medium">Maximum savings unlocked! 🌟</span>
+          </p>
+        ) : (
+          <p className="font-['Inter',sans-serif] text-sm leading-[1.4] text-[#003b3c]">
+            Add <span className="font-medium">1 more item</span> to unlock 5% off
+          </p>
+        )}
+        
+        {/* Toggle button */}
+        <button
+          onClick={() => setShowAllTiers(!showAllTiers)}
+          className="flex items-center gap-[6px] font-['Inter',sans-serif] text-[12px] md:text-[14px] text-[#009296] hover:text-[#007a7e] transition-colors shrink-0"
+        >
+          <span>{showAllTiers ? 'Hide tiers' : 'View all tiers'}</span>
+          <div className="relative shrink-0 size-[16px] md:size-[18px]">
+            <svg className="block size-full" fill="none" viewBox="0 0 18 18" style={{ overflow: 'visible' }}>
+              <circle cx="9" cy="9" r="8.5" stroke="currentColor" strokeWidth="1" />
+              {showAllTiers ? (
+                // Up arrow - centered at (9, 9)
+                <path d="M5.5 10.5 L9 7.5 L12.5 10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              ) : (
+                // Down arrow - centered at (9, 9)
+                <path d="M5.5 7.5 L9 10.5 L12.5 7.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              )}
+            </svg>
+          </div>
+        </button>
+      </div>
 
       {/* Expandable tier breakdown */}
       {showAllTiers && (
-        <div className="mt-[16px] pt-[16px] border-t border-[#D9E2E2]">
+        <div className="mt-[12px] pt-[12px] border-t border-[#D9E2E2]">
           {tiers.map((tier) => {
             const isActive = currentTier?.min === tier.min;
             return (
               <div 
                 key={tier.label} 
-                className={`flex items-center justify-between py-[6px] ${
+                className={`flex items-center justify-between py-[4px] ${
                   isActive ? 'font-medium' : ''
                 }`}
               >
@@ -227,7 +229,7 @@ function QuantityDiscountTiers({ totalUnits }: { totalUnits: number }) {
           })}
           
           {/* Disclaimer */}
-          <p className="font-['Inter',sans-serif] text-[11px] leading-[1.4] text-[#406c6d] italic mt-[12px]">
+          <p className="font-['Inter',sans-serif] text-[11px] leading-[1.4] text-[#406c6d] italic mt-[8px]">
             *Not applicable to Today's Special items
           </p>
         </div>
@@ -435,14 +437,23 @@ export default function CartPage({
                       {/* Product Details - Flex grow to fill space */}
                       <div className="flex-1 flex flex-col min-w-0">
                         {/* Top Row: Title and Price */}
-                        <div className="flex items-start justify-between gap-[16px] md:gap-[20px] mb-[5px]">
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-['Inter',sans-serif] font-medium text-[#003b3c] text-[15px] md:text-[16px] leading-[1.4] mb-[5px]">
+                        <div className="flex items-start justify-between gap-[16px] md:gap-[20px]">
+                          <div className="flex-1 min-w-0 flex flex-col gap-[10px]">
+                            <h3 className="font-['Inter',sans-serif] font-medium text-[#003b3c] text-[15px] md:text-[16px] leading-[1.4]">
                               {item.name}
                             </h3>
                             <p className="font-['Inter',sans-serif] text-[13px] md:text-[14px] text-[#406c6d] leading-[1.4]">
                               {item.count}
                             </p>
+                            
+                            {/* Today's Special Badge */}
+                            {item.isTodaysSpecial && (
+                              <div className="bg-[#ba282a] text-white px-[8px] py-[2px] rounded-[4px] inline-flex items-center w-fit">
+                                <p className="font-['Inter',sans-serif] text-xs uppercase tracking-[0.5px] whitespace-nowrap">
+                                  Today's Special
+                                </p>
+                              </div>
+                            )}
                           </div>
                           
                           {/* Price - Right aligned */}
@@ -453,9 +464,15 @@ export default function CartPage({
                               ${item.price.toFixed(2)}
                             </p>
                             {item.originalPrice && item.price < item.originalPrice && (
-                              <p className="font-['Inter',sans-serif] text-[13px] md:text-[14px] text-[#406c6d] line-through mt-[4px]">
-                                ${item.originalPrice.toFixed(2)}
-                              </p>
+                              <>
+                                <p className="font-['Inter',sans-serif] text-[13px] md:text-[14px] text-[#406c6d] line-through mt-[4px]">
+                                  ${item.originalPrice.toFixed(2)}
+                                </p>
+                                {/* Save Amount Indicator */}
+                                <p className="font-['Inter',sans-serif] text-[12px] md:text-[13px] text-[#009296] font-medium mt-[4px]">
+                                  Save ${(item.originalPrice - item.price).toFixed(2)}
+                                </p>
+                              </>
                             )}
                           </div>
                         </div>
@@ -478,7 +495,7 @@ export default function CartPage({
                         
                         {(item.purchaseType === 'flexpay' || item.purchaseType === 'autoship-flexpay') && item.flexPayInstallments && item.flexPayAmount && (
                           <div className="mb-[8px]">
-                            <div className="flex items-center gap-[6px]">
+                            <div className="flex items-center gap-[6px] mb-[6px]">
                               <div className="bg-[#7B61FF] text-white px-[8px] py-[2px] rounded-[4px]">
                                 <p className="font-['Inter',sans-serif] text-xs uppercase tracking-[0.5px]">
                                   FlexPay
@@ -488,14 +505,14 @@ export default function CartPage({
                                 {item.flexPayInstallments} payments of ${item.flexPayAmount.toFixed(2)}
                               </p>
                             </div>
-                            <p className="font-['Inter',sans-serif] text-xs text-[#406c6d] mt-[4px]">
+                            <p className="font-['Inter',sans-serif] text-xs text-[#406c6d]">
                               First payment charged today. Then <span className="font-semibold">${item.flexPayAmount.toFixed(2)}</span> every 30 days for {item.flexPayInstallments - 1} more {item.flexPayInstallments - 1 === 1 ? 'payment' : 'payments'}
                             </p>
                           </div>
                         )}
                         
                         {/* Bottom Row - Quantity Controls and Remove Button */}
-                        <div className="mt-[24px] md:mt-[36px]">
+                        <div className="mt-[12px]">
                           <div className="flex items-center justify-between">
                             {/* Quantity Selector and Disclaimer */}
                             <div className="flex items-center gap-[16px]">
@@ -588,19 +605,19 @@ export default function CartPage({
                 </h2>
 
                 {/* Free Shipping Progress - Desktop only */}
-                <div className="hidden lg:block mb-[20px] md:mb-[25px]">
+                <div className="hidden lg:block mb-[20px]">
                   <FreeShippingProgress subtotal={subtotal} />
                 </div>
 
                 {/* Quantity Discount Tiers */}
-                <div className="mb-[20px] md:mb-[25px]">
+                <div className="mb-[20px]">
                   <QuantityDiscountTiers totalUnits={eligibleItemCount} />
                 </div>
 
                 {/* Line Items */}
-                <div className="mb-[20px] md:mb-[25px]">
+                <div className="mb-[16px] md:mb-[20px]">
                   {/* Subtotal */}
-                  <div className="flex items-center justify-between mb-[12px]">
+                  <div className="flex items-center justify-between mb-[10px]">
                     <span className="font-['Inter',sans-serif] text-[#003b3c] text-[14px] leading-[1.4]">
                       Subtotal ({itemCount} {itemCount === 1 ? 'item' : 'items'})
                     </span>
@@ -611,7 +628,7 @@ export default function CartPage({
 
                   {/* Quantity Discount - Only show if active */}
                   {quantityDiscountAmount > 0 && (
-                    <div className="flex items-center justify-between mb-[12px]">
+                    <div className="flex items-center justify-between mb-[10px]">
                       <span className="font-['Inter',sans-serif] text-[#009296] text-[14px] leading-[1.4]">
                         Quantity Discount ({quantityDiscountPercent}%)
                       </span>
@@ -622,7 +639,7 @@ export default function CartPage({
                   )}
 
                   {/* Shipping */}
-                  <div className="flex items-center justify-between mb-[12px]">
+                  <div className="flex items-center justify-between mb-[20px]">
                     <span className="font-['Inter',sans-serif] text-[#003b3c] text-[14px] leading-[1.4]">
                       Shipping
                     </span>
@@ -634,10 +651,10 @@ export default function CartPage({
                   </div>
 
                   {/* Divider */}
-                  <div className="h-[1px] bg-[#D9E2E2] w-full mb-[12px]" />
+                  <div className="h-[1px] bg-[#D9E2E2] w-full mb-[20px]" />
 
                   {/* Main Total - "Due Today" if FlexPay items, "Total" otherwise */}
-                  <div className="flex items-center justify-between mb-[12px]">
+                  <div className="flex items-center justify-between">
                     <span className="font-['Inter',sans-serif] font-medium text-[#003b3c] text-[20px] md:text-[22px] leading-[1.4]">
                       {hasFlexPayItems ? 'Due Today' : 'Total'}
                     </span>
@@ -648,7 +665,7 @@ export default function CartPage({
 
                   {/* Order Total - Secondary (only show if there are FlexPay items) */}
                   {hasFlexPayItems && (
-                    <div className="flex items-center justify-between mb-[12px]">
+                    <div className="flex items-center justify-between mt-[8px]">
                       <span className="font-['Inter',sans-serif] text-[14px] leading-[1.4] text-[#406c6d]">
                         Order Total
                       </span>
@@ -657,26 +674,17 @@ export default function CartPage({
                       </span>
                     </div>
                   )}
-
-                  {/* Total Savings - Only show if there are savings */}
-                  {totalAllSavings > 0 && (
-                    <div className="text-right">
-                      <span className="font-['Inter',sans-serif] text-[#009296] text-[13px] md:text-[14px] leading-[1.4]">
-                        You saved ${totalAllSavings.toFixed(2)} total
-                      </span>
-                    </div>
-                  )}
                 </div>
 
                 {/* Disclaimer text */}
-                <p className="font-['Inter',sans-serif] text-[#406c6d] text-[13px] md:text-[14px] leading-[1.6] mb-[20px] md:mb-[25px]">
+                <p className="font-['Inter',sans-serif] text-[#406c6d] text-[13px] md:text-[14px] leading-[1.6] mb-[20px]">
                   Promo codes, taxes & shipping calculated at checkout
                 </p>
 
                 {/* Checkout Button */}
                 <button
                   onClick={onProceedToCheckout}
-                  className="w-full bg-[#009296] hover:bg-[#00b4ae] transition-all h-[50px] rounded-[999px] mb-[20px] md:mb-[25px]"
+                  className="w-full bg-[#009296] hover:bg-[#00b4ae] transition-all h-[50px] rounded-[999px] mb-[20px]"
                 >
                   <span className="font-['Inter',sans-serif] font-medium text-[16px] text-white tracking-[1.92px] uppercase">
                     Checkout

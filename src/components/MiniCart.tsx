@@ -82,7 +82,7 @@ function ProductImage({ src, alt }: { src: string; alt: string }) {
   );
 }
 
-function ProductTitleCount({ name, count, purchaseType, deliveryFrequency, flexPayInstallments, flexPayAmount, frequency }: { 
+function ProductTitleCount({ name, count, purchaseType, deliveryFrequency, flexPayInstallments, flexPayAmount, frequency, isTodaysSpecial }: { 
   name: string; 
   count: string; 
   purchaseType?: 'one-time' | 'autoship' | 'flexpay' | 'autoship-flexpay';
@@ -90,18 +90,28 @@ function ProductTitleCount({ name, count, purchaseType, deliveryFrequency, flexP
   flexPayInstallments?: number;
   flexPayAmount?: number;
   frequency?: string;
+  isTodaysSpecial?: boolean;
 }) {
   const showAutoship = purchaseType === 'autoship' || purchaseType === 'autoship-flexpay' || frequency;
   const showFlexPay = purchaseType === 'flexpay' || purchaseType === 'autoship-flexpay';
   
   return (
     <div className="content-stretch flex flex-col gap-[10px] items-start leading-[1.4] relative shrink-0 w-full">
-      <p className="font-['Inter',sans-serif] font-medium relative shrink-0 text-[#003b3c] text-base w-full">
+      <p className="font-['Inter',sans-serif] font-medium text-[#003b3c] text-base w-full">
         {name}
       </p>
       <p className="font-['Inter',sans-serif] font-normal relative shrink-0 text-[#406c6d] text-sm w-full">
         {count}
       </p>
+      
+      {/* Today's Special Badge */}
+      {isTodaysSpecial && (
+        <div className="bg-[#ba282a] text-white px-[8px] py-[2px] rounded-[4px] shrink-0 flex items-center">
+          <p className="font-['Inter',sans-serif] text-xs uppercase tracking-[0.5px] whitespace-nowrap">
+            Today's Special
+          </p>
+        </div>
+      )}
       
       {/* Autoship Badge */}
       {showAutoship && (
@@ -212,9 +222,15 @@ function Price({ price, originalPrice }: { price: number; originalPrice?: number
         ${price.toFixed(2)}
       </p>
       {hasDiscount && (
-        <p className="font-['Inter',sans-serif] font-normal line-through relative shrink-0 text-[#406c6d] text-sm">
-          ${originalPrice.toFixed(2)}
-        </p>
+        <>
+          <p className="font-['Inter',sans-serif] font-normal line-through relative shrink-0 text-[#406c6d] text-sm">
+            ${originalPrice.toFixed(2)}
+          </p>
+          {/* Save Amount Indicator */}
+          <p className="font-['Inter',sans-serif] text-[12px] text-[#009296] font-medium">
+            Save ${(originalPrice - price).toFixed(2)}
+          </p>
+        </>
       )}
     </div>
   );
@@ -233,6 +249,7 @@ function ProductItem({ item, onUpdateQuantity }: { item: CartItem; onUpdateQuant
           flexPayInstallments={item.flexPayInstallments}
           flexPayAmount={item.flexPayAmount}
           frequency={item.frequency}
+          isTodaysSpecial={item.isTodaysSpecial}
         />
         <QuantitySelector
           quantity={item.quantity}

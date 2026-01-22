@@ -9,6 +9,7 @@ import PhactSection from './PhactSection';
 import ProcapsDifferenceSection from './ProcapsDifferenceSection';
 import TickerTape from './TickerTape';
 import Slider from 'react-slick';
+import HighestReviewedProducts from './HighestReviewedProducts';
 import imgBanner from "figma:asset/be6b296809b899ffe49a39b24634e1a5d4abb146.png";
 import imgBannerMobile from "figma:asset/75fc2edc3d254e5f5f699438d8eaeb81a1ab5fd7.png";
 import imgBannerTablet from "figma:asset/84ce49373bbc690f8c23b2d25b68fd6aedbf8176.png";
@@ -1432,6 +1433,14 @@ function BodyGroup({ breakpoint, svgPaths, onIngredientsClick, onCategoryClick }
       <VideoSection breakpoint={breakpoint} svgPaths={svgPaths} />
       <PhactSection breakpoint={breakpoint} svgPaths={svgPaths} />
       <ProcapsDifferenceSection breakpoint={breakpoint} svgPaths={svgPaths} />
+      
+      {/* Divider - with page margins */}
+      <div className={`w-full ${isMobile ? 'px-[24px]' : 'px-[40px]'}`}>
+        <div className="h-[1px] bg-[#D9E2E2]" />
+      </div>
+      
+      {/* Highest Reviewed Products Section */}
+      <HighestReviewedProducts breakpoint={breakpoint} />
     </div>
   );
 }

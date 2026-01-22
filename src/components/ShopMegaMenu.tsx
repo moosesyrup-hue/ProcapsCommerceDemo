@@ -32,12 +32,12 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
   // Enhanced category data with popular flags
   const categoriesColumn1 = [
     { name: 'Anti-Aging', popular: false },
+    { name: 'Antioxidants', popular: false },
     { name: 'Beauty', popular: false },
     { name: 'Beverages', popular: false },
     { name: 'Bone & Skeletal Health', popular: false },
     { name: 'Brain Health', popular: true },
     { name: 'Cardiovascular Health', popular: true },
-    { name: 'Circulation', popular: false },
     { name: 'Digestive Health', popular: false },
     { name: 'Energy', popular: true },
     { name: 'Immune Health', popular: true },
@@ -59,65 +59,81 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
 
   // Body Part subcategories
   const bodyPartColumn1 = [
-    { name: 'Brain & Nerves', popular: true },
-    { name: 'Cardiovascular System', popular: true },
-    { name: 'Digestive System', popular: false },
+    { name: 'Arteries', popular: false },
+    { name: 'Bladder', popular: false },
+    { name: 'Blood', popular: false },
+    { name: 'Brain', popular: true },
+    { name: 'Breast', popular: false },
+    { name: 'Colon', popular: false },
+    { name: 'Ears', popular: false },
     { name: 'Eyes', popular: false },
+    { name: 'Endocrine System', popular: false },
+    { name: 'GI Tract', popular: false },
     { name: 'Hair, Skin & Nails', popular: false },
     { name: 'Heart', popular: true },
-    { name: 'Immune System', popular: false },
   ];
 
   const bodyPartColumn2 = [
-    { name: 'Joints & Bones', popular: true },
+    { name: 'Immune System', popular: false },
+    { name: 'Joints', popular: true },
     { name: 'Kidneys', popular: false },
+    { name: 'Legs', popular: false },
     { name: 'Liver', popular: false },
     { name: 'Lungs', popular: false },
     { name: 'Muscles', popular: false },
+    { name: 'Nerves', popular: false },
     { name: 'Prostate', popular: false },
-    { name: 'Thyroid', popular: false },
+    { name: 'Reproductive System', popular: false },
+    { name: 'Stomach', popular: false },
+    { name: 'Urinary Tract', popular: false },
+    { name: 'Veins', popular: false },
   ];
 
-  // Body Function subcategories
+  // Body Function subcategories - Alphabetically sorted
   const bodyFunctionColumn1 = [
-    { name: 'Antioxidant Protection', popular: false },
-    { name: 'Blood Sugar Support', popular: false },
-    { name: 'Bone Density', popular: false },
-    { name: 'Cellular Energy', popular: true },
-    { name: 'Circulation', popular: false },
+    { name: 'Breathing or Respiration', popular: false },
+    { name: 'Cell Protection', popular: false },
+    { name: 'Cognitive Function', popular: true },
     { name: 'Detoxification', popular: false },
-    { name: 'Digestive Health', popular: false },
+    { name: 'Digestion', popular: false },
+    { name: 'Energy Production', popular: true },
+    { name: 'Hormone Balancing', popular: false },
+    { name: 'Immune Defense', popular: true },
+    { name: 'Memory', popular: true },
   ];
 
   const bodyFunctionColumn2 = [
-    { name: 'Hormonal Balance', popular: false },
-    { name: 'Immune Function', popular: true },
-    { name: 'Joint Flexibility', popular: false },
-    { name: 'Memory & Focus', popular: true },
     { name: 'Metabolism', popular: false },
-    { name: 'Muscle Recovery', popular: false },
-    { name: 'Vision Health', popular: false },
+    { name: 'Mood Balancing', popular: false },
+    { name: 'Movement', popular: false },
+    { name: 'Skin Protection', popular: false },
+    { name: 'Sleep', popular: false },
+    { name: 'Structural Support', popular: false },
+    { name: 'Urinary Function', popular: false },
+    { name: 'Vision', popular: false },
+    { name: 'Waste Removal', popular: false },
   ];
 
-  // Health Issues subcategories
+  // Health Issues subcategories - Alphabetically sorted
   const healthIssuesColumn1 = [
-    { name: 'Allergies', popular: false },
     { name: 'Anxiety & Stress', popular: true },
-    { name: 'Arthritis', popular: false },
-    { name: 'Blood Pressure', popular: false },
-    { name: 'Cholesterol', popular: false },
-    { name: 'Cognitive Decline', popular: false },
-    { name: 'Diabetes Support', popular: false },
+    { name: 'Bone Strength', popular: false },
+    { name: 'Breathing Problems', popular: false },
+    { name: 'Cholesterol Management', popular: true },
+    { name: 'Depression', popular: false },
+    { name: 'Fatigue', popular: false },
+    { name: 'Heart & Blood Vessel Health', popular: true },
+    { name: 'High Blood Pressure', popular: false },
   ];
 
   const healthIssuesColumn2 = [
-    { name: 'Fatigue', popular: true },
-    { name: 'Inflammation', popular: false },
-    { name: 'Insomnia', popular: false },
-    { name: 'Joint Pain', popular: true },
-    { name: 'Poor Circulation', popular: false },
-    { name: 'Weight Management', popular: false },
-    { name: 'Weak Immunity', popular: false },
+    { name: 'Joint & Pain Stiffness', popular: true },
+    { name: 'Liver Health', popular: false },
+    { name: 'Menopause Symptoms', popular: false },
+    { name: 'Sleep Disorders', popular: false },
+    { name: 'Type 2 Diabetes', popular: false },
+    { name: 'Urinary Tract Infections', popular: false },
+    { name: 'Vision Problems', popular: false },
   ];
 
   // Determine which columns to show based on activeSubmenu
@@ -142,12 +158,12 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
     const iconMap: Record<string, any> = {
       // Categories
       'Anti-Aging': Sparkles,
+      'Antioxidants': Shield,
       'Beauty': Sparkles,
       'Beverages': Coffee,
       'Bone & Skeletal Health': Bone,
       'Brain Health': Brain,
       'Cardiovascular Health': HeartPulse,
-      'Circulation': Activity,
       'Digestive Health': Apple,
       'Energy': Zap,
       'Immune Health': ShieldCheck,
@@ -164,48 +180,68 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
       'Other': MoreHorizontal,
       
       // Body Part
-      'Brain & Nerves': Brain,
-      'Cardiovascular System': HeartPulse,
-      'Digestive System': Apple,
+      'Arteries': Circle,
+      'Bladder': Circle,
+      'Blood': Circle,
+      'Brain': Brain,
+      'Breast': Circle,
+      'Colon': Circle,
+      'Ears': Circle,
       'Eyes': Eye,
+      'Endocrine System': Circle,
+      'GI Tract': Circle,
       'Hair, Skin & Nails': Sparkles,
       'Heart': Heart,
       'Immune System': Shield,
-      'Joints & Bones': Bone,
+      'Joints': Bone,
       'Kidneys': Circle,
+      'Legs': Circle,
       'Liver': Circle,
       'Lungs': Wind,
       'Muscles': Dumbbell,
+      'Nerves': Circle,
       'Prostate': Circle,
-      'Thyroid': Circle,
+      'Reproductive System': Circle,
+      'Stomach': Circle,
+      'Urinary Tract': Circle,
+      'Veins': Circle,
       
       // Body Function
-      'Antioxidant Protection': Shield,
-      'Blood Sugar Support': Droplet,
-      'Bone Density': Bone,
-      'Cellular Energy': Zap,
+      'Breathing or Respiration': Wind,
+      'Cell Protection': Shield,
+      'Cognitive Function': Brain,
       'Detoxification': RefreshCw,
-      'Hormonal Balance': Scale,
-      'Immune Function': ShieldCheck,
-      'Joint Flexibility': Activity,
-      'Memory & Focus': Brain,
+      'Digestion': Apple,
+      'Energy Production': Zap,
+      'Hormone Balancing': Scale,
+      'Immune Defense': ShieldCheck,
+      'Memory': Brain,
       'Metabolism': TrendingUp,
-      'Muscle Recovery': Dumbbell,
+      'Mood Balancing': Smile,
+      'Movement': Activity,
+      'Skin Protection': Shield,
+      'Sleep': Moon,
+      'Structural Support': Bone,
+      'Urinary Function': Circle,
+      'Vision': Eye,
+      'Waste Removal': TrendingDown,
       
       // Health Issues
-      'Allergies': Wind,
+      'Joint & Pain Stiffness': Activity,
+      'Heart & Blood Vessel Health': HeartPulse,
+      'High Blood Pressure': HeartPulse,
+      'Type 2 Diabetes': Droplet,
+      'Cholesterol Management': TrendingDown,
       'Anxiety & Stress': AlertCircle,
-      'Arthritis': Activity,
-      'Blood Pressure': HeartPulse,
-      'Cholesterol': TrendingDown,
-      'Cognitive Decline': Brain,
-      'Diabetes Support': Droplet,
+      'Depression': AlertCircle,
+      'Sleep Disorders': Moon,
+      'Bone Strength': Bone,
+      'Vision Problems': Eye,
       'Fatigue': BatteryLow,
-      'Inflammation': Flame,
-      'Insomnia': Moon,
-      'Joint Pain': Activity,
-      'Poor Circulation': Activity,
-      'Weak Immunity': Shield,
+      'Menopause Symptoms': AlertCircle,
+      'Liver Health': Circle,
+      'Urinary Tract Infections': Circle,
+      'Breathing Problems': Wind,
     };
 
     return iconMap[item] || Circle;
@@ -310,12 +346,9 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
                       <button
                         key={item.name}
                         onClick={() => {
-                          // Convert category name to slug
-                          const itemSlug = item.name.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and');
-                          // For body-part, body-function, health-issues, prepend parent category
-                          const categorySlug = activeSubmenu === 'categories' 
-                            ? `product-category/${itemSlug}`
-                            : `${activeSubmenu}/${itemSlug}`;
+                          // Convert category name to slug and add parent prefix for non-categories submenus
+                          const itemSlug = item.name.toLowerCase().replace(/,/g, '').replace(/\s+/g, '-').replace(/&/g, 'and');
+                          const categorySlug = activeSubmenu === 'categories' ? itemSlug : `${activeSubmenu}/${itemSlug}`;
                           onNavigate?.(categorySlug);
                           onClose?.();
                         }}
@@ -343,12 +376,9 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
                       <button
                         key={item.name}
                         onClick={() => {
-                          // Convert category name to slug
-                          const itemSlug = item.name.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and');
-                          // For body-part, body-function, health-issues, prepend parent category
-                          const categorySlug = activeSubmenu === 'categories' 
-                            ? `product-category/${itemSlug}`
-                            : `${activeSubmenu}/${itemSlug}`;
+                          // Convert category name to slug and add parent prefix for non-categories submenus
+                          const itemSlug = item.name.toLowerCase().replace(/,/g, '').replace(/\s+/g, '-').replace(/&/g, 'and');
+                          const categorySlug = activeSubmenu === 'categories' ? itemSlug : `${activeSubmenu}/${itemSlug}`;
                           onNavigate?.(categorySlug);
                           onClose?.();
                         }}
