@@ -106,16 +106,20 @@ function CopyVitamin({ breakpoint }: { breakpoint: Breakpoint }) {
   );
 }
 
-function Button3() {
+function Button3({ onClick }: { onClick?: () => void }) {
   return (
-    <div className="box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center px-[39px] py-[15px] relative rounded-[999px] shrink-0" data-name="button">
+    <button 
+      onClick={onClick}
+      className="box-border content-stretch flex gap-[10px] h-[50px] items-center justify-center px-[39px] py-[15px] relative rounded-[999px] shrink-0 cursor-pointer transition-all hover:opacity-80" 
+      data-name="button"
+    >
       <div aria-hidden="true" className="absolute border border-[#009296] border-solid inset-0 pointer-events-none rounded-[999px]" />
       <p className="font-['Inter:Medium',sans-serif] font-medium leading-[normal] not-italic relative shrink-0 text-[#009296] text-[16px] text-center text-nowrap tracking-[1.92px] uppercase whitespace-pre">CHAT NOW</p>
-    </div>
+    </button>
   );
 }
 
-export default function VitaminSpecialist({ breakpoint }: { breakpoint: Breakpoint }) {
+export default function VitaminSpecialist({ breakpoint, onChatNowClick }: { breakpoint: Breakpoint; onChatNowClick?: () => void }) {
   const isMobile = breakpoint === 'S';
   const isTablet = breakpoint === 'M';
   const gap = isMobile || isTablet ? 'gap-[30px]' : 'gap-[40px]';
@@ -124,7 +128,7 @@ export default function VitaminSpecialist({ breakpoint }: { breakpoint: Breakpoi
     <div className={`content-stretch flex flex-col ${gap} items-center relative shrink-0`} data-name="vitamin specialist">
       <VitaminSpecialistBadge breakpoint={breakpoint} />
       <CopyVitamin breakpoint={breakpoint} />
-      <Button3 />
+      <Button3 onClick={onChatNowClick} />
     </div>
   );
 }

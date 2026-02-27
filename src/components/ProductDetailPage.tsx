@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { products, type Product } from '../data/products';
-import { ChevronDown, Check, Minus, Plus, Star, Info, Truck, Package, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronDown, Check, Minus, Plus, Star, Info, Truck, Package, ChevronLeft, ChevronRight, X, Printer, Download, Heart } from 'lucide-react';
 import imgPlaceholder from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png";
 import imgProduct from "figma:asset/f2e5085bf5c2fe71f9ea2c23494b5c63f1b85c27.png";
 import imgImage from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png";
@@ -12,16 +12,44 @@ import imgProduct6 from "figma:asset/549f0fd0509f835f4574adfa9f122e99f8fc70bb.pn
 import imgProduct7 from "figma:asset/6ce1d64ac817d4e5f0c224d844c393f2a86ee576.png";
 import imgPillCapsule from "figma:asset/9713f784abe59c2b09beb31e6a767104a00b0983.png";
 import imgPlantago from "figma:asset/29e9f2e4f5e91d4380eca0a7e99798dbc545b080.png";
+import imgProductLabel from "figma:asset/ae082c83412a5ee3d543cbb09c67892ed10b9cc4.png";
+// Additional product label images for carousel demo
+import imgProductLabel2 from "figma:asset/ae082c83412a5ee3d543cbb09c67892ed10b9cc4.png"; // Using same image for demo
+import imgProductLabel3 from "figma:asset/ae082c83412a5ee3d543cbb09c67892ed10b9cc4.png"; // Using same image for demo
 import svgPaths from "../imports/svg-3m84o7zton";
 import TickerTape from './TickerTape';
 import ProductCard from './ProductCard';
 import QuickView from './QuickView';
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "./ui/sheet";
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { StorySection } from './StorySection';
-import { useEffect } from 'react';
+import PDPContentSlot1Editable from './PDPContentSlot1Editable';
+import PDPContentSlot2Editable from './PDPContentSlot2Editable';
 
 type Breakpoint = 'S' | 'M' | 'L' | 'XL' | 'HD';
+
+// Product Label data structure
+interface ProductLabel {
+  id: string;
+  name: string;
+  imageUrl: string;
+}
+
+// Multiple product labels for carousel
+const productLabels: ProductLabel[] = [
+  { id: '1', name: 'Supplement Facts', imageUrl: imgProductLabel },
+  { id: '2', name: 'Ingredients List', imageUrl: imgProductLabel2 },
+  { id: '3', name: 'Warnings & Directions', imageUrl: imgProductLabel3 }
+];
+
+export interface ContentSlotData {
+  eyebrow: string;
+  headline: string;
+  paragraphs: string[];
+  bullets?: string[];
+  imageUrl: string;
+  imageAlt: string;
+}
 
 // Variant pricing - realistic bulk pricing
 const VARIANT_PRICING: Record<string, { msrp: number; sale: number }> = {
@@ -59,24 +87,35 @@ interface ProductDetailPageProps {
   setCartItems: (items: any[]) => void;
   onOpenCart: () => void;
   onNavigateToCategory: (category: string) => void;
+  isEditable?: boolean;
+  contentSlot1Data?: ContentSlotData;
+  contentSlot2Data?: ContentSlotData;
+  onContentSlot1Change?: (data: ContentSlotData) => void;
+  onContentSlot2Change?: (data: ContentSlotData) => void;
 }
 
-export default function ProductDetailPage({ productId, cartItems, setCartItems, onOpenCart, onNavigateToCategory }: ProductDetailPageProps) {
+export default function ProductDetailPage({ productId, cartItems, setCartItems, onOpenCart, onNavigateToCategory, isEditable, contentSlot1Data, contentSlot2Data, onContentSlot1Change, onContentSlot2Change }: ProductDetailPageProps) {
   const breakpoint = useBreakpoint();
   const product = products.find(p => p.id === productId);
   
+  const [selectedProductVariant, setSelectedProductVariant] = useState<string>('original');
   const [selectedVariant, setSelectedVariant] = useState<string>('60');
   const [quantity, setQuantity] = useState<number>(1);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const [showStickyButton, setShowStickyButton] = useState(false);
+  const [showProductLabel, setShowProductLabel] = useState(false);
+  const [currentLabelIndex, setCurrentLabelIndex] = useState(0);
   
   // New checkbox-based states instead of purchaseType radio
   const [isAutoship, setIsAutoship] = useState(false);
   const [isFlexPay, setIsFlexPay] = useState(false);
   const [deliveryFrequency, setDeliveryFrequency] = useState(30);
+  const [customFrequency, setCustomFrequency] = useState('');
+  const [frequencyError, setFrequencyError] = useState('');
   const [flexPayInstallments, setFlexPayInstallments] = useState(2);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   // Scroll detection for sticky button
   useEffect(() => {
@@ -105,6 +144,15 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
   const subtotal = unitPrice * quantity;
   
   const handleAddToCart = () => {
+    // Validate custom frequency if "Other" is selected
+    if (isAutoship && deliveryFrequency === 'other') {
+      const freq = parseInt(customFrequency);
+      if (!customFrequency || isNaN(freq) || freq < 15 || freq > 500) {
+        setFrequencyError('Please enter between 15-500 days');
+        return;
+      }
+    }
+    
     // Get accurate pricing based on selected variant
     const currentVariantPrice = VARIANT_PRICING[selectedVariant];
     const basePrice = currentVariantPrice.sale; // Sale price (e.g., $14.90 for 60ct)
@@ -138,7 +186,7 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
       
       // Autoship specific
       ...(isAutoship && {
-        deliveryFrequency: deliveryFrequency
+        deliveryFrequency: deliveryFrequency === 'other' ? parseInt(customFrequency) : deliveryFrequency
       }),
       
       // FlexPay specific
@@ -236,6 +284,8 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
         <TopSection
           product={product}
           breakpoint={breakpoint}
+          selectedProductVariant={selectedProductVariant}
+          setSelectedProductVariant={setSelectedProductVariant}
           selectedVariant={selectedVariant}
           setSelectedVariant={setSelectedVariant}
           quantity={quantity}
@@ -252,8 +302,18 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
           setIsFlexPay={setIsFlexPay}
           deliveryFrequency={deliveryFrequency}
           setDeliveryFrequency={setDeliveryFrequency}
+          customFrequency={customFrequency}
+          setCustomFrequency={setCustomFrequency}
+          frequencyError={frequencyError}
+          setFrequencyError={setFrequencyError}
           flexPayInstallments={flexPayInstallments}
           setFlexPayInstallments={setFlexPayInstallments}
+          showProductLabel={showProductLabel}
+          setShowProductLabel={setShowProductLabel}
+          currentLabelIndex={currentLabelIndex}
+          setCurrentLabelIndex={setCurrentLabelIndex}
+          isFavorite={isFavorite}
+          setIsFavorite={setIsFavorite}
         />
         
         {/* Reviews Section */}
@@ -263,10 +323,32 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
         <BenefitsSection breakpoint={breakpoint} />
         
         {/* Content Slot 1 */}
-        <ContentSlot1 breakpoint={breakpoint} />
+        {isEditable ? (
+          <PDPContentSlot1Editable 
+            breakpoint={breakpoint}
+            initialData={contentSlot1Data}
+            onDataChange={onContentSlot1Change}
+          />
+        ) : (
+          <ContentSlot1 
+            breakpoint={breakpoint} 
+            data={contentSlot1Data}
+          />
+        )}
         
         {/* Content Slot 2 */}
-        <ContentSlot2 breakpoint={breakpoint} />
+        {isEditable ? (
+          <PDPContentSlot2Editable 
+            breakpoint={breakpoint}
+            initialData={contentSlot2Data}
+            onDataChange={onContentSlot2Change}
+          />
+        ) : (
+          <ContentSlot2 
+            breakpoint={breakpoint} 
+            data={contentSlot2Data}
+          />
+        )}
         
         {/* Video Section */}
         <VideoSection breakpoint={breakpoint} />
@@ -309,16 +391,28 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
           />
           
           {/* Button container */}
-          <div className="relative px-[24px] pb-[24px] pt-[24px]">
-            <AddToCartButton 
-              onClick={handleAddToCart} 
-              total={subtotal}
-              isAutoship={isAutoship}
-              isFlexPay={isFlexPay}
-              deliveryFrequency={deliveryFrequency}
-              flexPayInstallments={flexPayInstallments}
-              breakpoint={breakpoint} 
-            />
+          <div className="relative px-[24px] pb-[24px] pt-[24px] flex gap-[12px] items-center">
+            <div className="flex-1">
+              <AddToCartButton 
+                onClick={handleAddToCart} 
+                total={subtotal}
+                isAutoship={isAutoship}
+                isFlexPay={isFlexPay}
+                deliveryFrequency={deliveryFrequency}
+                flexPayInstallments={flexPayInstallments}
+                breakpoint={breakpoint} 
+              />
+            </div>
+            <button
+              onClick={() => setIsFavorite(!isFavorite)}
+              className="w-[52px] h-[52px] rounded-full border-[1.5px] border-[#009296] hover:bg-[#EFF6F4] transition-colors flex items-center justify-center flex-shrink-0"
+              aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+            >
+              <Heart 
+                className={`w-[22px] h-[22px] ${isFavorite ? 'fill-[#009296]' : ''} stroke-[#009296]`}
+                strokeWidth={1.5}
+              />
+            </button>
           </div>
         </motion.div>
       )}
@@ -336,7 +430,274 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
           />
         </SheetContent>
       </Sheet>
+
+      {/* Product Label Overlay with Carousel */}
+      {showProductLabel && (
+        <ProductLabelOverlay 
+          labels={productLabels}
+          currentIndex={currentLabelIndex}
+          setCurrentIndex={setCurrentLabelIndex}
+          onClose={() => setShowProductLabel(false)}
+          breakpoint={breakpoint}
+        />
+      )}
     </>
+  );
+}
+
+// Product Label Overlay with Carousel
+function ProductLabelOverlay({ labels, currentIndex, setCurrentIndex, onClose, breakpoint }: { 
+  labels: ProductLabel[]; 
+  currentIndex: number; 
+  setCurrentIndex: (index: number) => void; 
+  onClose: () => void;
+  breakpoint: Breakpoint;
+}) {
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+  const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
+  const directionRef = useRef<'forward' | 'backward'>('forward');
+  const isMobile = breakpoint === 'S';
+  const hasMultipleLabels = labels.length > 1;
+  const currentLabel = labels[currentIndex];
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft' && hasMultipleLabels) {
+        handlePrevious();
+      } else if (e.key === 'ArrowRight' && hasMultipleLabels) {
+        handleNext();
+      } else if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentIndex, hasMultipleLabels]);
+
+  const handlePrevious = () => {
+    directionRef.current = 'backward';
+    setDirection('backward');
+    setCurrentIndex(currentIndex === 0 ? labels.length - 1 : currentIndex - 1);
+  };
+
+  const handleNext = () => {
+    directionRef.current = 'forward';
+    setDirection('forward');
+    setCurrentIndex(currentIndex === labels.length - 1 ? 0 : currentIndex + 1);
+  };
+
+  // Touch/swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!hasMultipleLabels) return;
+    
+    const swipeThreshold = 50;
+    const swipeDistance = touchStart - touchEnd;
+
+    if (swipeDistance > swipeThreshold) {
+      // Swiped left - next
+      handleNext();
+    } else if (swipeDistance < -swipeThreshold) {
+      // Swiped right - previous
+      handlePrevious();
+    }
+  };
+
+  const handlePrint = () => {
+    const printWindow = window.open('', '', 'width=800,height=600');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>${currentLabel.name} - Print</title>
+            <style>
+              body { 
+                margin: 0; 
+                padding: 20px; 
+                display: flex; 
+                justify-content: center; 
+                align-items: center;
+              }
+              img { 
+                max-width: 100%; 
+                height: auto; 
+              }
+              @media print {
+                body { padding: 0; }
+                img { max-width: 100%; page-break-inside: avoid; }
+              }
+            </style>
+          </head>
+          <body>
+            <img src="${currentLabel.imageUrl}" alt="${currentLabel.name}" onload="window.print(); window.close();" />
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+    }
+  };
+
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = currentLabel.imageUrl;
+    link.download = `${currentLabel.name.toLowerCase().replace(/\s+/g, '-')}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  return (
+    <div 
+      className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-[24px]"
+      onClick={onClose}
+    >
+      <div className="relative flex flex-col items-center">
+        {/* Header with label name and counter - only show if multiple labels */}
+        {hasMultipleLabels && (
+          <div className="absolute -top-[80px] left-0 right-0 text-center">
+            <p className="text-white font-['Inter:Medium',sans-serif] font-medium text-[16px] leading-[1.4]">
+              {currentLabel.name} - {currentIndex + 1} of {labels.length}
+            </p>
+          </div>
+        )}
+
+        {/* Action buttons - top right */}
+        <div className="absolute -top-[48px] right-0 flex items-center gap-[12px] z-10">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePrint();
+            }}
+            className="flex items-center gap-[8px] bg-white hover:bg-[#EFF6F4] text-[#003b3c] px-[16px] py-[10px] rounded-[6px] transition-colors font-['Inter:Medium',sans-serif] font-medium text-[14px]"
+            aria-label="Print"
+          >
+            <Printer className="w-[18px] h-[18px]" strokeWidth={2} />
+            <span>Print</span>
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDownload();
+            }}
+            className="flex items-center gap-[8px] bg-white hover:bg-[#EFF6F4] text-[#003b3c] px-[16px] py-[10px] rounded-[6px] transition-colors font-['Inter:Medium',sans-serif] font-medium text-[14px]"
+            aria-label="Download"
+          >
+            <Download className="w-[18px] h-[18px]" strokeWidth={2} />
+            <span>Download</span>
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            className="text-white hover:text-[#48E1DC] transition-colors"
+            aria-label="Close"
+          >
+            <X className="w-[32px] h-[32px]" strokeWidth={2} />
+          </button>
+        </div>
+
+        {/* Main carousel container */}
+        <div className="relative flex items-center justify-center">
+          {/* Previous button - positioned absolutely to left */}
+          {hasMultipleLabels && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePrevious();
+              }}
+              className="absolute left-[-80px] z-10 w-[48px] h-[48px] rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+              aria-label="Previous label"
+            >
+              <ChevronLeft className="w-[28px] h-[28px]" strokeWidth={2} />
+            </button>
+          )}
+
+          {/* Image with touch support and directional animation */}
+          <div className="relative w-full flex items-center justify-center">
+            <AnimatePresence mode="wait" initial={false} custom={direction}>
+              <motion.img 
+                key={currentIndex}
+                src={currentLabel.imageUrl} 
+                alt={currentLabel.name}
+                custom={direction}
+                variants={{
+                  enter: (direction: 'forward' | 'backward') => ({
+                    x: direction === 'forward' ? 300 : -300,
+                    opacity: 0
+                  }),
+                  center: {
+                    x: 0,
+                    opacity: 1
+                  },
+                  exit: (direction: 'forward' | 'backward') => ({
+                    x: direction === 'forward' ? -300 : 300,
+                    opacity: 0
+                  })
+                }}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ 
+                  duration: 0.35, 
+                  ease: [0.32, 0.72, 0, 1] 
+                }}
+                className="max-w-[80vw] max-h-[90vh] w-auto h-auto object-contain"
+                onClick={(e) => e.stopPropagation()}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              />
+            </AnimatePresence>
+          </div>
+
+          {/* Next button - positioned absolutely to right */}
+          {hasMultipleLabels && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNext();
+              }}
+              className="absolute right-[-80px] z-10 w-[48px] h-[48px] rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+              aria-label="Next label"
+            >
+              <ChevronRight className="w-[28px] h-[28px]" strokeWidth={2} />
+            </button>
+          )}
+        </div>
+
+        {/* Dot indicators - only show if multiple labels */}
+        {hasMultipleLabels && (
+          <div className="absolute -bottom-[48px] left-0 right-0 flex items-center justify-center gap-[8px]">
+            {labels.map((label, index) => (
+              <button
+                key={label.id}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentIndex(index);
+                }}
+                className={`w-[10px] h-[10px] rounded-full transition-all ${
+                  index === currentIndex 
+                    ? 'bg-white w-[24px]' 
+                    : 'bg-white/40 hover:bg-white/60'
+                }`}
+                aria-label={`Go to ${label.name}`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -503,6 +864,8 @@ function HeroSection({ product, breakpoint }: { product: Product; breakpoint: Br
 function TopSection({ 
   product, 
   breakpoint, 
+  selectedProductVariant,
+  setSelectedProductVariant,
   selectedVariant, 
   setSelectedVariant, 
   quantity, 
@@ -519,8 +882,18 @@ function TopSection({
   setIsFlexPay,
   deliveryFrequency,
   setDeliveryFrequency,
+  customFrequency,
+  setCustomFrequency,
+  frequencyError,
+  setFrequencyError,
   flexPayInstallments,
-  setFlexPayInstallments
+  setFlexPayInstallments,
+  showProductLabel,
+  setShowProductLabel,
+  currentLabelIndex,
+  setCurrentLabelIndex,
+  isFavorite,
+  setIsFavorite
 }: any) {
   const isMobile = breakpoint === 'S';
   const isTablet = breakpoint === 'M';
@@ -540,6 +913,10 @@ function TopSection({
           currentImageIndex={currentImageIndex}
           setCurrentImageIndex={setCurrentImageIndex}
           productImages={productImages}
+          showProductLabel={showProductLabel}
+          setShowProductLabel={setShowProductLabel}
+          currentLabelIndex={currentLabelIndex}
+          setCurrentLabelIndex={setCurrentLabelIndex}
         />
         
         {/* Vertical Divider - Desktop only, positioned between columns */}
@@ -551,6 +928,8 @@ function TopSection({
         <RightColumn 
           product={product}
           breakpoint={breakpoint}
+          selectedProductVariant={selectedProductVariant}
+          setSelectedProductVariant={setSelectedProductVariant}
           selectedVariant={selectedVariant}
           setSelectedVariant={setSelectedVariant}
           quantity={quantity}
@@ -562,10 +941,20 @@ function TopSection({
           setIsFlexPay={setIsFlexPay}
           deliveryFrequency={deliveryFrequency}
           setDeliveryFrequency={setDeliveryFrequency}
+          customFrequency={customFrequency}
+          setCustomFrequency={setCustomFrequency}
+          frequencyError={frequencyError}
+          setFrequencyError={setFrequencyError}
           flexPayInstallments={flexPayInstallments}
           setFlexPayInstallments={setFlexPayInstallments}
           activeAccordion={activeAccordion}
           setActiveAccordion={setActiveAccordion}
+          showProductLabel={showProductLabel}
+          setShowProductLabel={setShowProductLabel}
+          currentLabelIndex={currentLabelIndex}
+          setCurrentLabelIndex={setCurrentLabelIndex}
+          isFavorite={isFavorite}
+          setIsFavorite={setIsFavorite}
         />
       </div>
     </div>
@@ -573,7 +962,7 @@ function TopSection({
 }
 
 // Left Column Component
-function LeftColumn({ product, breakpoint, activeAccordion, setActiveAccordion, currentImageIndex, setCurrentImageIndex, productImages }: any) {
+function LeftColumn({ product, breakpoint, activeAccordion, setActiveAccordion, currentImageIndex, setCurrentImageIndex, productImages, showProductLabel, setShowProductLabel, currentLabelIndex, setCurrentLabelIndex }: any) {
   const isMobile = breakpoint === 'S';
   const isTablet = breakpoint === 'M';
   const minWidth = isMobile || isTablet ? 'min-w-0' : 'min-w-[725px]';
@@ -595,6 +984,10 @@ function LeftColumn({ product, breakpoint, activeAccordion, setActiveAccordion, 
           activeAccordion={activeAccordion}
           setActiveAccordion={setActiveAccordion}
           breakpoint={breakpoint}
+          showProductLabel={showProductLabel}
+          setShowProductLabel={setShowProductLabel}
+          currentLabelIndex={currentLabelIndex}
+          setCurrentLabelIndex={setCurrentLabelIndex}
         />
       )}
     </div>
@@ -677,6 +1070,15 @@ function ImageCarousel({ images, currentIndex, setCurrentIndex, breakpoint }: an
             className="w-full h-full object-contain"
           />
           
+          {/* Today's Special Badge - Top right corner, only on first image */}
+          {currentIndex === 0 && (
+            <div className="absolute top-[20px] right-[20px] bg-white text-[#ba282a] p-[8px] md:p-[12px] rounded-[4px] md:rounded-[6px]">
+              <p className="font-['Inter',sans-serif] text-xs md:text-sm md:font-medium uppercase tracking-[0.5px] whitespace-nowrap leading-none">
+                Today's Special
+              </p>
+            </div>
+          )}
+          
           {/* Left Arrow - Subtle on desktop (hover only), always visible but subtle on mobile */}
           <button
             onClick={handlePrevious}
@@ -727,7 +1129,7 @@ function ImageCarousel({ images, currentIndex, setCurrentIndex, breakpoint }: an
 }
 
 // Accordion Group Component
-function AccordionGroup({ product, activeAccordion, setActiveAccordion, breakpoint }: any) {
+function AccordionGroup({ product, activeAccordion, setActiveAccordion, breakpoint, showProductLabel, setShowProductLabel, currentLabelIndex, setCurrentLabelIndex }: any) {
   return (
     <div className="flex flex-col gap-[40px] w-full">
       <div className="h-[1px] w-full bg-[#D9E2E2]" />
@@ -780,6 +1182,27 @@ function AccordionGroup({ product, activeAccordion, setActiveAccordion, breakpoi
       >
         <div className="font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] text-[16px]">
           <p>Take two capsules daily, preferably with food, or as directed by your healthcare professional.</p>
+        </div>
+      </AccordionItem>
+      
+      <div className="h-[1px] w-full bg-[#D9E2E2]" />
+      
+      <AccordionItem
+        title={productLabels.length > 1 ? `Product labels (${productLabels.length})` : "Product label"}
+        isOpen={activeAccordion === 'label'}
+        onToggle={() => setActiveAccordion(activeAccordion === 'label' ? null : 'label')}
+        breakpoint={breakpoint}
+      >
+        <div className="w-full">
+          <img 
+            src={imgProductLabel} 
+            alt="Product Label" 
+            className="w-full h-auto cursor-pointer hover:opacity-90 transition-opacity rounded-[8px]"
+            onClick={() => {
+              setCurrentLabelIndex(0); // Always start from first label
+              setShowProductLabel(true);
+            }}
+          />
         </div>
       </AccordionItem>
       
@@ -837,6 +1260,8 @@ function AccordionItem({ title, isOpen, onToggle, children, breakpoint }: any) {
 function RightColumn({ 
   product, 
   breakpoint, 
+  selectedProductVariant,
+  setSelectedProductVariant,
   selectedVariant, 
   setSelectedVariant, 
   quantity, 
@@ -848,10 +1273,20 @@ function RightColumn({
   setIsFlexPay,
   deliveryFrequency,
   setDeliveryFrequency,
+  customFrequency,
+  setCustomFrequency,
+  frequencyError,
+  setFrequencyError,
   flexPayInstallments,
   setFlexPayInstallments,
   activeAccordion,
-  setActiveAccordion
+  setActiveAccordion,
+  showProductLabel,
+  setShowProductLabel,
+  currentLabelIndex,
+  setCurrentLabelIndex,
+  isFavorite,
+  setIsFavorite
 }: any) {
   const isMobile = breakpoint === 'S';
   const isTablet = breakpoint === 'M';
@@ -889,8 +1324,17 @@ function RightColumn({
       {/* Divider - 32px spacing on mobile (before major section), 40px on desktop */}
       <div className={`h-[1px] w-full bg-[#D9E2E2] ${isMobile ? 'mt-[32px]' : 'mt-[40px]'}`} />
       
-      {/* Variant Selector - 24px after divider on mobile, 40px on desktop */}
+      {/* Product Variant Selector - 24px after divider on mobile, 40px on desktop */}
       <div className={isMobile ? 'mt-[24px]' : 'mt-[40px]'}>
+        <ProductVariantSelector 
+          selectedProductVariant={selectedProductVariant}
+          setSelectedProductVariant={setSelectedProductVariant}
+          breakpoint={breakpoint}
+        />
+      </div>
+      
+      {/* Size Variant Selector - 20px spacing (related to product variant) */}
+      <div className="mt-[20px]">
         <VariantSelector 
           selectedVariant={selectedVariant}
           setSelectedVariant={setSelectedVariant}
@@ -907,6 +1351,10 @@ function RightColumn({
           setIsFlexPay={setIsFlexPay}
           deliveryFrequency={deliveryFrequency}
           setDeliveryFrequency={setDeliveryFrequency}
+          customFrequency={customFrequency}
+          setCustomFrequency={setCustomFrequency}
+          frequencyError={frequencyError}
+          setFrequencyError={setFrequencyError}
           flexPayInstallments={flexPayInstallments}
           setFlexPayInstallments={setFlexPayInstallments}
           basePrice={basePrice}
@@ -924,15 +1372,27 @@ function RightColumn({
         />
         {/* Hide inline button on mobile, show only sticky */}
         {!isMobile && (
-          <AddToCartButton 
-            onClick={handleAddToCart} 
-            total={subtotal}
-            isAutoship={isAutoship}
-            isFlexPay={isFlexPay}
-            deliveryFrequency={deliveryFrequency}
-            flexPayInstallments={flexPayInstallments}
-            breakpoint={breakpoint} 
-          />
+          <div className="flex gap-[12px] items-center flex-1">
+            <AddToCartButton 
+              onClick={handleAddToCart} 
+              total={subtotal}
+              isAutoship={isAutoship}
+              isFlexPay={isFlexPay}
+              deliveryFrequency={deliveryFrequency}
+              flexPayInstallments={flexPayInstallments}
+              breakpoint={breakpoint} 
+            />
+            <button
+              onClick={() => setIsFavorite(!isFavorite)}
+              className="w-[50px] h-[50px] rounded-full border-[1.5px] border-[#009296] hover:bg-[#EFF6F4] transition-colors flex items-center justify-center flex-shrink-0"
+              aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+            >
+              <Heart 
+                className={`w-[22px] h-[22px] ${isFavorite ? 'fill-[#009296]' : ''} stroke-[#009296]`}
+                strokeWidth={1.5}
+              />
+            </button>
+          </div>
         )}
       </div>
       
@@ -965,6 +1425,10 @@ function RightColumn({
             activeAccordion={activeAccordion}
             setActiveAccordion={setActiveAccordion}
             breakpoint={breakpoint}
+            showProductLabel={showProductLabel}
+            setShowProductLabel={setShowProductLabel}
+            currentLabelIndex={currentLabelIndex}
+            setCurrentLabelIndex={setCurrentLabelIndex}
           />
         </div>
       )}
@@ -1045,6 +1509,59 @@ function GoodForTags({ product, breakpoint }: any) {
   );
 }
 
+// Product Variant Selector - Dropdown for product type variations
+function ProductVariantSelector({ selectedProductVariant, setSelectedProductVariant, breakpoint }: any) {
+  const labelSize = breakpoint === 'S' ? 'text-[14px]' : 'text-[16px]';
+  const selectSize = breakpoint === 'S' ? 'text-[14px]' : 'text-[16px]';
+  
+  const productVariants = [
+    { value: 'original', label: 'Fibermucil Original Formula' },
+    { value: 'sugar-free', label: 'Fibermucil Sugar-Free Orange' },
+    { value: 'extra-strength', label: 'Fibermucil Extra Strength' },
+    { value: 'immune', label: 'Fibermucil Immune Support' }
+  ];
+  
+  return (
+    <div className="flex flex-col gap-[12px] w-full">
+      <label 
+        htmlFor="product-variant" 
+        className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] ${labelSize}`}
+      >
+        <span className="font-['Inter:Medium',sans-serif] font-medium">Product:</span>
+      </label>
+      <div className="relative">
+        <select
+          id="product-variant"
+          value={selectedProductVariant}
+          onChange={(e) => setSelectedProductVariant(e.target.value)}
+          className={`
+            w-full px-[16px] py-[14px] pr-[40px]
+            border-2 border-[#D9E2E2]
+            bg-white
+            font-['Inter:Regular',sans-serif] font-normal leading-[1.4] text-[#003b3c]
+            ${selectSize}
+            appearance-none
+            cursor-pointer
+            transition-colors
+            hover:border-[#009296]
+            focus:outline-none focus:border-[#009296] focus:ring-2 focus:ring-[#009296]/20
+          `}
+        >
+          {productVariants.map((variant) => (
+            <option key={variant.value} value={variant.value}>
+              {variant.label}
+            </option>
+          ))}
+        </select>
+        <ChevronDown 
+          className="absolute right-[12px] top-1/2 -translate-y-1/2 w-[20px] h-[20px] text-[#003b3c] pointer-events-none"
+          strokeWidth={2}
+        />
+      </div>
+    </div>
+  );
+}
+
 // Variant Selector - Clean without prices
 function VariantSelector({ selectedVariant, setSelectedVariant, breakpoint }: any) {
   const variants = ['60', '180', '360', '1000'];
@@ -1083,7 +1600,7 @@ function VariantSelector({ selectedVariant, setSelectedVariant, breakpoint }: an
 }
 
 // Purchase Options - NEW CHECKBOX DESIGN
-function PurchaseOptions({ isAutoship, setIsAutoship, isFlexPay, setIsFlexPay, deliveryFrequency, setDeliveryFrequency, flexPayInstallments, setFlexPayInstallments, basePrice, msrpPrice, breakpoint }: any) {
+function PurchaseOptions({ isAutoship, setIsAutoship, isFlexPay, setIsFlexPay, deliveryFrequency, setDeliveryFrequency, customFrequency, setCustomFrequency, frequencyError, setFrequencyError, flexPayInstallments, setFlexPayInstallments, basePrice, msrpPrice, breakpoint }: any) {
   const isMobile = breakpoint === 'S';
   const labelSize = isMobile ? 'text-[14px]' : 'text-[16px]';
   const titleSize = isMobile ? 'text-[16px]' : 'text-[18px]';
@@ -1096,16 +1613,31 @@ function PurchaseOptions({ isAutoship, setIsAutoship, isFlexPay, setIsFlexPay, d
   return (
     <div className="flex flex-col gap-[20px] w-full">
       {/* Price Display - Always visible at top */}
-      <div className="flex items-baseline gap-[12px]">
-        <p className={`font-['Inter:Medium',sans-serif] font-medium ${priceSize} leading-[1.2] text-[#D84315]`}>
-          ${basePrice.toFixed(2)}
+      <div className="flex flex-col gap-[8px]">
+        {/* Limited time offer label - above price */}
+        <p className={`font-['Inter:Regular',sans-serif] font-normal ${isMobile ? 'text-[12px]' : 'text-[13px]'} leading-[1.2] text-[#D84315]`}>
+          Limited time offer for February
         </p>
-        <p className={`font-['Inter:Regular',sans-serif] font-normal ${strikethroughSize} leading-[1.2] text-[#406c6d] line-through`}>
-          ${msrpPrice.toFixed(2)}
-        </p>
-        <p className={`font-['Inter:Medium',sans-serif] font-medium ${strikethroughSize} leading-[1.2] text-[#009296]`}>
-          Save ${savings.toFixed(2)}
-        </p>
+        
+        <div className="flex items-baseline gap-[12px]">
+          <p className={`font-['Inter:Medium',sans-serif] font-medium ${priceSize} leading-[1.2] text-[#D84315]`}>
+            ${basePrice.toFixed(2)}
+          </p>
+          <p className={`font-['Inter:Regular',sans-serif] font-normal ${strikethroughSize} leading-[1.2] text-[#406c6d] line-through`}>
+            ${msrpPrice.toFixed(2)}
+          </p>
+          <p className={`font-['Inter:Medium',sans-serif] font-medium ${strikethroughSize} leading-[1.2] text-[#009296]`}>
+            Save ${savings.toFixed(2)}
+          </p>
+        </div>
+        
+        {/* Free shipping line */}
+        <div className="flex items-center gap-[6px]">
+          <Check className={`${isMobile ? 'w-[14px] h-[14px]' : 'w-[16px] h-[16px]'} text-[#009296]`} />
+          <p className={`font-['Inter:Regular',sans-serif] font-normal ${isMobile ? 'text-[12px]' : 'text-[13px]'} leading-[1.2] text-[#406c6d]`}>
+            Free shipping on this order
+          </p>
+        </div>
       </div>
       
       <div className="flex flex-col gap-[12px]">
@@ -1165,28 +1697,101 @@ function PurchaseOptions({ isAutoship, setIsAutoship, isFlexPay, setIsFlexPay, d
                     Delivery frequency:
                   </p>
                   
-                  {/* Frequency Buttons */}
+                  {/* Frequency Buttons - Including Other */}
                   <div className="flex gap-[10px] mb-[16px]">
-                    {[30, 60, 90].map((days) => (
+                    {[30, 60, 90, 'other'].map((option) => (
                       <button
-                        key={days}
+                        key={option}
                         onClick={(e) => {
                           e.stopPropagation();
-                          setDeliveryFrequency(days);
+                          setDeliveryFrequency(option);
+                          setFrequencyError('');
                         }}
                         className={`
                           flex-1 h-[40px] rounded-[6px] border transition-all duration-200
                           font-['Inter:Regular',sans-serif] text-[14px]
                           flex items-center justify-center
-                          ${deliveryFrequency === days
+                          ${deliveryFrequency === option
                             ? 'bg-[#009296] border-[#009296] text-white font-medium'
                             : 'bg-white border-[#D9E2E2] text-[#003b3c] hover:border-[#009296]'
                           }
                         `}
                       >
-                        {days} days
+                        {option === 'other' ? 'Other' : `${option} days`}
                       </button>
                     ))}
+                  </div>
+                  
+                  {/* Custom Frequency Input - Expandable */}
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateRows: deliveryFrequency === 'other' ? '1fr' : '0fr',
+                      transition: 'grid-template-rows 300ms ease-in-out'
+                    }}
+                  >
+                    <div style={{ overflow: 'hidden' }}>
+                      <div className="mb-[16px]">
+                        <p className="font-['Inter:Regular',sans-serif] text-[14px] text-[#003b3c] mb-[10px]">
+                          Custom frequency:
+                        </p>
+                        <div className="flex items-center gap-[8px]">
+                          <span className="font-['Inter:Regular',sans-serif] text-[14px] text-[#003b3c]">
+                            Every
+                          </span>
+                          <div className="relative flex-1 max-w-[140px]">
+                            <input
+                              type="number"
+                              min="15"
+                              max="500"
+                              value={customFrequency}
+                              onChange={(e) => {
+                                setCustomFrequency(e.target.value);
+                                const val = parseInt(e.target.value);
+                                // Show real-time validation feedback
+                                if (e.target.value && (!isNaN(val) && (val < 15 || val > 500))) {
+                                  setFrequencyError('Please enter between 15-500 days');
+                                } else {
+                                  setFrequencyError('');
+                                }
+                              }}
+                              onBlur={() => {
+                                // Auto-clamp on blur
+                                const val = parseInt(customFrequency);
+                                if (!isNaN(val)) {
+                                  if (val < 15) {
+                                    setCustomFrequency('15');
+                                    setFrequencyError('');
+                                  } else if (val > 500) {
+                                    setCustomFrequency('500');
+                                    setFrequencyError('');
+                                  }
+                                }
+                              }}
+                              placeholder="0"
+                              className={`
+                                w-full h-[40px] px-[14px] rounded-[6px] border transition-all duration-200
+                                font-['Inter:Regular',sans-serif] text-[14px] text-[#003b3c]
+                                bg-white border-[#D9E2E2]
+                                focus:outline-none focus:border-[#009296]
+                                ${frequencyError ? 'border-red-500' : ''}
+                              `}
+                            />
+                          </div>
+                          <span className="font-['Inter:Regular',sans-serif] text-[14px] text-[#003b3c]">
+                            days
+                          </span>
+                        </div>
+                        {frequencyError && (
+                          <p className="mt-[6px] font-['Inter:Regular',sans-serif] text-[12px] text-red-600">
+                            {frequencyError}
+                          </p>
+                        )}
+                        <p className="mt-[6px] font-['Inter:Regular',sans-serif] text-[11px] text-[#406c6d]">
+                          Enter between 15-500 days
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Benefits */}
@@ -1668,96 +2273,152 @@ function VideoSection({ breakpoint }: any) {
 }
 
 // Content Slot 1 - Clean, Simple and Exceptionally Pure
-function ContentSlot1({ breakpoint }: any) {
+function ContentSlot1({ breakpoint, isEditable, data, onEdit }: any) {
   const bodySize = breakpoint === 'HD' ? 'text-[20px]' : 'text-[16px]';
+  
+  // Default data
+  const defaultData = {
+    eyebrow: "BIOACTIVE MICRO-GRANULES FOR MAXIMUM EFFICACY",
+    headline: "Clean, Simple and Exceptionally Pure.",
+    paragraph: "Fibermucil® features 100% pure psyllium husk powder from the high-fiber Plantago ovata plant—encapsulated in small, easy-to-swallow capsules without any additives, sweeteners, or synthetic ingredients.\n\nUnlike conventional fiber drinks or gritty powders, Fibermucil is free of colors, flavors, calories, or allergens. Its ultra-fine, bioactive granules are designed for optimal benefit and gentle daily use—delivering fiber in a naturally gentle, yet effective form.",
+    imageUrl: imgPillCapsule,
+    imageAlt: "Clear capsule with psyllium fiber powder"
+  };
+  
+  const slotData = data || defaultData;
   
   const bodyContent = (
     <div className={`flex flex-col gap-[16px]`}>
-      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] ${bodySize}`}>
-        Fibermucil® features 100% pure psyllium husk powder from the high-fiber Plantago ovata plant—encapsulated in small, easy-to-swallow capsules without any additives, sweeteners, or synthetic ingredients.
+      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] ${bodySize} whitespace-pre-line`}>
+        {slotData.paragraph}
       </p>
-      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] ${bodySize}`}>
-        Unlike conventional fiber drinks or gritty powders, Fibermucil is free of colors, flavors, calories, or allergens. Its ultra-fine, bioactive granules are designed for optimal benefit and gentle daily use—delivering fiber in a naturally gentle, yet effective form.
-      </p>
+      {slotData.bullets && slotData.bullets.length > 0 && (
+        <div className="flex flex-col gap-[12px] mt-[8px]">
+          {slotData.bullets.map((bullet: string, idx: number) => (
+            <div key={idx} className="flex gap-[12px] items-start">
+              <Check className="w-[20px] h-[20px] text-[#009296] flex-shrink-0 mt-[2px]" strokeWidth={2.5} />
+              <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] ${bodySize}`}>
+                {bullet}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
   
   const imageSlot = (
     <img 
-      src={imgPillCapsule} 
-      alt="Clear capsule with psyllium fiber powder" 
-      className="w-full aspect-square rounded-[20px] object-cover"
+      src={slotData.imageUrl} 
+      alt={slotData.imageAlt} 
+      className="w-full h-auto rounded-[20px] object-cover"
     />
   );
   
   return (
-    <StorySection
-      breakpoint={breakpoint}
-      eyebrow="BIOACTIVE MICRO-GRANULES FOR MAXIMUM EFFICACY"
-      headline="Clean, Simple and Exceptionally Pure."
-      bodyContent={bodyContent}
-      imageSlot={imageSlot}
-      imageOnRight={true}
-      eyebrowPosition="above"
-      showDivider={false}
-      bgColor="white"
-    />
+    <div className={`relative ${isEditable ? 'group' : ''}`}>
+      {isEditable && (
+        <button
+          onClick={onEdit}
+          className="absolute top-4 right-4 z-10 px-4 py-2 bg-[#009296] text-white rounded-[6px] opacity-0 group-hover:opacity-100 transition-opacity font-['Inter',sans-serif] text-[13px] font-medium shadow-lg"
+        >
+          Edit Content Slot 1
+        </button>
+      )}
+      <StorySection
+        breakpoint={breakpoint}
+        eyebrow={slotData.eyebrow}
+        headline={slotData.headline}
+        bodyContent={bodyContent}
+        imageSlot={imageSlot}
+        imageOnRight={true}
+        eyebrowPosition="above"
+        showDivider={false}
+        bgColor="white"
+      />
+    </div>
   );
 }
 
 // Content Slot 2 - Proven Fiber. Measurable Benefits.
-function ContentSlot2({ breakpoint }: any) {
+function ContentSlot2({ breakpoint, isEditable, data, onEdit }: any) {
   const bodySize = breakpoint === 'HD' ? 'text-[20px]' : 'text-[16px]';
   const bulletSize = breakpoint === 'S' || breakpoint === 'M' ? 'text-[14px]' : 'text-[16px]';
   
-  const benefits = [
-    'Gently cleanses the digestive tract',
-    'Promotes regularity and healthy transit time',
-    'Provides lasting fullness to support weight management',
-    'Supports healthy cholesterol levels already in the normal range',
-    'Maintains cardiovascular and digestive wellness'
-  ];
+  // Default data
+  const defaultData = {
+    eyebrow: "ESSENTIAL NUTRIENTS FOR BETTER HEALTH",
+    headline: "Proven Fiber. Measurable Benefits.",
+    paragraphs: [
+      "Fiber is one of the most overlooked nutrients in the modern diet, yet it plays a vital role in supporting your body's daily wellness. Backed by decades of research, a fiber-rich diet offers a natural path to better digestive and heart health."
+    ],
+    bullets: [
+      'Gently cleanses the digestive tract',
+      'Promotes regularity and healthy transit time',
+      'Provides lasting fullness to support weight management',
+      'Supports healthy cholesterol levels already in the normal range',
+      'Maintains cardiovascular and digestive wellness'
+    ],
+    imageUrl: imgPlantago,
+    imageAlt: "Plantago ovata plant - source of psyllium fiber"
+  };
+  
+  const slotData = data || defaultData;
   
   const bodyContent = (
     <div className="flex flex-col gap-[24px]">
-      <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] ${bodySize}`}>
-        Fiber is one of the most overlooked nutrients in the modern diet, yet it plays a vital role in supporting your body's daily wellness. Backed by decades of research, a fiber-rich diet offers a natural path to better digestive and heart health.
-      </p>
+      {slotData.paragraphs.map((para: string, idx: number) => (
+        <p key={idx} className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] ${bodySize}`}>
+          {para}
+        </p>
+      ))}
       
       {/* Benefits List */}
-      <div className="flex flex-col gap-[12px]">
-        {benefits.map((benefit, idx) => (
-          <div key={idx} className="flex gap-[12px] items-start">
-            <Check className="w-[20px] h-[20px] text-[#009296] flex-shrink-0 mt-[2px]" strokeWidth={2.5} />
-            <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] ${bulletSize}`}>
-              {benefit}
-            </p>
-          </div>
-        ))}
-      </div>
+      {slotData.bullets && slotData.bullets.length > 0 && (
+        <div className="flex flex-col gap-[12px]">
+          {slotData.bullets.map((benefit: string, idx: number) => (
+            <div key={idx} className="flex gap-[12px] items-start">
+              <Check className="w-[20px] h-[20px] text-[#009296] flex-shrink-0 mt-[2px]" strokeWidth={2.5} />
+              <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] ${bulletSize}`}>
+                {benefit}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
   
   const imageSlot = (
     <img 
-      src={imgPlantago} 
-      alt="Plantago ovata plant - source of psyllium fiber" 
-      className="w-full aspect-square rounded-[20px] object-cover"
+      src={slotData.imageUrl} 
+      alt={slotData.imageAlt} 
+      className="w-full h-auto rounded-[20px] object-cover"
     />
   );
   
   return (
-    <StorySection
-      breakpoint={breakpoint}
-      eyebrow="ESSENTIAL NUTRIENTS FOR BETTER HEALTH"
-      headline="Proven Fiber. Measurable Benefits."
-      bodyContent={bodyContent}
-      imageSlot={imageSlot}
-      imageOnRight={false}
-      eyebrowPosition="above"
-      showDivider={false}
-      bgColor="white"
-    />
+    <div className={`relative ${isEditable ? 'group' : ''}`}>
+      {isEditable && (
+        <button
+          onClick={onEdit}
+          className="absolute top-4 right-4 z-10 px-4 py-2 bg-[#009296] text-white rounded-[6px] opacity-0 group-hover:opacity-100 transition-opacity font-['Inter',sans-serif] text-[13px] font-medium shadow-lg"
+        >
+          Edit Content Slot 2
+        </button>
+      )}
+      <StorySection
+        breakpoint={breakpoint}
+        eyebrow={slotData.eyebrow}
+        headline={slotData.headline}
+        bodyContent={bodyContent}
+        imageSlot={imageSlot}
+        imageOnRight={false}
+        eyebrowPosition="above"
+        showDivider={false}
+        bgColor="white"
+      />
+    </div>
   );
 }
 

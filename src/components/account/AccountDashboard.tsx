@@ -5,6 +5,7 @@ import OrdersSection from './OrdersSection';
 import SubscriptionsSection from './SubscriptionsSection';
 import FlexpaySection from './FlexpaySection';
 import FavoritesSection from './FavoritesSection';
+import { UnsavedChangesModal } from './UnsavedChangesModal';
 
 interface AccountDashboardProps {
   userEmail: string;
@@ -19,6 +20,13 @@ export default function AccountDashboard({ userEmail, onClose, initialTab }: Acc
   const [activeTab, setActiveTab] = useState<TabType>(initialTab || 'overview');
   const [customerType, setCustomerType] = useState<CustomerType>('existing');
   const [initialOrderId, setInitialOrderId] = useState<string | undefined>(undefined);
+  
+  // Unsaved changes tracking
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [unsavedProductName, setUnsavedProductName] = useState<string | undefined>(undefined);
+  const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
+  const [pendingTab, setPendingTab] = useState<TabType | null>(null);
+  const [triggerScrollToEdit, setTriggerScrollToEdit] = useState(false);
 
   const handleNavigate = (tab: TabType, orderId?: string) => {
     setActiveTab(tab);
@@ -27,6 +35,20 @@ export default function AccountDashboard({ userEmail, onClose, initialTab }: Acc
     } else {
       setInitialOrderId(undefined);
     }
+  };
+  
+  // Handle tab navigation with unsaved changes check
+  const handleTabClick = (tabId: TabType) => {
+    // If we're on autoship tab and have unsaved changes, show warning
+    if (activeTab === 'autoship' && hasUnsavedChanges && tabId !== 'autoship') {
+      setPendingTab(tabId);
+      setShowUnsavedWarning(true);
+      return;
+    }
+    
+    // Otherwise, navigate normally
+    setActiveTab(tabId);
+    setInitialOrderId(undefined);
   };
 
   const tabs = [
@@ -74,7 +96,7 @@ export default function AccountDashboard({ userEmail, onClose, initialTab }: Acc
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => handleTabClick(tab.id)}
                 className={`relative py-[24px] whitespace-nowrap transition-colors cursor-pointer focus:outline-none font-['Inter',sans-serif] text-[16px] ${
                   activeTab === tab.id
                     ? 'text-[#003b3c]'
@@ -96,7 +118,16 @@ export default function AccountDashboard({ userEmail, onClose, initialTab }: Acc
         {activeTab === 'overview' && <AccountOverview userEmail={userEmail} onNavigate={handleNavigate} isNewCustomer={customerType === 'new'} />}
         {activeTab === 'orders' && <OrdersSection isNewCustomer={customerType === 'new'} initialOrderId={initialOrderId} />}
         {activeTab === 'profile' && <ProfileSection userEmail={userEmail} isNewCustomer={customerType === 'new'} />}
-        {activeTab === 'autoship' && <SubscriptionsSection isNewCustomer={customerType === 'new'} />}
+        {activeTab === 'autoship' && (
+          <SubscriptionsSection 
+            isNewCustomer={customerType === 'new'} 
+            onUnsavedChangesStatusChange={(hasChanges, productName) => {
+              setHasUnsavedChanges(hasChanges);
+              setUnsavedProductName(productName);
+            }}
+            scrollToEditPanel={triggerScrollToEdit}
+          />
+        )}
         {activeTab === 'flexpay' && <FlexpaySection isNewCustomer={customerType === 'new'} />}
         {activeTab === 'favorites' && <FavoritesSection isNewCustomer={customerType === 'new'} />}
       </div>
@@ -110,6 +141,29 @@ export default function AccountDashboard({ userEmail, onClose, initialTab }: Acc
           scrollbar-width: none;
         }
       `}</style>
+
+      {/* Unsaved Changes Modal */}
+      {showUnsavedWarning && (
+        <UnsavedChangesModal
+          isOpen={showUnsavedWarning}
+          productName={unsavedProductName}
+          onCancel={() => {
+            setShowUnsavedWarning(false);
+            setPendingTab(null);
+            // Trigger scroll to edit panel
+            setTriggerScrollToEdit(true);
+            setTimeout(() => setTriggerScrollToEdit(false), 100);
+          }}
+          onDiscard={() => {
+            setShowUnsavedWarning(false);
+            setHasUnsavedChanges(false);
+            if (pendingTab) {
+              setActiveTab(pendingTab);
+              setPendingTab(null);
+            }
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -25,6 +25,7 @@ interface HeaderContentProps {
   onLogoClick: () => void;
   onSpecialsClick: () => void;
   onAccountClick: () => void;
+  onSearchClick?: () => void;
   onOurStoryClick?: () => void;
   onQualityClick?: () => void;
   onDetailsClick?: () => void;
@@ -45,6 +46,7 @@ export default function HeaderContent({
   onLogoClick,
   onSpecialsClick,
   onAccountClick,
+  onSearchClick,
   onOurStoryClick,
   onQualityClick,
   onDetailsClick,
@@ -93,6 +95,7 @@ export default function HeaderContent({
               isDesktop={isDesktop}
               onCartClick={onCartClick}
               onAccountClick={onAccountClick}
+              onSearchClick={onSearchClick}
             />
           </div>
           

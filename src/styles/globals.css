@@ -15,6 +15,13 @@
   --font-size-5xl: 48px;
   --font-size-6xl: 54px;
   --font-size-7xl: 72px;
+  
+  /* Custom Breakpoints - 5-breakpoint system */
+  --breakpoint-s: 768px;
+  --breakpoint-m: 768px;
+  --breakpoint-l: 1280px;
+  --breakpoint-xl: 1440px;
+  --breakpoint-hd: 1920px;
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -378,6 +385,35 @@ html {
 @media (min-width: 1920px) {
   .product-headline {
     font-size: 28px !important;
+  }
+}
+
+/* Search Overlay Product Card Headlines - Separate from Collection Page */
+.search-product-headline {
+  font-size: 18px !important;
+}
+
+@media (min-width: 768px) {
+  .search-product-headline {
+    font-size: 20px !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  .search-product-headline {
+    font-size: 20px !important;
+  }
+}
+
+@media (min-width: 1440px) {
+  .search-product-headline {
+    font-size: 20px !important;
+  }
+}
+
+@media (min-width: 1920px) {
+  .search-product-headline {
+    font-size: 20px !important;
   }
 }
 

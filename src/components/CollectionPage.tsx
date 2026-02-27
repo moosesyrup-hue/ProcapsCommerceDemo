@@ -126,7 +126,7 @@ function ProductGrid({ filtersVisible, onQuickView, onProductClick }: { filtersV
     if (index === 1) {
       return (
         <>
-          Here is an Example of a Long Headline (Flexbox automatically adjust the height of all cards in row to match tallest card)
+          An Unparalleled Natural Source of Fiber
         </>
       );
     }

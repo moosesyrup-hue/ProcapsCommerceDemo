@@ -1,6 +1,6 @@
 export interface FooterLink {
   label: string;
-  action: 'myAccount' | 'trackOrder' | 'shippingReturns' | 'ourStory' | 'giving' | 'careers' | 'helpCenter' | 'faq' | null;
+  action: 'myAccount' | 'trackOrder' | 'shippingReturns' | 'ourStory' | 'giving' | 'careers' | 'helpCenter' | 'helpCenter2' | 'faq' | null;
 }
 
 export interface FooterSection {
@@ -29,6 +29,7 @@ export const footerSections: FooterSection[] = [
     title: 'Support',
     links: [
       { label: 'Help Center', action: 'helpCenter' },
+      { label: 'Help Center 2', action: 'helpCenter2' },
       { label: 'FAQs', action: 'faq' }
     ]
   }

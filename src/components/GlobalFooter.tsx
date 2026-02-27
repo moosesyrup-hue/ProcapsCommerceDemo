@@ -16,6 +16,7 @@ interface GlobalFooterProps {
   onShippingReturnsClick?: () => void;
   onTrackOrderClick?: () => void;
   onContactClick?: () => void;
+  onHelpCenter2Click?: () => void;
   onOurStoryClick?: () => void;
   onWellnessGuideClick?: () => void;
 }
@@ -27,7 +28,8 @@ export default function GlobalFooter({
   onMyAccountClick, 
   onShippingReturnsClick, 
   onTrackOrderClick, 
-  onContactClick, 
+  onContactClick,
+  onHelpCenter2Click,
   onOurStoryClick,
   onWellnessGuideClick
 }: GlobalFooterProps) {
@@ -74,6 +76,7 @@ export default function GlobalFooter({
       shippingReturns: onShippingReturnsClick,
       ourStory: onOurStoryClick,
       helpCenter: onContactClick,
+      helpCenter2: onHelpCenter2Click,
       faq: onFAQClick
     };
 

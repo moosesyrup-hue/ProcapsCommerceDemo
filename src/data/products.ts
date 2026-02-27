@@ -7,6 +7,7 @@ export interface Product {
   price: number;
   salePrice?: number;
   image?: string;
+  todaysSpecial?: boolean; // Flag for "Today's Special" badge
   
   // Tagging for search
   primaryCategory: string;
@@ -39,6 +40,7 @@ export const products: Product[] = [
     longDescription: 'A comprehensive sleep support formula combining highly bioavailable Magnesium Glycinate with synergistic L-Theanine and Glycine to naturally promote relaxation, support healthy sleep patterns, and help you wake refreshed. This gentle, non-habit forming formula works with your body\'s natural sleep mechanisms to support both falling asleep and staying asleep throughout the night.',
     price: 19.90,
     salePrice: 24.90,
+    todaysSpecial: true,
     primaryCategory: 'Sleep & Relaxation',
     secondaryCategories: ['Stress & Mood'],
     bodyParts: ['Brain', 'Nerves', 'Muscles'],
@@ -61,6 +63,7 @@ export const products: Product[] = [
     description: 'Multi-pathway sleep support with Magnesium, GABA, and Glycine',
     price: 29.90,
     salePrice: 34.90,
+    todaysSpecial: true,
     primaryCategory: 'Sleep & Relaxation',
     bodyParts: ['Brain', 'Nerves'],
     bodySystems: ['Nervous'],
@@ -82,6 +85,7 @@ export const products: Product[] = [
     description: 'Time-release melatonin with L-Theanine for natural sleep cycles',
     price: 14.90,
     salePrice: 18.90,
+    todaysSpecial: true,
     primaryCategory: 'Sleep & Relaxation',
     bodyParts: ['Brain', 'Endocrine System'],
     bodySystems: ['Nervous', 'Endocrine'],
@@ -104,6 +108,7 @@ export const products: Product[] = [
     description: 'Complete B-vitamin complex for natural energy production',
     price: 16.90,
     salePrice: 21.90,
+    todaysSpecial: true,
     primaryCategory: 'Energy',
     secondaryCategories: ['Brain Health'],
     bodyParts: ['Blood', 'Brain', 'Nerves'],
@@ -127,6 +132,7 @@ export const products: Product[] = [
     description: 'Easy-to-digest iron with Vitamin C for optimal absorption',
     price: 13.90,
     salePrice: 17.90,
+    todaysSpecial: true,
     primaryCategory: 'Energy',
     secondaryCategories: ['Individual Vitamins & Minerals'],
     bodyParts: ['Blood'],
@@ -292,7 +298,7 @@ export const products: Product[] = [
     ],
     healthIssues: ['Digestive Health', 'Cholesterol'],
     keyIngredients: ['Psyllium Husk'],
-    searchKeywords: ['fiber', 'psyllium', 'digestion', 'regularity', 'cholesterol', 'constipation'],
+    searchKeywords: ['fiber', 'psyllium', 'digestion', 'regularity', 'cholesterol', 'constipation', 'prebiotic fiber', 'soluble fiber', 'fiber supplements', 'dietary fiber'],
     popularFor: ['digestive health', 'fiber', 'regularity', 'cholesterol support'],
     formulation: 'Capsule',
     servingSize: '5 capsules',

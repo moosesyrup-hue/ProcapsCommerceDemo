@@ -9,6 +9,7 @@ interface HeaderIconsProps {
   isDesktop: boolean;
   onCartClick: () => void;
   onAccountClick: () => void;
+  onSearchClick?: () => void;
 }
 
 export default function HeaderIcons({
@@ -16,13 +17,19 @@ export default function HeaderIcons({
   isDesktop,
   onCartClick,
   onAccountClick,
+  onSearchClick,
 }: HeaderIconsProps) {
   const showHeart = breakpoint !== 'S';
   const showUser = breakpoint !== 'S';
 
   return (
     <div className={`absolute right-0 top-1/2 -translate-y-1/2 flex items-center ${isDesktop ? 'gap-[30px]' : 'gap-[20px]'}`}>
-      <SearchIcon />
+      <button 
+        onClick={onSearchClick} 
+        className="hover:opacity-80 transition-opacity"
+      >
+        <SearchIcon />
+      </button>
       
       {showHeart && <HeartIcon />}
       

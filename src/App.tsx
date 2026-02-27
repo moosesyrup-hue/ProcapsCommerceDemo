@@ -13,6 +13,7 @@ import PrivacyPolicyPage from './components/PrivacyPolicyPage';
 import TermsOfUsePage from './components/TermsOfUsePage';
 import ShippingReturnsPage from './components/ShippingReturnsPage';
 import HelpPage from './components/HelpPage';
+import HelpPage2 from './components/HelpPage2';
 import IngredientsPage from './components/IngredientsPage';
 import IngredientCollectionPage from './components/IngredientCollectionPage';
 import VitaminCalculatorPage from './components/VitaminCalculatorPage';
@@ -24,27 +25,44 @@ import MobileMenu from './components/MobileMenu';
 import AccountTray from './components/AccountTray';
 import ChatWithAndrew from './components/chat/ChatWithAndrew';
 import AndrewWellnessGuide from './andrew-wellness-guide';
+import WellnessHub from './components/WellnessHub';
+import WellnessHubGoalPage from './components/WellnessHubGoalPage';
+import WellnessHubArticlePage from './components/WellnessHubArticlePage';
+import WellnessHubVideoPage from './components/WellnessHubVideoPage';
 import ComponentEditor from './components/ComponentEditor';
 import CollectionPageEditable from './components/CollectionPageEditable';
+import SearchOverlay from './components/SearchOverlay';
+import SearchResultsPage from './components/SearchResultsPage';
+import { type ContentSlotData } from './components/ProductDetailPage';
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from './components/ui/sheet';
 import { Toaster } from './components/ui/sonner';
 import imgImage from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png";
 
 export default function App() {
   // Routing state
-  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'product' | 'cart' | 'checkout' | 'order-confirmation' | 'find-supplements' | 'faq' | 'privacy-policy' | 'terms-of-use' | 'shipping-returns' | 'help' | 'ingredients' | 'ingredient-collection' | 'vitamin-calculator' | 'our-story' | 'quality' | 'account' | 'wellness-guide'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'collection' | 'product' | 'cart' | 'checkout' | 'order-confirmation' | 'find-supplements' | 'faq' | 'privacy-policy' | 'terms-of-use' | 'shipping-returns' | 'help' | 'help2' | 'ingredients' | 'ingredient-collection' | 'vitamin-calculator' | 'our-story' | 'quality' | 'account' | 'wellness-guide' | 'wellness-hub' | 'wellness-hub-goal' | 'wellness-hub-article' | 'wellness-hub-video' | 'search'>('home');
   const [selectedCategory, setSelectedCategory] = useState<string>('digestive-health');
   const [selectedIngredient, setSelectedIngredient] = useState<string>('Vitamin C');
   const [selectedProductId, setSelectedProductId] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [accountTab, setAccountTab] = useState<'overview' | 'orders' | 'profile' | 'autoship' | 'flexpay' | 'favorites'>('overview');
+  const [selectedWellnessGoal, setSelectedWellnessGoal] = useState<string>('heart-health');
+  const [selectedArticleId, setSelectedArticleId] = useState<string>('coq10-heart');
+  const [selectedVideoId, setSelectedVideoId] = useState<string>('coq10-explained');
   
   // UI state
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [accountTrayOpen, setAccountTrayOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [bannerEditorOpen, setBannerEditorOpen] = useState(false);
   const [collectionPageEditorOpen, setCollectionPageEditorOpen] = useState(false);
+  const [pdpEditorOpen, setPdpEditorOpen] = useState(false);
+  
+  // PDP Content Slot Data
+  const [contentSlot1Data, setContentSlot1Data] = useState<ContentSlotData | undefined>(undefined);
+  const [contentSlot2Data, setContentSlot2Data] = useState<ContentSlotData | undefined>(undefined);
   
   // Help page reset key - increments to reset the page when navigating to it
   const [helpPageKey, setHelpPageKey] = useState(0);
@@ -63,6 +81,14 @@ export default function App() {
         // Toggle editing mode when on collection page
         if (currentPage === 'collection') {
           setCollectionPageEditorOpen(prev => !prev);
+        }
+      }
+      // PDP Content Slot Editor (Ctrl/Cmd + Shift + P)
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'p') {
+        e.preventDefault();
+        // Toggle editing mode when on product page
+        if (currentPage === 'product') {
+          setPdpEditorOpen(prev => !prev);
         }
       }
     };
@@ -218,6 +244,12 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
+  const handleHelp2Click = () => {
+    setHelpPageKey(prevKey => prevKey + 1);
+    setCurrentPage('help2');
+    window.scrollTo(0, 0);
+  };
+
   const handleIngredientsClick = () => {
     setCurrentPage('ingredients');
     window.scrollTo(0, 0);
@@ -235,6 +267,29 @@ export default function App() {
 
   const handleWellnessGuideClick = () => {
     setCurrentPage('wellness-guide');
+    window.scrollTo(0, 0);
+  };
+
+  const handleWellnessHubClick = () => {
+    setCurrentPage('wellness-hub');
+    window.scrollTo(0, 0);
+  };
+
+  const handleWellnessHubGoalClick = (goal: string) => {
+    setSelectedWellnessGoal(goal);
+    setCurrentPage('wellness-hub-goal');
+    window.scrollTo(0, 0);
+  };
+
+  const handleWellnessHubArticleClick = (articleId: string) => {
+    setSelectedArticleId(articleId);
+    setCurrentPage('wellness-hub-article');
+    window.scrollTo(0, 0);
+  };
+
+  const handleWellnessHubVideoClick = (videoId: string) => {
+    setSelectedVideoId(videoId);
+    setCurrentPage('wellness-hub-video');
     window.scrollTo(0, 0);
   };
 
@@ -342,6 +397,7 @@ export default function App() {
             setCurrentPage('collection');
           }}
           onAccountClick={() => setAccountTrayOpen(!accountTrayOpen)}
+          onSearchClick={() => setSearchOpen(true)}
           isLoggedIn={isLoggedIn}
           userFirstName={userData?.firstName}
           onFAQClick={handleFAQClick}
@@ -357,6 +413,23 @@ export default function App() {
           }}
         />
       )}
+
+      {/* Search Overlay */}
+      <SearchOverlay 
+        isOpen={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        onProductClick={(productId) => {
+          setSelectedProductId(productId);
+          setCurrentPage('product');
+          setSearchOpen(false);
+          window.scrollTo(0, 0);
+        }}
+        onViewAllResults={(query) => {
+          setSearchQuery(query);
+          setCurrentPage('search');
+          window.scrollTo(0, 0);
+        }}
+      />
 
       {/* Mobile Menu */}
       <MobileMenu 
@@ -414,6 +487,7 @@ export default function App() {
           onIngredientsClick={handleIngredientsClick}
           onOurStoryClick={handleOurStoryClick}
           onCategoryClick={handleCategoryClick}
+          onWellnessHubClick={handleWellnessHubClick}
         />
       ) : currentPage === 'collection' ? (
         collectionPageEditorOpen ? (
@@ -450,17 +524,41 @@ export default function App() {
           />
         )
       ) : currentPage === 'product' ? (
-        <ProductDetailPage 
-          cartItems={cartItems}
-          setCartItems={setCartItems}
-          onOpenCart={() => setCartOpen(true)}
-          productId={selectedProductId}
-          onNavigateToCategory={(category) => {
-            setSelectedCategory(category);
-            setCurrentPage('collection');
-            window.scrollTo(0, 0);
-          }}
-        />
+        <div className="relative">
+          {/* Editing Mode Banner */}
+          {pdpEditorOpen && (
+            <div className="sticky top-0 z-[100] bg-[#009296] text-white py-3 px-6 flex items-center justify-between shadow-md">
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                <span className="font-['Inter',sans-serif] font-medium text-[14px]">
+                  PDP Editing Mode Active - Hover over content slots to edit
+                </span>
+              </div>
+              <button
+                onClick={() => setPdpEditorOpen(false)}
+                className="px-4 py-1.5 bg-white/20 hover:bg-white/30 rounded-[6px] font-['Inter',sans-serif] text-[13px] font-medium transition-colors"
+              >
+                Exit Editing Mode
+              </button>
+            </div>
+          )}
+          <ProductDetailPage 
+            cartItems={cartItems}
+            setCartItems={setCartItems}
+            onOpenCart={() => setCartOpen(true)}
+            productId={selectedProductId}
+            onNavigateToCategory={(category) => {
+              setSelectedCategory(category);
+              setCurrentPage('collection');
+              window.scrollTo(0, 0);
+            }}
+            isEditable={pdpEditorOpen}
+            contentSlot1Data={contentSlot1Data}
+            contentSlot2Data={contentSlot2Data}
+            onContentSlot1Change={setContentSlot1Data}
+            onContentSlot2Change={setContentSlot2Data}
+          />
+        </div>
       ) : currentPage === 'find-supplements' ? (
         <FindMySupplementsPage onClose={handleLogoClick} />
       ) : currentPage === 'faq' ? (
@@ -473,6 +571,8 @@ export default function App() {
         <ShippingReturnsPage />
       ) : currentPage === 'help' ? (
         <HelpPage key={helpPageKey} />
+      ) : currentPage === 'help2' ? (
+        <HelpPage2 key={helpPageKey} />
       ) : currentPage === 'ingredients' ? (
         <IngredientsPage 
           onNavigateToIngredient={(ingredient) => {
@@ -495,6 +595,15 @@ export default function App() {
         />
       ) : currentPage === 'vitamin-calculator' ? (
         <VitaminCalculatorPage />
+      ) : currentPage === 'search' ? (
+        <SearchResultsPage 
+          searchQuery={searchQuery}
+          onProductClick={(productId) => {
+            setSelectedProductId(productId);
+            setCurrentPage('product');
+            window.scrollTo(0, 0);
+          }}
+        />
       ) : currentPage === 'cart' ? (
         <CartPage
           cartItems={cartItems}
@@ -529,6 +638,27 @@ export default function App() {
         <AccountDashboard userEmail={userData?.email || ''} initialTab={accountTab} />
       ) : currentPage === 'wellness-guide' ? (
         <AndrewWellnessGuide />
+      ) : currentPage === 'wellness-hub' ? (
+        <WellnessHub onNavigateToGoal={handleWellnessHubGoalClick} onNavigateToArticle={handleWellnessHubArticleClick} onNavigateToVideo={handleWellnessHubVideoClick} />
+      ) : currentPage === 'wellness-hub-goal' ? (
+        <WellnessHubGoalPage 
+          goalId={selectedWellnessGoal}
+          onBack={handleWellnessHubClick}
+          onNavigateToArticle={handleWellnessHubArticleClick}
+          onNavigateToVideo={handleWellnessHubVideoClick}
+        />
+      ) : currentPage === 'wellness-hub-article' ? (
+        <WellnessHubArticlePage 
+          articleId={selectedArticleId}
+          onBack={handleWellnessHubClick}
+          onNavigateToArticle={handleWellnessHubArticleClick}
+        />
+      ) : currentPage === 'wellness-hub-video' ? (
+        <WellnessHubVideoPage 
+          videoId={selectedVideoId}
+          onBack={handleWellnessHubClick}
+          onNavigateToVideo={handleWellnessHubVideoClick}
+        />
       ) : (
         <OrderConfirmationPage 
           orderData={orderData}
@@ -548,7 +678,7 @@ export default function App() {
       )}
 
       {/* Global Footer - Hide on checkout, order confirmation, find-supplements, and vitamin-calculator */}
-      {currentPage !== 'checkout' && currentPage !== 'order-confirmation' && currentPage !== 'find-supplements' && currentPage !== 'vitamin-calculator' && <GlobalFooter onFAQClick={handleFAQClick} onPrivacyPolicyClick={handlePrivacyPolicyClick} onTermsOfUseClick={handleTermsOfUseClick} onMyAccountClick={() => setAccountTrayOpen(true)} onShippingReturnsClick={handleShippingReturnsClick} onTrackOrderClick={() => setAccountTrayOpen(true)} onContactClick={handleHelpClick} onOurStoryClick={handleOurStoryClick} onWellnessGuideClick={handleWellnessGuideClick} />}
+      {currentPage !== 'checkout' && currentPage !== 'order-confirmation' && currentPage !== 'find-supplements' && currentPage !== 'vitamin-calculator' && <GlobalFooter onFAQClick={handleFAQClick} onPrivacyPolicyClick={handlePrivacyPolicyClick} onTermsOfUseClick={handleTermsOfUseClick} onMyAccountClick={() => setAccountTrayOpen(true)} onShippingReturnsClick={handleShippingReturnsClick} onTrackOrderClick={() => setAccountTrayOpen(true)} onContactClick={handleHelpClick} onHelpCenter2Click={handleHelp2Click} onOurStoryClick={handleOurStoryClick} onWellnessGuideClick={handleWellnessGuideClick} />}
 
       {/* MiniCart Sheet */}
       <Sheet open={cartOpen} onOpenChange={setCartOpen}>

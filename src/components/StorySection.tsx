@@ -1,5 +1,5 @@
 import { motion, useInView } from 'motion/react';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import React from 'react';
 
 type Breakpoint = 'S' | 'M' | 'L' | 'XL' | 'HD';
@@ -31,6 +31,11 @@ export function StorySection({
 }: StorySectionProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  
+  // Refs to measure heights
+  const textRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const [alignment, setAlignment] = useState<'items-center' | 'items-start'>('items-center');
   
   const isMobile = breakpoint === 'S';
   const isTablet = breakpoint === 'M';
@@ -79,17 +84,50 @@ export function StorySection({
   );
   
   const textContent = (
-    <div className={`flex flex-col gap-[40px] ${isMobile ? 'w-full' : 'flex-1'} min-w-0 ${textOrder}`}>
+    <div className={`flex flex-col gap-[40px] ${isMobile ? 'w-full' : 'flex-1'} min-w-0 ${textOrder}`} ref={textRef}>
       {headlineSection}
       {bodyContent}
     </div>
   );
   
   const imageContent = (
-    <div className={`${isMobile ? 'w-full' : 'flex-1'} min-w-0 ${imageOrder}`}>
+    <div className={`${isMobile ? 'w-full' : 'flex-1'} min-w-0 ${imageOrder}`} ref={imageRef}>
       {imageSlot}
     </div>
   );
+  
+  useEffect(() => {
+    const checkAlignment = () => {
+      if (textRef.current && imageRef.current) {
+        const textHeight = textRef.current.offsetHeight;
+        const imageHeight = imageRef.current.offsetHeight;
+        if (textHeight > imageHeight) {
+          setAlignment('items-start');
+        } else {
+          setAlignment('items-center');
+        }
+      }
+    };
+    
+    // Check alignment on mount and content changes
+    checkAlignment();
+    
+    // Use ResizeObserver to detect when content or image sizes change
+    const resizeObserver = new ResizeObserver(() => {
+      checkAlignment();
+    });
+    
+    if (textRef.current) {
+      resizeObserver.observe(textRef.current);
+    }
+    if (imageRef.current) {
+      resizeObserver.observe(imageRef.current);
+    }
+    
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [eyebrow, headline, bodyContent, imageSlot]);
   
   if (animated) {
     return (
@@ -100,7 +138,7 @@ export function StorySection({
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6 }}
         >
-          <div className={`flex ${layoutDirection} ${contentGap} items-center justify-center max-w-[1600px] mx-auto ${padding}`}>
+          <div className={`flex ${layoutDirection} ${contentGap} ${alignment} justify-center max-w-[1600px] mx-auto ${padding}`}>
             {textContent}
             {imageContent}
           </div>
@@ -111,7 +149,7 @@ export function StorySection({
   
   return (
     <div className={`w-full bg-${bgColor}`}>
-      <div className={`flex ${layoutDirection} ${contentGap} items-center justify-center max-w-[1600px] mx-auto ${padding}`}>
+      <div className={`flex ${layoutDirection} ${contentGap} ${alignment} justify-center max-w-[1600px] mx-auto ${padding}`}>
         {textContent}
         {imageContent}
       </div>

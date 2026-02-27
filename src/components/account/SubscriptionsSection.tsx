@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { RefreshCw, SkipForward, Pause, Play, X, Calendar, AlertCircle, ChevronDown, ChevronUp, CreditCard, MapPin, Trash2, Check, Loader2, Clock, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner@2.0.3';
@@ -6,6 +6,8 @@ import imgProduct from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import AddressFormModal from '../shared/AddressFormModal';
 import PaymentMethodFormModal from '../shared/PaymentMethodFormModal';
+import { SubscriptionManagePanel } from './SubscriptionManagePanel';
+import { UnsavedChangesModal } from './UnsavedChangesModal';
 
 // Circle button components matching MiniCart
 function IconRemove({ onClick, disabled }: { onClick: () => void; disabled?: boolean }) {
@@ -52,6 +54,8 @@ function IconAdd({ onClick }: { onClick: () => void }) {
 
 interface SubscriptionsSectionProps {
   isNewCustomer?: boolean;
+  onUnsavedChangesStatusChange?: (hasUnsavedChanges: boolean, productName?: string) => void;
+  scrollToEditPanel?: boolean;
 }
 
 interface Subscription {
@@ -146,7 +150,7 @@ const availableAddresses = [
   },
 ];
 
-export default function SubscriptionsSection({ isNewCustomer = false }: SubscriptionsSectionProps) {
+export default function SubscriptionsSection({ isNewCustomer = false, onUnsavedChangesStatusChange, scrollToEditPanel }: SubscriptionsSectionProps) {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([
     {
       id: '1',
@@ -154,7 +158,7 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
       productCount: '120 Capsules',
       productImage: imgProduct,
       frequency: 'Every 60 days',
-      nextDelivery: 'December 19, 2025',
+      nextDelivery: 'March 15, 2026',
       price: 35.96,
       status: 'Active',
       quantity: 1,
@@ -165,7 +169,7 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
       productCount: '250 Capsules',
       productImage: imgProduct,
       frequency: 'Every 90 days',
-      nextDelivery: 'December 27, 2025',
+      nextDelivery: 'April 10, 2026',
       price: 24.95,
       status: 'Active',
       quantity: 2,
@@ -176,7 +180,7 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
       productCount: '120 Capsules',
       productImage: imgProduct,
       frequency: 'Every 30 days',
-      nextDelivery: 'January 10, 2026',
+      nextDelivery: 'February 20, 2026',
       price: 42.50,
       status: 'Paused',
       quantity: 1,
@@ -187,12 +191,23 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
   const [modalType, setModalType] = useState<ModalType>(null);
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
   const [undoAction, setUndoAction] = useState<UndoAction | null>(null);
+  
+  // Ref for scrolling to the edit panel
+  const editPanelRef = useRef<HTMLDivElement>(null);
   const [loadingActions, setLoadingActions] = useState<Record<string, boolean>>({});
   const [savedFields, setSavedFields] = useState<Record<string, boolean>>({});
   const [showAllDeliveries, setShowAllDeliveries] = useState<Record<string, boolean>>({});
   const [datePickerOpen, setDatePickerOpen] = useState<Record<string, boolean>>({});
   const [selectedPaymentId, setSelectedPaymentId] = useState<Record<string, string>>({});
   const [selectedAddressId, setSelectedAddressId] = useState<Record<string, string>>({});
+  const [customFrequencyValues, setCustomFrequencyValues] = useState<Record<string, string>>({});
+  const [frequencyMode, setFrequencyMode] = useState<Record<string, number | 'other'>>({});
+  
+  // Edit mode tracking - for explicit save pattern
+  const [editingSubscriptionId, setEditingSubscriptionId] = useState<string | null>(null);
+  const [pendingChanges, setPendingChanges] = useState<Record<string, Partial<Subscription & { paymentId?: string; addressId?: string }>>>({});
+  const [originalValues, setOriginalValues] = useState<Record<string, Subscription & { paymentId?: string; addressId?: string }>>({});
+  const [isSaving, setIsSaving] = useState(false);
   
   // Filter states
   const [activeStatus, setActiveStatus] = useState<AutoshipStatus>('All');
@@ -201,6 +216,13 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
   // Modal states
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  
+  // Unsaved changes warning
+  const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
+  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+  
+  // Frequency error state for validation
+  const [frequencyErrors, setFrequencyErrors] = useState<Record<string, string>>({});
   
   const { breakpoint, isMobile } = useBreakpoint();
   
@@ -236,7 +258,7 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
   };
 
   // Generate upcoming deliveries
-  const getUpcomingDeliveries = (sub: Subscription, count: number = 5) => {
+  const getUpcomingDeliveries = (sub: Subscription & Partial<{ paymentId?: string; addressId?: string }>, count: number = 5) => {
     const deliveries = [];
     let currentDate = sub.nextDelivery;
     for (let i = 0; i < count; i++) {
@@ -262,91 +284,62 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
     }, 2000);
   };
 
-  // Generate available delivery dates
-  const getAvailableDates = (baseDate: string, frequency: string, count: number = 8) => {
+  // Generate available delivery dates - flexible weekly options for vacation scheduling
+  const getAvailableDates = (baseDate: string, frequency: string, count: number = 12) => {
     const dates = [];
-    let current = new Date(baseDate);
-    const days = frequency === 'Every 30 days' ? 30 
-      : frequency === 'Every 45 days' ? 45 
-      : frequency === 'Every 60 days' ? 60 
-      : frequency === 'Every 90 days' ? 90 
-      : 120;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     
+    // Start from today or the base date, whichever is later
+    let current = new Date(baseDate);
+    current.setHours(0, 0, 0, 0);
+    
+    // If base date is in the past, start from today
+    if (current < today) {
+      current = new Date(today);
+    }
+    
+    // Generate weekly intervals for flexibility (vacation scheduling)
+    // This allows customers to pick any week that works for them
     for (let i = 0; i < count; i++) {
       dates.push({
         date: new Date(current),
         label: current.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
         fullLabel: current.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
       });
-      current = new Date(current.getTime() + (days * 24 * 60 * 60 * 1000));
+      // Add 7 days for next option
+      current = new Date(current.getTime() + (7 * 24 * 60 * 60 * 1000));
     }
     return dates;
   };
 
-  // Handle date change
-  const handleDateChange = async (subId: string, newDate: string) => {
-    setLoadingActions(prev => ({ ...prev, [`${subId}-date`]: true }));
+  // Track date change (no auto-save)
+  const handleDateChange = (subId: string, newDate: string) => {
+    // Track as pending change
+    setPendingChanges(prev => ({
+      ...prev,
+      [subId]: { ...prev[subId], nextDelivery: newDate }
+    }));
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    setSubscriptions(subs =>
-      subs.map(s =>
-        s.id === subId ? { ...s, nextDelivery: newDate } : s
-      )
-    );
-    
-    setLoadingActions(prev => ({ ...prev, [`${subId}-date`]: false }));
     setDatePickerOpen(prev => ({ ...prev, [subId]: false }));
-    
-    // Show saved badge
-    setSavedFields(prev => ({ ...prev, [`${subId}-date`]: true }));
-    setTimeout(() => {
-      setSavedFields(prev => ({ ...prev, [`${subId}-date`]: false }));
-    }, 2000);
-    
-    toast.success('Delivery date updated');
   };
 
-  // Handle payment method change
-  const handlePaymentChange = async (subId: string, paymentId: string) => {
-    const fieldKey = `${subId}-payment`;
-    setLoadingActions(prev => ({ ...prev, [fieldKey]: true }));
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    setSelectedPaymentId(prev => ({ ...prev, [subId]: paymentId }));
-    setLoadingActions(prev => ({ ...prev, [fieldKey]: false }));
-    
-    // Show saved badge
-    setSavedFields(prev => ({ ...prev, [fieldKey]: true }));
-    setTimeout(() => {
-      setSavedFields(prev => ({ ...prev, [fieldKey]: false }));
-    }, 2000);
-    
-    const payment = availablePaymentMethods.find(p => p.id === paymentId);
-    toast.success(`Payment updated to ${payment?.type} •••• ${payment?.last4}`);
+  // Track payment method change (no auto-save)
+  const handlePaymentChange = (subId: string, paymentId: string) => {
+    // Track as pending change
+    setPendingChanges(prev => ({
+      ...prev,
+      [subId]: { ...prev[subId], paymentId }
+    }));
   };
 
-  // Handle address change
-  const handleAddressChange = async (subId: string, addressId: string) => {
-    const fieldKey = `${subId}-address`;
-    setLoadingActions(prev => ({ ...prev, [fieldKey]: true }));
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    setSelectedAddressId(prev => ({ ...prev, [subId]: addressId }));
-    setLoadingActions(prev => ({ ...prev, [fieldKey]: false }));
-    
-    // Show saved badge
-    setSavedFields(prev => ({ ...prev, [fieldKey]: true }));
-    setTimeout(() => {
-      setSavedFields(prev => ({ ...prev, [fieldKey]: false }));
-    }, 2000);
-    
-    toast.success('Shipping address updated');
+  // Track address change (no auto-save)
+  const handleAddressChange = (subId: string, addressId: string) => {
+    // Track as pending change
+    setPendingChanges(prev => ({
+      ...prev,
+      [subId]: { ...prev[subId], addressId }
+    }));
   };
 
   // Clear undo timeout on unmount
@@ -357,6 +350,51 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
       }
     };
   }, [undoAction]);
+
+  // Browser warning when user tries to close/navigate away with unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      // Check if any subscription has pending changes
+      const hasAnyPendingChanges = Object.values(pendingChanges).some(
+        changes => Object.keys(changes).length > 0
+      );
+      
+      if (hasAnyPendingChanges) {
+        e.preventDefault();
+        e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+        return e.returnValue;
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [pendingChanges]);
+
+  // Notify parent component when unsaved changes status changes
+  useEffect(() => {
+    const hasAnyPendingChanges = Object.values(pendingChanges).some(
+      changes => Object.keys(changes).length > 0
+    );
+    
+    // Get product name of the subscription being edited
+    const productName = editingSubscriptionId 
+      ? subscriptions.find(s => s.id === editingSubscriptionId)?.productName
+      : undefined;
+    
+    if (onUnsavedChangesStatusChange) {
+      onUnsavedChangesStatusChange(hasAnyPendingChanges, productName);
+    }
+  }, [pendingChanges, editingSubscriptionId, subscriptions, onUnsavedChangesStatusChange]);
+
+  // Scroll to edit panel when user clicks "Keep Editing"
+  useEffect(() => {
+    if (scrollToEditPanel && editPanelRef.current && expandedId) {
+      editPanelRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' 
+      });
+    }
+  }, [scrollToEditPanel, expandedId]);
 
   // Handle Skip Next
   const handleSkipClick = (sub: Subscription) => {
@@ -507,53 +545,125 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
     setUndoAction(null);
   };
 
-  // Handle Manage (toggle expanded state)
+  // Handle Manage (enter edit mode with explicit save)
   const handleManage = (sub: Subscription) => {
-    setExpandedId(prev => prev === sub.id ? null : sub.id);
+    if (expandedId === sub.id) {
+      // Collapse - but check if there are unsaved changes
+      if (editingSubscriptionId === sub.id && Object.keys(pendingChanges[sub.id] || {}).length > 0) {
+        // Show warning modal
+        setPendingAction(() => () => {
+          handleCancelChanges(sub.id);
+        });
+        setShowUnsavedWarning(true);
+        return;
+      }
+      setExpandedId(null);
+      setEditingSubscriptionId(null);
+    } else {
+      // Expand and enter edit mode
+      setExpandedId(sub.id);
+      setEditingSubscriptionId(sub.id);
+      
+      // Store original values for cancel/revert
+      setOriginalValues(prev => ({
+        ...prev,
+        [sub.id]: {
+          ...sub,
+          paymentId: selectedPaymentId[sub.id] || '1',
+          addressId: selectedAddressId[sub.id] || '1',
+        }
+      }));
+      
+      // Initialize pending changes as empty
+      setPendingChanges(prev => ({ ...prev, [sub.id]: {} }));
+    }
   };
 
-  // Handle frequency change
-  const handleFrequencyChange = async (subId: string, newFrequency: 'Every 30 days' | 'Every 45 days' | 'Every 60 days' | 'Every 90 days' | 'Every 120 days') => {
-    const fieldKey = `${subId}-frequency`;
-    setLoadingActions(prev => ({ ...prev, [fieldKey]: true }));
+  // Track frequency change (no auto-save)
+  const handleFrequencyModeChange = (subId: string, mode: number | 'other') => {
+    setFrequencyMode(prev => ({ ...prev, [subId]: mode }));
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    setSubscriptions(subs =>
-      subs.map(s =>
-        s.id === subId ? { ...s, frequency: newFrequency } : s
-      )
-    );
-    
-    setLoadingActions(prev => ({ ...prev, [fieldKey]: false }));
-    showSavedIndicator(fieldKey);
-    toast.success('Delivery frequency updated');
+    if (mode !== 'other') {
+      // Track as pending change
+      setPendingChanges(prev => ({
+        ...prev,
+        [subId]: { ...prev[subId], frequency: `Every ${mode} days` }
+      }));
+    }
   };
 
-  // Handle quantity change
-  const handleQuantityChange = async (subId: string, delta: number) => {
+  // Handle custom frequency value change with validation
+  const handleCustomFrequencyValueChange = (subId: string, value: string) => {
+    setCustomFrequencyValues(prev => ({ ...prev, [subId]: value }));
+    
+    // Real-time validation feedback (like PDP)
+    const val = parseInt(value);
+    if (value && (!isNaN(val) && (val < 15 || val > 500))) {
+      setFrequencyErrors(prev => ({ ...prev, [subId]: 'Please enter between 15-500 days' }));
+    } else {
+      setFrequencyErrors(prev => {
+        const updated = { ...prev };
+        delete updated[subId];
+        return updated;
+      });
+    }
+  };
+  
+  // Handle custom frequency blur - auto-clamp values (like PDP)
+  const handleCustomFrequencyBlur = (subId: string) => {
+    const val = parseInt(customFrequencyValues[subId]);
+    if (!isNaN(val)) {
+      if (val < 15) {
+        setCustomFrequencyValues(prev => ({ ...prev, [subId]: '15' }));
+        setFrequencyErrors(prev => {
+          const updated = { ...prev };
+          delete updated[subId];
+          return updated;
+        });
+      } else if (val > 500) {
+        setCustomFrequencyValues(prev => ({ ...prev, [subId]: '500' }));
+        setFrequencyErrors(prev => {
+          const updated = { ...prev };
+          delete updated[subId];
+          return updated;
+        });
+      }
+    }
+  };
+
+  // Track custom frequency (no auto-save)
+  const handleCustomFrequencyApply = (subId: string) => {
+    const customValue = customFrequencyValues[subId];
+    if (!customValue) return;
+    
+    const days = parseInt(customValue);
+    if (isNaN(days) || days < 15 || days > 500) {
+      toast.error('Please enter between 15-500 days');
+      return;
+    }
+    
+    // Track as pending change
+    setPendingChanges(prev => ({
+      ...prev,
+      [subId]: { ...prev[subId], frequency: `Every ${days} days` }
+    }));
+  };
+
+  // Track quantity change (no auto-save)
+  const handleQuantityChange = (subId: string, delta: number) => {
     const sub = subscriptions.find(s => s.id === subId);
-    if (!sub) return;
+    const pendingSub = { ...sub, ...pendingChanges[subId] };
+    if (!pendingSub) return;
 
-    const newQuantity = Math.max(1, Math.min(10, sub.quantity + delta));
-    if (newQuantity === sub.quantity) return;
+    const currentQuantity = pendingSub.quantity || sub?.quantity || 1;
+    const newQuantity = Math.max(1, Math.min(10, currentQuantity + delta));
+    if (newQuantity === currentQuantity) return;
 
-    const fieldKey = `${subId}-quantity`;
-    setLoadingActions(prev => ({ ...prev, [fieldKey]: true }));
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    setSubscriptions(subs =>
-      subs.map(s =>
-        s.id === subId ? { ...s, quantity: newQuantity } : s
-      )
-    );
-    
-    setLoadingActions(prev => ({ ...prev, [fieldKey]: false }));
-    showSavedIndicator(fieldKey);
-    toast.success(`Quantity updated to ${newQuantity}`);
+    // Track as pending change
+    setPendingChanges(prev => ({
+      ...prev,
+      [subId]: { ...prev[subId], quantity: newQuantity }
+    }));
   };
 
   // Handle cancel
@@ -578,6 +688,78 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
   const closeModal = () => {
     setModalType(null);
     setSelectedSubscription(null);
+  };
+
+  // Handle Cancel Changes - revert all pending changes
+  const handleCancelChanges = (subId: string) => {
+    // Clear pending changes
+    setPendingChanges(prev => {
+      const updated = { ...prev };
+      delete updated[subId];
+      return updated;
+    });
+    
+    // Clear frequency mode and custom values
+    setFrequencyMode(prev => {
+      const updated = { ...prev };
+      delete updated[subId];
+      return updated;
+    });
+    setCustomFrequencyValues(prev => {
+      const updated = { ...prev };
+      delete updated[subId];
+      return updated;
+    });
+    
+    // Collapse panel
+    setExpandedId(null);
+    setEditingSubscriptionId(null);
+  };
+
+  // Handle Save Changes - commit all pending changes
+  const handleSaveChanges = async (subId: string) => {
+    const changes = pendingChanges[subId];
+    if (!changes || Object.keys(changes).length === 0) {
+      // No changes to save
+      setExpandedId(null);
+      setEditingSubscriptionId(null);
+      return;
+    }
+
+    setIsSaving(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    // Apply all changes at once
+    setSubscriptions(subs =>
+      subs.map(s =>
+        s.id === subId ? { ...s, ...changes } : s
+      )
+    );
+    
+    // Update payment/address if changed
+    if (changes.paymentId) {
+      setSelectedPaymentId(prev => ({ ...prev, [subId]: changes.paymentId! }));
+    }
+    if (changes.addressId) {
+      setSelectedAddressId(prev => ({ ...prev, [subId]: changes.addressId! }));
+    }
+    
+    setIsSaving(false);
+    
+    // Collapse panel
+    setExpandedId(null);
+    setEditingSubscriptionId(null);
+    
+    // Show success message
+    toast.success('Your autoship has been updated');
+  };
+
+  // Check if there are any pending changes
+  const hasPendingChanges = (subId: string): boolean => {
+    const changes = pendingChanges[subId];
+    return changes ? Object.keys(changes).length > 0 : false;
   };
 
   // Filter subscriptions based on active filters
@@ -660,14 +842,22 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
         <div className="space-y-[20px]">
           {displaySubscriptions.map((sub) => {
             const isExpanded = expandedId === sub.id;
-            const upcomingDeliveries = getUpcomingDeliveries(sub);
+            
+            // Get current values including pending changes FIRST
+            const currentValues = { ...sub, ...pendingChanges[sub.id] };
+            const currentPaymentId = pendingChanges[sub.id]?.paymentId || selectedPaymentId[sub.id] || '1';
+            const currentAddressId = pendingChanges[sub.id]?.addressId || selectedAddressId[sub.id] || '1';
+            
+            // Use currentValues for deliveries and calendar so changes update live
+            const upcomingDeliveries = getUpcomingDeliveries(currentValues);
             const displayedDeliveries = showAllDeliveries[sub.id] ? upcomingDeliveries : upcomingDeliveries.slice(0, 2);
             const frequencyKey = `${sub.id}-frequency`;
             const quantityKey = `${sub.id}-quantity`;
-
+            
             return (
               <div
                 key={sub.id}
+                ref={isExpanded && editingSubscriptionId === sub.id ? editPanelRef : null}
                 className="bg-white rounded-[8px] overflow-hidden transition-all"
               >
                 <div className="p-[30px] md:p-[40px]">
@@ -687,7 +877,7 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
                         {sub.productCount}
                       </p>
                       <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] mb-[8px]">
-                        Qty: {sub.quantity}
+                        Qty: {currentValues.quantity}
                       </p>
                       {sub.status === 'Active' ? (
                         <div className="inline-flex bg-[#E0F7F8] rounded-[8px] px-[12px] py-[6px] self-start">
@@ -710,7 +900,7 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
                         Price
                       </p>
                       <p className="font-['Inter',sans-serif] font-medium text-[#003b3c]">
-                        ${(sub.price * sub.quantity).toFixed(2)}
+                        ${(sub.price * currentValues.quantity).toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -722,7 +912,7 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
                         Frequency
                       </p>
                       <p className="font-['Inter',sans-serif] text-[#003b3c]">
-                        {sub.frequency}
+                        {currentValues.frequency}
                       </p>
                     </div>
                     <div>
@@ -730,7 +920,7 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
                         Next Delivery
                       </p>
                       <p className="font-['Inter',sans-serif] text-[#003b3c]">
-                        {sub.nextDelivery}
+                        {currentValues.nextDelivery}
                       </p>
                     </div>
                   </div>
@@ -789,420 +979,44 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
                 <AnimatePresence>
                   {isExpanded && (
                     <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
-                      className="overflow-hidden"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
                     >
-                      <div className="bg-white border-t border-[#D9E2E2] px-[30px] md:px-[40px] py-[30px]">
-                        {/* Row 1: Frequency | Quantity | Next Delivery (3 columns) */}
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-[24px] lg:gap-[32px]">
-                          {/* Frequency */}
-                          <div>
-                            <div className="flex items-center gap-[8px] mb-[12px]">
-                              <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] uppercase tracking-[0.05em]">
-                                Frequency
-                              </p>
-                              <AnimatePresence>
-                                {savedFields[frequencyKey] && (
-                                  <motion.div
-                                    initial={{ scale: 0, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    exit={{ scale: 0, opacity: 0 }}
-                                    className="inline-flex items-center gap-[4px] bg-[#E8F5E9] px-[6px] py-[1px] rounded-[4px]"
-                                  >
-                                    <Check className="size-[10px] text-[#2E7D32]" />
-                                    <span className="font-['Inter',sans-serif] text-[10px] font-medium text-[#2E7D32]">
-                                      Saved
-                                    </span>
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
-                            </div>
-                            <div className="space-y-[6px]">
-                              {(['Every 30 days', 'Every 45 days', 'Every 60 days', 'Every 90 days', 'Every 120 days'] as const).map((freq) => (
-                                <label
-                                  key={freq}
-                                  className={`flex items-center gap-[8px] p-[8px] rounded-[6px] border transition-all cursor-pointer group ${
-                                    sub.frequency === freq
-                                      ? 'border-[#009296] bg-[#E0F7F8]/30'
-                                      : 'border-[#D9E2E2] hover:border-[#009296] hover:bg-[#F5F9F9]'
-                                  }`}
-                                >
-                                  <input
-                                    type="radio"
-                                    name={`frequency-${sub.id}`}
-                                    checked={sub.frequency === freq}
-                                    onChange={() => handleFrequencyChange(sub.id, freq)}
-                                    disabled={loadingActions[frequencyKey]}
-                                    className="appearance-none size-[16px] rounded-full border-2 border-[#D9E2E2] checked:border-[#009296] checked:border-[5px] transition-all cursor-pointer disabled:opacity-50 shrink-0"
-                                  />
-                                  <span className={`font-['Inter',sans-serif] text-[16px] transition-colors flex-1 ${
-                                    sub.frequency === freq ? 'text-[#009296] font-medium' : 'text-[#003b3c] group-hover:text-[#009296]'
-                                  }`}>
-                                    {freq}
-                                  </span>
-                                  {sub.frequency === freq && (
-                                    <Check className="size-[14px] text-[#009296] shrink-0" />
-                                  )}
-                                </label>
-                              ))}
-                            </div>
-                          </div>
-
-                          {/* Quantity */}
-                          <div>
-                              <div className="flex items-center gap-[8px] mb-[12px]">
-                                <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] uppercase tracking-[0.05em]">
-                                  Quantity
-                                </p>
-                                <AnimatePresence>
-                                  {savedFields[quantityKey] && (
-                                    <motion.div
-                                      initial={{ scale: 0, opacity: 0 }}
-                                      animate={{ scale: 1, opacity: 1 }}
-                                      exit={{ scale: 0, opacity: 0 }}
-                                      className="inline-flex items-center gap-[4px] bg-[#E8F5E9] px-[6px] py-[1px] rounded-[4px]"
-                                    >
-                                      <Check className="size-[10px] text-[#2E7D32]" />
-                                      <span className="font-['Inter',sans-serif] text-[10px] font-medium text-[#2E7D32]">
-                                        Saved
-                                      </span>
-                                    </motion.div>
-                                  )}
-                                </AnimatePresence>
-                              </div>
-                              <div className="flex items-center gap-[12px]">
-                                <IconRemove 
-                                  onClick={() => handleQuantityChange(sub.id, -1)} 
-                                  disabled={sub.quantity <= 1 || loadingActions[quantityKey]}
-                                />
-                                <p className="font-['Inter',sans-serif] font-medium text-[16px] text-[#003b3c] min-w-[20px] text-center">
-                                  {loadingActions[quantityKey] ? (
-                                    <Loader2 className="size-[16px] animate-spin inline-block" />
-                                  ) : (
-                                    sub.quantity
-                                  )}
-                                </p>
-                                <IconAdd onClick={() => handleQuantityChange(sub.id, 1)} />
-                                <span className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] ml-[8px]">
-                                  ${(sub.price * sub.quantity).toFixed(2)} per delivery
-                                </span>
-                              </div>
-                          </div>
-
-                          {/* Next Delivery */}
-                          <div>
-                            <div className="flex items-center gap-[8px] mb-[12px]">
-                              <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] uppercase tracking-[0.05em]">
-                                Next Delivery
-                              </p>
-                              <AnimatePresence>
-                                {savedFields[`${sub.id}-date`] && (
-                                  <motion.div
-                                    initial={{ scale: 0, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    exit={{ scale: 0, opacity: 0 }}
-                                    className="inline-flex items-center gap-[4px] bg-[#E8F5E9] px-[6px] py-[1px] rounded-[4px]"
-                                  >
-                                    <Check className="size-[10px] text-[#2E7D32]" />
-                                    <span className="font-['Inter',sans-serif] text-[10px] font-medium text-[#2E7D32]">
-                                      Saved
-                                    </span>
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
-                            </div>
-                            <div className="flex items-center gap-[8px] mb-[8px]">
-                              <Calendar className="size-[16px] text-[#009296]" />
-                              <p className="font-['Inter',sans-serif] text-[#003b3c]">
-                                {sub.nextDelivery}
-                              </p>
-                            </div>
-                            <button
-                              onClick={() => setDatePickerOpen(prev => ({ ...prev, [sub.id]: !prev[sub.id] }))}
-                              className="font-['Inter',sans-serif] text-[14px] text-[#009296] hover:underline"
-                            >
-                              {datePickerOpen[sub.id] ? 'Cancel' : 'Change Date'}
-                            </button>
-                            
-                            {/* Inline Date Picker */}
-                            <AnimatePresence>
-                              {datePickerOpen[sub.id] && (
-                                <motion.div
-                                  initial={{ height: 0, opacity: 0 }}
-                                  animate={{ height: 'auto', opacity: 1 }}
-                                  exit={{ height: 0, opacity: 0 }}
-                                  transition={{ duration: 0.2 }}
-                                  className="overflow-hidden"
-                                >
-                                  <div className="mt-[12px] bg-white border border-[#D9E2E2] rounded-[8px] p-[16px]">
-                                    <p className="font-['Inter',sans-serif] text-[13px] font-medium text-[#003b3c] mb-[12px]">
-                                      Select a new delivery date:
-                                    </p>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-[8px]">
-                                      {getAvailableDates(sub.nextDelivery, sub.frequency).map(date => (
-                                        <button
-                                          key={date.label}
-                                          onClick={() => handleDateChange(sub.id, date.fullLabel)}
-                                          disabled={loadingActions[`${sub.id}-date`]}
-                                          className="px-[12px] py-[8px] rounded-[6px] border border-[#D9E2E2] hover:border-[#009296] hover:bg-[#E0F7F8] transition-all text-left disabled:opacity-50"
-                                        >
-                                          <span className="font-['Inter',sans-serif] text-[13px] text-[#003b3c]">
-                                            {date.label}
-                                          </span>
-                                        </button>
-                                      ))}
-                                    </div>
-                                  </div>
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        </div>
-
-                        {/* Divider */}
-                        <div className="h-[1px] bg-[#D9E2E2] my-[32px]" />
-
-                        {/* Row 2: Payment | Shipping (2 columns) */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-[24px] md:gap-[32px]">
-                          {/* Payment Method */}
-                          <div>
-                            <div className="flex items-center gap-[8px] mb-[12px]">
-                              <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] uppercase tracking-[0.05em]">
-                                Payment Method
-                              </p>
-                              <AnimatePresence>
-                                {savedFields[`${sub.id}-payment`] && (
-                                  <motion.div
-                                    initial={{ scale: 0, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    exit={{ scale: 0, opacity: 0 }}
-                                    className="inline-flex items-center gap-[4px] bg-[#E8F5E9] px-[6px] py-[1px] rounded-[4px]"
-                                  >
-                                    <Check className="size-[10px] text-[#2E7D32]" />
-                                    <span className="font-['Inter',sans-serif] text-[10px] font-medium text-[#2E7D32]">
-                                      Saved
-                                    </span>
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
-                            </div>
-                            
-                            {(() => {
-                              const currentPaymentId = selectedPaymentId[sub.id] || '1';
-                              
-                              return (
-                                <div className="space-y-[12px]">
-                                  {availablePaymentMethods.map(payment => {
-                                    const isSelected = currentPaymentId === payment.id;
-                                    return (
-                                      <div
-                                        key={payment.id}
-                                        onClick={() => handlePaymentChange(sub.id, payment.id)}
-                                        className={`relative border-2 rounded-[8px] p-[16px] cursor-pointer transition-all ${
-                                          isSelected
-                                            ? 'border-[#009296] bg-[#F5F9F9]'
-                                            : 'border-[#D9E2E2]'
-                                        }`}
-                                      >
-                                        <div className="flex items-start gap-[12px]">
-                                          <input
-                                            type="radio"
-                                            checked={isSelected}
-                                            onChange={() => handlePaymentChange(sub.id, payment.id)}
-                                            disabled={loadingActions[`${sub.id}-payment`]}
-                                            className="custom-checkout-radio"
-                                          />
-                                          <div className="flex-1">
-                                            <div className="flex items-center gap-[12px] mb-[8px]">
-                                              <CreditCard className="size-[16px] text-[#009296]" />
-                                              <span className="font-['Inter',sans-serif] font-medium text-[16px] text-[#003b3c]">
-                                                <span className="tracking-[2px]">••••</span> {payment.last4}
-                                              </span>
-                                            </div>
-                                            <p className="font-['Inter',sans-serif] text-[16px] text-[#406c6d]">
-                                              Expires {payment.expiryMonth}/{payment.expiryYear}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    );
-                                  })}
-                                  
-                                  <button
-                                    onClick={() => setShowPaymentModal(true)}
-                                    className="w-full border-2 border-dashed border-[#D9E2E2] rounded-[8px] p-[16px] font-['Inter',sans-serif] text-[14px] text-[#009296] hover:border-[#009296] hover:bg-[#F5F9F9] transition-all"
-                                  >
-                                    + Use a different card
-                                  </button>
-                                </div>
-                              );
-                            })()}
-                          </div>
-
-                          {/* Shipping Address */}
-                          <div>
-                            <div className="flex items-center gap-[8px] mb-[12px]">
-                              <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] uppercase tracking-[0.05em]">
-                                Shipping Address
-                              </p>
-                              <AnimatePresence>
-                                {savedFields[`${sub.id}-address`] && (
-                                  <motion.div
-                                    initial={{ scale: 0, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    exit={{ scale: 0, opacity: 0 }}
-                                    className="inline-flex items-center gap-[4px] bg-[#E8F5E9] px-[6px] py-[1px] rounded-[4px]"
-                                  >
-                                    <Check className="size-[10px] text-[#2E7D32]" />
-                                    <span className="font-['Inter',sans-serif] text-[10px] font-medium text-[#2E7D32]">
-                                      Saved
-                                    </span>
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
-                            </div>
-                            
-                            {(() => {
-                              const currentAddressId = selectedAddressId[sub.id] || '1';
-                              
-                              return (
-                                <div className="space-y-[12px]">
-                                  {availableAddresses.map(address => {
-                                    const isSelected = currentAddressId === address.id;
-                                    return (
-                                      <div
-                                        key={address.id}
-                                        onClick={() => handleAddressChange(sub.id, address.id)}
-                                        className={`relative border-2 rounded-[8px] p-[16px] cursor-pointer transition-all ${
-                                          isSelected
-                                            ? 'border-[#009296] bg-[#F5F9F9]'
-                                            : 'border-[#D9E2E2]'
-                                        }`}
-                                      >
-                                        <div className="flex items-start gap-[12px]">
-                                          <input
-                                            type="radio"
-                                            checked={isSelected}
-                                            onChange={() => handleAddressChange(sub.id, address.id)}
-                                            disabled={loadingActions[`${sub.id}-address`]}
-                                            className="custom-checkout-radio"
-                                          />
-                                          <div className="flex-1">
-                                            <div className="flex items-center gap-[8px] mb-[8px]">
-                                              <span className="font-['Inter',sans-serif] font-medium text-[16px] text-[#003b3c]">
-                                                {address.firstName} {address.lastName}
-                                              </span>
-                                            </div>
-                                            <p className="font-['Inter',sans-serif] text-[16px] text-[#406c6d] leading-[1.5]">
-                                              {address.address}{address.apartment && `, ${address.apartment}`}<br />
-                                              {address.city}, {address.state} {address.zipCode}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    );
-                                  })}
-                                  
-                                  <button
-                                    onClick={() => setShowAddressModal(true)}
-                                    className="w-full border-2 border-dashed border-[#D9E2E2] rounded-[8px] p-[16px] font-['Inter',sans-serif] text-[14px] text-[#009296] hover:border-[#009296] hover:bg-[#F5F9F9] transition-all"
-                                  >
-                                    + Deliver to a different address
-                                  </button>
-                                </div>
-                              );
-                            })()}
-                          </div>
-                        </div>
-
-                        {/* Divider */}
-                        <div className="h-[1px] bg-[#D9E2E2] my-[32px]" />
-
-                        {/* Row 3: Upcoming Deliveries (full width) */}
-                        <div>
-                            <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] uppercase tracking-[0.05em] mb-[12px]">
-                              Upcoming Deliveries
-                            </p>
-
-                            <div className="space-y-[8px]">
-                              <AnimatePresence initial={false} mode="sync">
-                                {displayedDeliveries.map((delivery, index) => {
-                                  const isNext = index === 0;
-                                  const relativeDays = getRelativeDays(delivery.date);
-                                  
-                                  return (
-                                    <motion.div
-                                      key={`${delivery.date}-${index}`}
-                                      initial={{ opacity: 0 }}
-                                      animate={{ opacity: 1 }}
-                                      exit={{ opacity: 0 }}
-                                      transition={{ duration: 0.15 }}
-                                      className={`flex items-center justify-between gap-[12px] p-[12px] rounded-[6px] ${
-                                        isNext ? 'bg-[#E0F7F8]/40' : 'bg-[#F5F9F9]'
-                                      }`}
-                                    >
-                                      <div className="flex items-center gap-[8px] flex-1 min-w-0">
-                                        <Calendar className={`size-[14px] shrink-0 ${
-                                          isNext ? 'text-[#009296]' : 'text-[#406c6d]'
-                                        }`} />
-                                        <div className="flex-1 min-w-0">
-                                          <p className={`font-['Inter',sans-serif] text-[16px] ${
-                                            isNext ? 'text-[#003b3c] font-medium' : 'text-[#003b3c]'
-                                          }`}>
-                                            {delivery.date}
-                                          </p>
-                                          <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d]">
-                                            {relativeDays}
-                                          </p>
-                                        </div>
-                                      </div>
-                                      <div className="flex items-center gap-[8px] shrink-0">
-                                        <p className="font-['Inter',sans-serif] text-[16px] font-medium text-[#003b3c]">
-                                          ${delivery.price.toFixed(2)}
-                                        </p>
-                                        {isNext && (
-                                          <span className="inline-flex items-center px-[6px] py-[1px] bg-[#009296] text-white rounded-[4px] text-[9px] font-medium uppercase tracking-[0.5px]">
-                                            Next
-                                          </span>
-                                        )}
-                                      </div>
-                                    </motion.div>
-                                  );
-                                })}
-                              </AnimatePresence>
-                            </div>
-
-                            <button
-                              onClick={() => setShowAllDeliveries(prev => ({ ...prev, [sub.id]: !prev[sub.id] }))}
-                              className="font-['Inter',sans-serif] text-[14px] text-[#009296] hover:underline mt-[12px] inline-flex items-center gap-[4px]"
-                            >
-                              {showAllDeliveries[sub.id] ? (
-                                <>
-                                  <span>Show Less</span>
-                                  <ChevronUp className="size-[14px]" />
-                                </>
-                              ) : (
-                                <>
-                                  <span>View More</span>
-                                  <ChevronDown className="size-[14px]" />
-                                </>
-                              )}
-                            </button>
-                        </div>
-
-                        {/* Cancel Section */}
-                        <div className="mt-[32px]">
-                          <button
-                            onClick={() => handleCancelClick(sub)}
-                            className="font-['Inter',sans-serif] text-[14px] text-[#C62828] hover:underline"
-                          >
-                            Cancel This Autoship
-                          </button>
-                        </div>
-                      </div>
+                      <SubscriptionManagePanel
+                        sub={sub}
+                        currentValues={currentValues}
+                        currentPaymentId={currentPaymentId}
+                        currentAddressId={currentAddressId}
+                        availablePaymentMethods={availablePaymentMethods}
+                        availableAddresses={availableAddresses}
+                        displayedDeliveries={displayedDeliveries}
+                        showAllDeliveries={showAllDeliveries[sub.id] || false}
+                        datePickerOpen={datePickerOpen[sub.id] || false}
+                        frequencyMode={frequencyMode[sub.id]}
+                        customFrequencyValues={customFrequencyValues[sub.id] || ''}
+                        frequencyError={frequencyErrors[sub.id] || ''}
+                        isSaving={isSaving}
+                        hasPendingChanges={hasPendingChanges(sub.id)}
+                        onCancelChanges={() => handleCancelChanges(sub.id)}
+                        onSaveChanges={() => handleSaveChanges(sub.id)}
+                        onFrequencyModeChange={(mode) => handleFrequencyModeChange(sub.id, mode)}
+                        onCustomFrequencyApply={() => handleCustomFrequencyApply(sub.id)}
+                        onCustomFrequencyChange={(value) => handleCustomFrequencyValueChange(sub.id, value)}
+                        onCustomFrequencyBlur={() => handleCustomFrequencyBlur(sub.id)}
+                        onQuantityChange={(delta) => handleQuantityChange(sub.id, delta)}
+                        onDatePickerToggle={() => setDatePickerOpen(prev => ({ ...prev, [sub.id]: !prev[sub.id] }))}
+                        onDateChange={(date) => handleDateChange(sub.id, date)}
+                        onPaymentChange={(paymentId) => handlePaymentChange(sub.id, paymentId)}
+                        onAddressChange={(addressId) => handleAddressChange(sub.id, addressId)}
+                        onShowAllDeliveriesToggle={() => setShowAllDeliveries(prev => ({ ...prev, [sub.id]: !prev[sub.id] }))}
+                        onShowPaymentModal={() => setShowPaymentModal(true)}
+                        onShowAddressModal={() => setShowAddressModal(true)}
+                        onCancelAutoship={() => handleCancelClick(sub)}
+                        getAvailableDates={getAvailableDates}
+                        getRelativeDays={getRelativeDays}
+                      />
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -1319,34 +1133,6 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
               No deliveries or charges while paused. Resume anytime.
             </p>
 
-            {/* Impact Info */}
-            <div className="bg-[#FFF9F5] border border-[#FFE4CC] rounded-[8px] p-[16px] mb-[24px]">
-              <div className="flex items-start gap-[12px]">
-                <AlertCircle className="size-[18px] text-[#E65100] mt-[2px] shrink-0" />
-                <div className="flex-1">
-                  <p className="font-['Inter',sans-serif] text-[13px] text-[#003b3c] leading-[1.6] mb-[8px]">
-                    <span className="font-medium">Your {selectedSubscription.nextDelivery} delivery will be cancelled.</span>
-                  </p>
-                  <p className="font-['Inter',sans-serif] text-[13px] text-[#406c6d] leading-[1.6]">
-                    Deliveries and billing will pause until you resume.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Alternative action */}
-            <div className="mb-[24px] text-center">
-              <button
-                onClick={() => {
-                  closeModal();
-                  handleSkipClick(selectedSubscription);
-                }}
-                className="font-['Inter',sans-serif] text-[13px] text-[#009296] underline hover:no-underline"
-              >
-                Just skip next delivery instead?
-              </button>
-            </div>
-
             {/* Actions */}
             <div className="flex flex-col sm:flex-row gap-[12px]">
               <button
@@ -1359,69 +1145,10 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
               </button>
               <button
                 onClick={confirmPause}
-                className="flex-1 px-[24px] py-[12px] bg-[#009296] rounded-[8px] hover:bg-[#007d81] transition-colors cursor-pointer focus:outline-none"
+                className="flex-1 px-[24px] py-[12px] bg-[#E65100] rounded-[8px] hover:bg-[#D84315] transition-colors cursor-pointer focus:outline-none"
               >
                 <span className="font-['Inter',sans-serif] text-[14px] text-white uppercase tracking-[0.05em]">
                   Pause Autoship
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Resume Modal */}
-      {modalType === 'resume' && selectedSubscription && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-[20px] animate-fadeIn">
-          <div className="bg-white rounded-[12px] max-w-[480px] w-full p-[40px] shadow-2xl animate-slideUp">
-            {/* Icon */}
-            <div className="inline-flex items-center justify-center size-[56px] rounded-full bg-[#E8F5E9] mb-[20px]">
-              <Play className="size-[28px] text-[#2E7D32]" />
-            </div>
-
-            {/* Header */}
-            <h2 className="font-['Inter',sans-serif] font-medium text-[24px] text-[#003b3c] mb-[12px]">
-              Resume Autoship?
-            </h2>
-            <p className="font-['Inter',sans-serif] text-[14px] text-[#406c6d] leading-[1.6] mb-[24px]">
-              Your autoship will become active again.
-            </p>
-
-            {/* Next Delivery Info */}
-            <div className="bg-[#F5F9F9] border border-[#D9E2E2] rounded-[8px] p-[16px] mb-[24px]">
-              <div className="flex items-start gap-[12px]">
-                <Calendar className="size-[18px] text-[#009296] mt-[2px] shrink-0" />
-                <div className="flex-1">
-                  <p className="font-['Inter',sans-serif] text-[12px] text-[#406c6d] uppercase tracking-[0.05em] mb-[4px]">
-                    Next Delivery
-                  </p>
-                  <p className="font-['Inter',sans-serif] font-medium text-[14px] text-[#003b3c]">
-                    {calculateNextDelivery(new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }), selectedSubscription.frequency)}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <p className="font-['Inter',sans-serif] text-[13px] text-[#406c6d] leading-[1.6] mb-[24px]">
-              Billing will resume with your next shipment.
-            </p>
-
-            {/* Actions */}
-            <div className="flex flex-col sm:flex-row gap-[12px]">
-              <button
-                onClick={closeModal}
-                className="flex-1 px-[24px] py-[12px] border border-[#D9E2E2] rounded-[8px] hover:border-[#003b3c] transition-colors cursor-pointer focus:outline-none"
-              >
-                <span className="font-['Inter',sans-serif] text-[14px] text-[#003b3c] uppercase tracking-[0.05em]">
-                  Cancel
-                </span>
-              </button>
-              <button
-                onClick={confirmResume}
-                className="flex-1 px-[24px] py-[12px] bg-[#009296] rounded-[8px] hover:bg-[#007d81] transition-colors cursor-pointer focus:outline-none"
-              >
-                <span className="font-['Inter',sans-serif] text-[14px] text-white uppercase tracking-[0.05em]">
-                  Resume Autoship
                 </span>
               </button>
             </div>
@@ -1598,6 +1325,35 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
                 </button>
               </div>
             )}
+
+            {/* Cancel Action - Red */}
+            {undoAction.type === 'cancel' && (
+              <div className="bg-white border-2 border-[#C62828] rounded-[12px] p-[16px] sm:p-[20px] flex flex-col sm:flex-row sm:items-center gap-[12px] sm:gap-[24px] shadow-2xl">
+                <div className="flex items-start gap-[12px] sm:gap-[16px] flex-1 min-w-0">
+                  <div className="inline-flex items-center justify-center size-[40px] sm:size-[44px] rounded-full bg-[#FFEBEE] shrink-0">
+                    <AlertCircle className="size-[20px] sm:size-[22px] text-[#C62828]" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-['Inter',sans-serif] font-medium text-[14px] sm:text-[15px] text-[#003b3c]">
+                      Autoship Cancelled
+                    </p>
+                    {undoAction.productName && (
+                      <p className="font-['Inter',sans-serif] text-[12px] sm:text-[13px] text-[#406c6d] line-clamp-2 leading-[1.4]">
+                        {undoAction.productName}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <button
+                  onClick={handleUndo}
+                  className="shrink-0 px-[16px] sm:px-[20px] py-[10px] sm:py-[11px] bg-[#C62828] rounded-[8px] hover:bg-[#B71C1C] transition-colors cursor-pointer focus:outline-none flex items-center gap-[8px]"
+                >
+                  <span className="font-['Inter',sans-serif] text-[13px] sm:text-[14px] font-medium text-white uppercase tracking-[0.05em]">
+                    Undo
+                  </span>
+                </button>
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
@@ -1624,13 +1380,62 @@ export default function SubscriptionsSection({ isNewCustomer = false }: Subscrip
         }}
       />
 
+      {/* Unsaved Changes Warning Modal */}
+      <UnsavedChangesModal
+        isOpen={showUnsavedWarning}
+        onCancel={() => {
+          setShowUnsavedWarning(false);
+          setPendingAction(null);
+        }}
+        onDiscard={() => {
+          setShowUnsavedWarning(false);
+          if (pendingAction) {
+            pendingAction();
+          }
+          setPendingAction(null);
+        }}
+        productName={editingSubscriptionId ? subscriptions.find(s => s.id === editingSubscriptionId)?.productName : undefined}
+      />
+
       <style>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
         }
+        
         .scrollbar-hide {
           -ms-overflow-style: none;
           scrollbar-width: none;
+        }
+
+        .custom-checkout-radio {
+          appearance: none;
+          -webkit-appearance: none;
+          width: 18px;
+          height: 18px;
+          border: 2px solid #D9E2E2;
+          border-radius: 50%;
+          outline: none;
+          cursor: pointer;
+          position: relative;
+          flex-shrink: 0;
+          margin-top: 2px;
+        }
+
+        .custom-checkout-radio:checked {
+          border-color: #009296;
+          background-color: white;
+        }
+
+        .custom-checkout-radio:checked::after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background-color: #009296;
         }
       `}</style>
     </div>

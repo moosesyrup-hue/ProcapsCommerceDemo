@@ -16,6 +16,7 @@ interface GlobalHeaderProps {
   onSpecialsClick: () => void;
   onNavigateToCollection?: (category: string) => void;
   onAccountClick: () => void;
+  onSearchClick?: () => void;
   isLoggedIn?: boolean;
   userFirstName?: string;
   onFAQClick?: () => void;
@@ -34,6 +35,7 @@ export default function GlobalHeader({
   onSpecialsClick,
   onNavigateToCollection,
   onAccountClick,
+  onSearchClick,
   onIngredientsClick,
   onOurStoryClick,
   onQualityClick,
@@ -84,6 +86,7 @@ export default function GlobalHeader({
     onLogoClick,
     onSpecialsClick,
     onAccountClick,
+    onSearchClick,
     onOurStoryClick,
     onQualityClick,
     onDetailsClick,

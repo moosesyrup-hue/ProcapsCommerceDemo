@@ -38,11 +38,12 @@ import imgImage5 from "figma:asset/53da6d9ed35f82a7364b7a236e964b3d87a96086.png"
 
 type Breakpoint = 'S' | 'M' | 'L' | 'XL' | 'HD';
 
-export default function Homepage({ onFindSupplementsClick, onIngredientsClick, onOurStoryClick, onCategoryClick }: { 
+export default function Homepage({ onFindSupplementsClick, onIngredientsClick, onOurStoryClick, onCategoryClick, onWellnessHubClick }: { 
   onFindSupplementsClick?: () => void;
   onIngredientsClick?: () => void;
   onOurStoryClick?: () => void;
   onCategoryClick?: (categoryId: string) => void;
+  onWellnessHubClick?: () => void;
 }) {
   const [breakpoint, setBreakpoint] = useState<Breakpoint>('XL');
 
@@ -77,6 +78,7 @@ export default function Homepage({ onFindSupplementsClick, onIngredientsClick, o
         svgPaths={svgPaths} 
         onIngredientsClick={onIngredientsClick}
         onCategoryClick={onCategoryClick}
+        onWellnessHubClick={onWellnessHubClick}
       />
     </div>
   );
@@ -1415,29 +1417,26 @@ function ProcapsDifferenceVideo({ breakpoint, svgPaths }: { breakpoint: Breakpoi
 }
 
 // Body Group
-function BodyGroup({ breakpoint, svgPaths, onIngredientsClick, onCategoryClick }: { 
+function BodyGroup({ breakpoint, svgPaths, onIngredientsClick, onCategoryClick, onWellnessHubClick }: { 
   breakpoint: Breakpoint; 
   svgPaths: any; 
   onIngredientsClick?: () => void;
   onCategoryClick?: (categoryId: string) => void;
+  onWellnessHubClick?: () => void;
 }) {
-  const verticalSpacing = breakpoint === 'S' ? 'py-[60px] gap-[60px]' : 'py-[80px] gap-[80px]';
+  const paddingTop = breakpoint === 'S' ? 'pt-[60px]' : 'pt-[80px]';
+  const sectionGap = breakpoint === 'S' ? 'gap-[60px]' : 'gap-[80px]';
   const isMobile = breakpoint === 'S';
 
   return (
-    <div className={`box-border content-stretch flex flex-col items-center px-0 relative shrink-0 w-full ${verticalSpacing}`} data-name="body group">
+    <div className={`box-border content-stretch flex flex-col items-center px-0 relative shrink-0 w-full ${paddingTop} ${sectionGap}`} data-name="body group">
       <TickerTape fontSize={isMobile ? '28px' : '34px'} />
       <Component2Up breakpoint={breakpoint} />
       <InformedChoice breakpoint={breakpoint} onIngredientsClick={onIngredientsClick} onCategoryClick={onCategoryClick} />
-      <VitaminSpecialist breakpoint={breakpoint} />
+      <VitaminSpecialist breakpoint={breakpoint} onChatNowClick={onWellnessHubClick} />
       <VideoSection breakpoint={breakpoint} svgPaths={svgPaths} />
       <PhactSection breakpoint={breakpoint} svgPaths={svgPaths} />
       <ProcapsDifferenceSection breakpoint={breakpoint} svgPaths={svgPaths} />
-      
-      {/* Divider - with page margins */}
-      <div className={`w-full ${isMobile ? 'px-[24px]' : 'px-[40px]'}`}>
-        <div className="h-[1px] bg-[#D9E2E2]" />
-      </div>
       
       {/* Highest Reviewed Products Section */}
       <HighestReviewedProducts breakpoint={breakpoint} />
