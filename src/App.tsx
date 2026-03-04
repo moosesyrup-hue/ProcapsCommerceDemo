@@ -7,7 +7,7 @@ import ProductDetailPage from './components/ProductDetailPage';
 import CartPage from './components/CartPage';
 import CheckoutPage from './components/CheckoutPage';
 import OrderConfirmationPage from './components/OrderConfirmationPage';
-import FindMySupplementsPage from './pages/FindMySupplementsPage';
+import FindMySupplementsPage from './components/FindMySupplementsPage';
 import FAQPage from './components/FAQPage';
 import PrivacyPolicyPage from './components/PrivacyPolicyPage';
 import TermsOfUsePage from './components/TermsOfUsePage';

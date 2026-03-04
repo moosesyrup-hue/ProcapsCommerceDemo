@@ -48,7 +48,6 @@ export const getIconForItem = (item: string) => {
     'Bone & Skeletal Health': Bone,
     'Brain Health': Brain,
     'Cardiovascular Health': HeartPulse,
-    'Circulation': Activity,
     'Digestive Health': Apple,
     'Energy': Zap,
     'Immune Health': ShieldCheck,
@@ -123,14 +122,14 @@ export const getIconForItem = (item: string) => {
     'Depression': Smile,
     'Memory and Brain Health': Brain,
     'Sleep Disorders': Moon,
-    'Immune Health': ShieldCheck,
+    // 'Immune Health' - removed duplicate, already defined in Categories
     'Bone Strength': Bone,
     'Vision Problems': Eye,
     'Fatigue': BatteryLow,
     'Menopause Symptoms': Circle,
     'Liver Health': Circle,
     'Urinary Tract Infections': Circle,
-    'Digestive Health': Apple,
+    // 'Digestive Health' - removed duplicate, already defined in Categories
     'Breathing Problems': Wind,
   };
 

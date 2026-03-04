@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { products, type Product } from '../data/products';
-import { ChevronDown, Check, Minus, Plus, Star, Info, Truck, Package, ChevronLeft, ChevronRight, X, Printer, Download, Heart } from 'lucide-react';
+import { ChevronDown, Check, Minus, Plus, Star, Info, Truck, Package, ChevronLeft, ChevronRight, X, Printer, Download, Heart, Phone } from 'lucide-react';
 import imgPlaceholder from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png";
 import imgProduct from "figma:asset/f2e5085bf5c2fe71f9ea2c23494b5c63f1b85c27.png";
 import imgImage from "figma:asset/ca2f3f644a7edcdbe62dc09c7fd5d2712d8e3429.png";
@@ -13,6 +13,7 @@ import imgProduct7 from "figma:asset/6ce1d64ac817d4e5f0c224d844c393f2a86ee576.pn
 import imgPillCapsule from "figma:asset/9713f784abe59c2b09beb31e6a767104a00b0983.png";
 import imgPlantago from "figma:asset/29e9f2e4f5e91d4380eca0a7e99798dbc545b080.png";
 import imgProductLabel from "figma:asset/ae082c83412a5ee3d543cbb09c67892ed10b9cc4.png";
+import imgPurplePacket from "figma:asset/e31dbed9c9dd723f23f7243bd88a61a68aff0246.png";
 // Additional product label images for carousel demo
 import imgProductLabel2 from "figma:asset/ae082c83412a5ee3d543cbb09c67892ed10b9cc4.png"; // Using same image for demo
 import imgProductLabel3 from "figma:asset/ae082c83412a5ee3d543cbb09c67892ed10b9cc4.png"; // Using same image for demo
@@ -116,6 +117,47 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
   const [frequencyError, setFrequencyError] = useState('');
   const [flexPayInstallments, setFlexPayInstallments] = useState(2);
   const [isFavorite, setIsFavorite] = useState(false);
+  
+  // UI Variant state - Press '1' or '2' or '3' or '4' to toggle between versions
+  const [uiVariant, setUiVariant] = useState<1 | 2 | 3 | 4>(1);
+  const [showVariantIndicator, setShowVariantIndicator] = useState(false);
+
+  // Keyboard shortcut listener for UI variant toggle
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only trigger if not typing in an input field
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+      
+      if (e.key === '1') {
+        setUiVariant(1);
+        setShowVariantIndicator(true);
+      } else if (e.key === '2') {
+        setUiVariant(2);
+        setShowVariantIndicator(true);
+      } else if (e.key === '3') {
+        setUiVariant(3);
+        setShowVariantIndicator(true);
+      } else if (e.key === '4') {
+        setUiVariant(4);
+        setShowVariantIndicator(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+  
+  // Auto-hide variant indicator after 2 seconds
+  useEffect(() => {
+    if (showVariantIndicator) {
+      const timer = setTimeout(() => {
+        setShowVariantIndicator(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [showVariantIndicator]);
 
   // Scroll detection for sticky button
   useEffect(() => {
@@ -276,6 +318,24 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
 
   return (
     <>
+      {/* UI Variant Indicator - Shows briefly when switching */}
+      <AnimatePresence>
+        {showVariantIndicator && (
+          <motion.div
+            key={uiVariant}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed top-[20px] right-[20px] z-[9999] bg-[#003b3c] text-white px-[16px] py-[10px] rounded-[8px] shadow-lg"
+          >
+            <p className="font-['Inter:Medium',sans-serif] font-medium text-[14px]">
+              Option {uiVariant} {uiVariant === 1 ? '(Full)' : uiVariant === 2 ? '(Minimal)' : uiVariant === 3 ? '(Borderless)' : '(Borderless + Founder Message)'}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
       <div className="bg-white w-full">
         {/* Hero Section */}
         <HeroSection product={product} breakpoint={breakpoint} />
@@ -314,6 +374,7 @@ export default function ProductDetailPage({ productId, cartItems, setCartItems, 
           setCurrentLabelIndex={setCurrentLabelIndex}
           isFavorite={isFavorite}
           setIsFavorite={setIsFavorite}
+          uiVariant={uiVariant}
         />
         
         {/* Reviews Section */}
@@ -893,7 +954,8 @@ function TopSection({
   currentLabelIndex,
   setCurrentLabelIndex,
   isFavorite,
-  setIsFavorite
+  setIsFavorite,
+  uiVariant
 }: any) {
   const isMobile = breakpoint === 'S';
   const isTablet = breakpoint === 'M';
@@ -941,6 +1003,7 @@ function TopSection({
           setIsFlexPay={setIsFlexPay}
           deliveryFrequency={deliveryFrequency}
           setDeliveryFrequency={setDeliveryFrequency}
+          uiVariant={uiVariant}
           customFrequency={customFrequency}
           setCustomFrequency={setCustomFrequency}
           frequencyError={frequencyError}
@@ -1286,7 +1349,8 @@ function RightColumn({
   currentLabelIndex,
   setCurrentLabelIndex,
   isFavorite,
-  setIsFavorite
+  setIsFavorite,
+  uiVariant
 }: any) {
   const isMobile = breakpoint === 'S';
   const isTablet = breakpoint === 'M';
@@ -1360,11 +1424,12 @@ function RightColumn({
           basePrice={basePrice}
           msrpPrice={msrpPrice}
           breakpoint={breakpoint}
+          uiVariant={uiVariant}
         />
       </div>
       
-      {/* Quantity & Add to Cart - 32px spacing on mobile (functional section), 40px on desktop */}
-      <div className={`flex ${isMobile ? 'flex-col mt-[32px]' : 'gap-[16px] items-end mt-[40px]'} w-full`}>
+      {/* Quantity & Add to Cart - 32px spacing on mobile (functional section), 40px on desktop, 24px for options 3 & 4 */}
+      <div className={`flex ${isMobile ? 'flex-col mt-[32px]' : `gap-[16px] items-end ${uiVariant === 3 || uiVariant === 4 ? 'mt-[24px]' : 'mt-[40px]'}`} w-full`}>
         <QuantitySelector 
           quantity={quantity}
           setQuantity={setQuantity}
@@ -1400,6 +1465,13 @@ function RightColumn({
       <div className={isMobile ? 'mt-[32px]' : 'mt-[40px]'}>
         <GuaranteeText breakpoint={breakpoint} />
       </div>
+      
+      {/* Founder Message - Option 4 only */}
+      {uiVariant === 4 && (
+        <div className={isMobile ? 'mt-[24px]' : 'mt-[24px]'}>
+          <FounderMessage breakpoint={breakpoint} />
+        </div>
+      )}
       
       {/* Divider - 40px spacing (major break before shipping section) */}
       <div className={`h-[1px] w-full bg-[#D9E2E2] ${isMobile ? 'mt-[40px]' : 'mt-[40px]'}`} />
@@ -1600,7 +1672,7 @@ function VariantSelector({ selectedVariant, setSelectedVariant, breakpoint }: an
 }
 
 // Purchase Options - NEW CHECKBOX DESIGN
-function PurchaseOptions({ isAutoship, setIsAutoship, isFlexPay, setIsFlexPay, deliveryFrequency, setDeliveryFrequency, customFrequency, setCustomFrequency, frequencyError, setFrequencyError, flexPayInstallments, setFlexPayInstallments, basePrice, msrpPrice, breakpoint }: any) {
+function PurchaseOptions({ isAutoship, setIsAutoship, isFlexPay, setIsFlexPay, deliveryFrequency, setDeliveryFrequency, customFrequency, setCustomFrequency, frequencyError, setFrequencyError, flexPayInstallments, setFlexPayInstallments, basePrice, msrpPrice, breakpoint, uiVariant }: any) {
   const isMobile = breakpoint === 'S';
   const labelSize = isMobile ? 'text-[14px]' : 'text-[16px]';
   const titleSize = isMobile ? 'text-[16px]' : 'text-[18px]';
@@ -1640,6 +1712,276 @@ function PurchaseOptions({ isAutoship, setIsAutoship, isFlexPay, setIsFlexPay, d
         </div>
       </div>
       
+      {uiVariant === 3 || uiVariant === 4 ? (
+        // OPTIONS 3 & 4: Minimal with Horizontal Separators
+        <div className="flex flex-col">
+          {/* Autoship */}
+          <div className="flex flex-col py-[12px] border-b border-[#D9E2E2]">
+            <button
+              onClick={() => setIsAutoship(!isAutoship)}
+              className="group w-full text-left"
+            >
+              <div className="flex items-start gap-[12px]">
+                {/* Checkbox */}
+                <div className="relative w-[20px] h-[20px] shrink-0 mt-[2px]">
+                  <div className={`
+                    w-full h-full rounded-[4px] border-2 transition-all duration-200 
+                    flex items-center justify-center
+                    ${isAutoship
+                      ? 'border-[#009296] bg-[#009296]'
+                      : 'border-[#D9E2E2] bg-white group-hover:border-[#009296]'
+                    }
+                  `}>
+                    {isAutoship && (
+                      <Check className="w-[14px] h-[14px] text-white" strokeWidth={3} />
+                    )}
+                  </div>
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <p className={`font-['Inter:Medium',sans-serif] font-medium ${titleSize} text-[#003b3c]`}>
+                    Autoship
+                  </p>
+                </div>
+              </div>
+            </button>
+
+            {/* Expanded Details */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateRows: isAutoship ? '1fr' : '0fr',
+                transition: 'grid-template-rows 300ms ease-in-out'
+              }}
+            >
+              <div style={{ overflow: 'hidden' }}>
+                <div className="pt-[20px]">
+                  <div className="bg-[#f2fafa] rounded-[8px] p-[16px] border border-[#D9E2E2]">
+                    <p className="font-['Inter:Regular',sans-serif] text-[14px] text-[#003b3c] mb-[12px]">
+                      Delivery frequency:
+                    </p>
+                    
+                    {/* Frequency Buttons */}
+                    <div className="flex gap-[8px] mb-[16px]">
+                      {[30, 60, 90, 'other'].map((option) => (
+                        <button
+                          key={option}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDeliveryFrequency(option);
+                            setFrequencyError('');
+                          }}
+                          className={`
+                            flex-1 h-[40px] rounded-[6px] border transition-all duration-200
+                            font-['Inter:Regular',sans-serif] text-[14px]
+                            flex items-center justify-center
+                            ${deliveryFrequency === option
+                              ? 'bg-[#009296] border-[#009296] text-white font-medium'
+                              : 'bg-white border-[#D9E2E2] text-[#003b3c] hover:border-[#009296]'
+                            }
+                          `}
+                        >
+                          {option === 'other' ? 'Other' : `${option} days`}
+                        </button>
+                      ))}
+                    </div>
+                    
+                    {/* Custom Frequency Input */}
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateRows: deliveryFrequency === 'other' ? '1fr' : '0fr',
+                        transition: 'grid-template-rows 300ms ease-in-out'
+                      }}
+                    >
+                      <div style={{ overflow: 'hidden' }}>
+                        <div className="mb-[16px]">
+                          <p className="font-['Inter:Regular',sans-serif] text-[14px] text-[#003b3c] mb-[10px]">
+                            Custom frequency:
+                          </p>
+                          <div className="flex items-center gap-[8px]">
+                            <span className="font-['Inter:Regular',sans-serif] text-[14px] text-[#003b3c]">
+                              Every
+                            </span>
+                            <div className="relative flex-1 max-w-[140px]">
+                              <input
+                                type="number"
+                                min="15"
+                                max="500"
+                                value={customFrequency}
+                                onChange={(e) => {
+                                  setCustomFrequency(e.target.value);
+                                  const val = parseInt(e.target.value);
+                                  if (e.target.value && (!isNaN(val) && (val < 15 || val > 500))) {
+                                    setFrequencyError('Please enter between 15-500 days');
+                                  } else {
+                                    setFrequencyError('');
+                                  }
+                                }}
+                                onBlur={() => {
+                                  const val = parseInt(customFrequency);
+                                  if (!isNaN(val)) {
+                                    if (val < 15) {
+                                      setCustomFrequency('15');
+                                      setFrequencyError('');
+                                    } else if (val > 500) {
+                                      setCustomFrequency('500');
+                                      setFrequencyError('');
+                                    }
+                                  }
+                                }}
+                                placeholder="0"
+                                className={`
+                                  w-full h-[40px] px-[14px] rounded-[6px] border transition-all duration-200
+                                  font-['Inter:Regular',sans-serif] text-[14px] text-[#003b3c]
+                                  bg-white border-[#D9E2E2]
+                                  focus:outline-none focus:border-[#009296]
+                                  ${frequencyError ? 'border-red-500' : ''}
+                                `}
+                              />
+                            </div>
+                            <span className="font-['Inter:Regular',sans-serif] text-[14px] text-[#003b3c]">
+                              days
+                            </span>
+                          </div>
+                          {frequencyError && (
+                            <p className="mt-[6px] font-['Inter:Regular',sans-serif] text-[12px] text-red-600">
+                              {frequencyError}
+                            </p>
+                          )}
+                          <p className="mt-[6px] font-['Inter:Regular',sans-serif] text-[11px] text-[#406c6d]">
+                            Enter between 15-500 days
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Benefits */}
+                    <div className="flex flex-col gap-[8px]">
+                      <div className="flex items-start gap-[8px]">
+                        <Check className="w-[16px] h-[16px] text-[#009296] shrink-0 mt-[2px]" />
+                        <p className="font-['Inter:Regular',sans-serif] text-[12px] text-[#003b3c] leading-[1.4]">
+                          Never run out of your essential supplements
+                        </p>
+                      </div>
+                      <div className="flex items-start gap-[8px]">
+                        <Check className="w-[16px] h-[16px] text-[#009296] shrink-0 mt-[2px]" />
+                        <p className="font-['Inter:Regular',sans-serif] text-[12px] text-[#003b3c] leading-[1.4]">
+                          Free shipping on all autoship orders
+                        </p>
+                      </div>
+                      <div className="flex items-start gap-[8px]">
+                        <Check className="w-[16px] h-[16px] text-[#009296] shrink-0 mt-[2px]" />
+                        <p className="font-['Inter:Regular',sans-serif] text-[12px] text-[#003b3c] leading-[1.4]">
+                          Pause, skip, or cancel anytime
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* FlexPay */}
+          <div className="flex flex-col py-[12px]">
+            <button
+              onClick={() => setIsFlexPay(!isFlexPay)}
+              className="group w-full text-left"
+            >
+              <div className="flex items-start gap-[12px]">
+                {/* Checkbox */}
+                <div className="relative w-[20px] h-[20px] shrink-0 mt-[2px]">
+                  <div className={`
+                    w-full h-full rounded-[4px] border-2 transition-all duration-200 
+                    flex items-center justify-center
+                    ${isFlexPay
+                      ? 'border-[#009296] bg-[#009296]'
+                      : 'border-[#D9E2E2] bg-white group-hover:border-[#009296]'
+                    }
+                  `}>
+                    {isFlexPay && (
+                      <Check className="w-[14px] h-[14px] text-white" strokeWidth={3} />
+                    )}
+                  </div>
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <p className={`font-['Inter:Medium',sans-serif] font-medium ${titleSize} text-[#003b3c]`}>
+                    FlexPay
+                  </p>
+                </div>
+              </div>
+            </button>
+
+            {/* Expanded Details */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateRows: isFlexPay ? '1fr' : '0fr',
+                transition: 'grid-template-rows 300ms ease-in-out'
+              }}
+            >
+              <div style={{ overflow: 'hidden' }}>
+                <div className="pt-[20px]">
+                  <div className="bg-[#f2fafa] rounded-[8px] p-[16px] border border-[#D9E2E2]">
+                    <p className="font-['Inter:Regular',sans-serif] text-[14px] text-[#003b3c] mb-[12px]">
+                      Choose installments:
+                    </p>
+                    
+                    {/* Installment Buttons */}
+                    <div className="flex gap-[8px] mb-[16px]">
+                      {[2, 3, 4, 5].map((installments) => (
+                        <button
+                          key={installments}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setFlexPayInstallments(installments);
+                          }}
+                          className={`
+                            flex-1 h-[40px] rounded-[6px] border transition-all duration-200
+                            font-['Inter:Regular',sans-serif] text-[14px]
+                            flex items-center justify-center
+                            ${flexPayInstallments === installments
+                              ? 'bg-[#009296] border-[#009296] text-white font-medium'
+                              : 'bg-white border-[#D9E2E2] text-[#003b3c] hover:border-[#009296]'
+                            }
+                          `}
+                        >
+                          {installments} payments
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Benefits */}
+                    <div className="flex flex-col gap-[8px]">
+                      <div className="flex items-start gap-[8px]">
+                        <Check className="w-[16px] h-[16px] text-[#009296] shrink-0 mt-[2px]" />
+                        <p className="font-['Inter:Regular',sans-serif] text-[12px] text-[#003b3c] leading-[1.4]">
+                          No interest, no fees
+                        </p>
+                      </div>
+                      <div className="flex items-start gap-[8px]">
+                        <Check className="w-[16px] h-[16px] text-[#009296] shrink-0 mt-[2px]" />
+                        <p className="font-['Inter:Regular',sans-serif] text-[12px] text-[#003b3c] leading-[1.4]">
+                          Automatic payments every 30 days
+                        </p>
+                      </div>
+                      <div className="flex items-start gap-[8px]">
+                        <Check className="w-[16px] h-[14px] text-[#009296] shrink-0 mt-[2px]" />
+                        <p className="font-['Inter:Regular',sans-serif] text-[12px] text-[#003b3c] leading-[1.4]">
+                          Products ship immediately
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        // OPTIONS 1 & 2: Card Design
       <div className="flex flex-col gap-[12px]">
         {/* Autoship Checkbox Card */}
         <div
@@ -1675,9 +2017,12 @@ function PurchaseOptions({ isAutoship, setIsAutoship, isFlexPay, setIsFlexPay, d
                 <p className={`font-['Inter:Medium',sans-serif] font-medium ${titleSize} text-[#003b3c] mb-[4px]`}>
                   Autoship
                 </p>
-                <p className={`font-['Inter:Regular',sans-serif] ${subtitleSize} text-[#406c6d]`}>
-                  Flexible delivery that works for you
-                </p>
+                {/* Only show subtitle in variant 1 OR when selected */}
+                {(uiVariant === 1 || isAutoship) && (
+                  <p className={`font-['Inter:Regular',sans-serif] ${subtitleSize} text-[#406c6d]`}>
+                    Flexible delivery that works for you
+                  </p>
+                )}
               </div>
             </div>
           </button>
@@ -1856,21 +2201,26 @@ function PurchaseOptions({ isAutoship, setIsAutoship, isFlexPay, setIsFlexPay, d
                   <p className={`font-['Inter:Medium',sans-serif] font-medium ${titleSize} text-[#003b3c] mb-[4px]`}>
                     FlexPay
                   </p>
-                  <p className={`font-['Inter:Regular',sans-serif] ${subtitleSize} text-[#406c6d]`}>
-                    Split into easy installments
-                  </p>
+                  {/* Only show subtitle in variant 1 OR when selected */}
+                  {(uiVariant === 1 || isFlexPay) && (
+                    <p className={`font-['Inter:Regular',sans-serif] ${subtitleSize} text-[#406c6d]`}>
+                      Split into easy installments
+                    </p>
+                  )}
                 </div>
               </div>
               
-              {/* Price Display */}
-              <div className="flex flex-col items-end gap-[2px] shrink-0">
-                <p className={`font-['Inter:Medium',sans-serif] font-medium text-[16px] leading-[1.2] text-[#009296]`}>
-                  ${(basePrice / flexPayInstallments).toFixed(2)}
-                </p>
-                <p className="font-['Inter:Regular',sans-serif] font-normal text-[12px] leading-[1.2] text-[#406c6d]">
-                  ×{flexPayInstallments} payments
-                </p>
-              </div>
+              {/* Price Display - Only show in variant 1 OR when selected */}
+              {(uiVariant === 1 || isFlexPay) && (
+                <div className="flex flex-col items-end gap-[2px] shrink-0">
+                  <p className={`font-['Inter:Medium',sans-serif] font-medium text-[16px] leading-[1.2] text-[#009296]`}>
+                    ${(basePrice / flexPayInstallments).toFixed(2)}
+                  </p>
+                  <p className="font-['Inter:Regular',sans-serif] font-normal text-[12px] leading-[1.2] text-[#406c6d]">
+                    ×{flexPayInstallments} payments
+                  </p>
+                </div>
+              )}
             </div>
           </button>
 
@@ -1940,6 +2290,7 @@ function PurchaseOptions({ isAutoship, setIsAutoship, isFlexPay, setIsFlexPay, d
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }
@@ -2098,6 +2449,46 @@ function GuaranteeText({ breakpoint }: any) {
       <span className="font-['Inter:Medium',sans-serif] font-medium">Questions?</span>{' '}
       <a href="#" className="underline hover:text-[#009296]">Talk to one of our Vitamin Specialists</a>
     </p>
+  );
+}
+
+// Founder Message (Option 4)
+function FounderMessage({ breakpoint }: any) {
+  const isMobile = breakpoint === 'S';
+  const headingSize = 'text-[16px]';
+  const bodySize = 'text-[14px]';
+  const phoneSize = 'text-[14px]';
+  const imageSize = isMobile ? 'w-[80px]' : 'w-[100px]';
+  const padding = isMobile ? 'p-[20px]' : 'p-[24px]';
+  const gap = isMobile ? 'gap-[16px]' : 'gap-[20px]';
+  
+  return (
+    <div className={`bg-[#fef5f5] rounded-[12px] ${padding}`}>
+      <h3 className={`font-['Inter:Medium',sans-serif] font-medium leading-[1.4] text-[#D84315] ${headingSize} mb-[20px]`}>
+        Important Update from Our Founder, Andrew Lessman
+      </h3>
+      
+      <div className={`flex ${gap} ${isMobile ? 'flex-col' : 'flex-row'} items-start`}>
+        <img 
+          src={imgPurplePacket}
+          alt="Purple packet with X"
+          className={`${imageSize} shrink-0 ${isMobile ? 'self-center' : ''}`}
+        />
+        
+        <div className="flex-1">
+          <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] ${bodySize} mb-[20px]`}>
+            For over four decades, each year, we have created millions of purple packets, which has generated thousands of tons of unrecyclable plastic packet waste. I find that to be an unacceptable and unnecessary environmental burden. As a result, in the months to come, we will gradually replace all packeted products with superior unpacketed versions. Rest assured, your favorite products aren't going away but will simply be available without packets. We will patiently complete this conversion early next year.
+          </p>
+          
+          <div className="flex items-start gap-[12px] bg-white rounded-[8px] p-[16px]">
+            <Phone className="w-[20px] h-[20px] text-[#003b3c] shrink-0 mt-[2px]" strokeWidth={1.5} />
+            <p className={`font-['Inter:Regular',sans-serif] font-normal leading-[1.6] text-[#003b3c] ${phoneSize}`}>
+              If you have any questions, please do not hesitate to call us at <span className="font-['Inter:Medium',sans-serif] font-medium">800-800-1200</span>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

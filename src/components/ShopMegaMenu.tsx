@@ -271,7 +271,7 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
               {/* Enhanced Left Sidebar Navigation */}
               <div className="flex-shrink-0 w-[280px]">
                 {/* Primary Navigation - Main 4 items */}
-                <div className="bg-[#F5F9F9] rounded-[10px] p-[8px] mb-[24px] space-y-[6px]">
+                <div className="bg-[#e8f9f9] rounded-[10px] p-[8px] mb-[24px] space-y-[6px]">
                   {leftMenuItems.slice(0, 4).map((item) => {
                     const isActive = activeSubmenu === item.id;
                     
@@ -280,7 +280,7 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
                         key={item.id}
                         onMouseEnter={() => setActiveSubmenu(item.id as any)}
                         className={`relative w-full px-[16px] py-[14px] text-left rounded-[8px] transition-all duration-200 group ${
-                          isActive ? 'bg-white shadow-sm' : 'hover:bg-white/60'
+                          isActive ? 'bg-white shadow-[0_2px_8px_rgba(0,146,150,0.15)]' : 'hover:bg-white/60 hover:shadow-[0_2px_8px_rgba(0,146,150,0.15)]'
                         }`}
                       >
                         {/* Title and Chevron */}
@@ -318,7 +318,7 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
                           onNavigate?.(path);
                           onClose?.();
                         }}
-                        className="flex items-center gap-[12px] w-full px-[12px] py-[10px] text-left rounded-[8px] hover:bg-[#F5F9F9] transition-all duration-200 group"
+                        className="flex items-center gap-[12px] w-full px-[12px] py-[10px] text-left rounded-[8px] hover:bg-[#e8f9f9] transition-all duration-200 group"
                       >
                         <IconComponent className="w-[16px] h-[16px] text-[#003b3c] group-hover:text-[#009296] transition-colors" />
                         <span className="font-['Inter',sans-serif] text-[16px] text-[#003b3c] group-hover:text-[#009296] transition-colors">
@@ -352,9 +352,9 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
                           onNavigate?.(categorySlug);
                           onClose?.();
                         }}
-                        className="relative flex items-center gap-[12px] w-full text-left font-['Inter',sans-serif] text-[16px] text-[#003b3c] px-[12px] py-[10px] rounded-[8px] transition-all duration-200 group bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+                        className="relative flex items-center gap-[12px] w-full text-left font-['Inter',sans-serif] text-[16px] text-[#003b3c] px-[12px] py-[10px] rounded-[8px] transition-all duration-200 group bg-white hover:shadow-[0_2px_8px_rgba(0,146,150,0.15)]"
                       >
-                        <div className="p-[6px] rounded-[6px] bg-[#F5F9F9] group-hover:bg-[#009296] transition-colors">
+                        <div className="p-[6px] rounded-[6px] bg-[#e8f9f9] group-hover:bg-[#009296] transition-colors">
                           <IconComponent className="w-[16px] h-[16px] text-[#009296] group-hover:text-white transition-colors" />
                         </div>
                         <span className="flex-1 group-hover:text-[#009296] transition-colors whitespace-nowrap">
@@ -382,9 +382,9 @@ export default function ShopMegaMenu({ isOpen, onNavigate, onClose }: ShopMegaMe
                           onNavigate?.(categorySlug);
                           onClose?.();
                         }}
-                        className="relative flex items-center gap-[12px] w-full text-left font-['Inter',sans-serif] text-[16px] text-[#003b3c] px-[12px] py-[10px] rounded-[8px] transition-all duration-200 group bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+                        className="relative flex items-center gap-[12px] w-full text-left font-['Inter',sans-serif] text-[16px] text-[#003b3c] px-[12px] py-[10px] rounded-[8px] transition-all duration-200 group bg-white hover:shadow-[0_2px_8px_rgba(0,146,150,0.15)]"
                       >
-                        <div className="p-[6px] rounded-[6px] bg-[#F5F9F9] group-hover:bg-[#009296] transition-colors">
+                        <div className="p-[6px] rounded-[6px] bg-[#e8f9f9] group-hover:bg-[#009296] transition-colors">
                           <IconComponent className="w-[16px] h-[16px] text-[#009296] group-hover:text-white transition-colors" />
                         </div>
                         <span className="flex-1 group-hover:text-[#009296] transition-colors whitespace-nowrap">

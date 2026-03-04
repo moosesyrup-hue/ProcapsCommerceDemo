@@ -1,6 +1,7 @@
 import { Button } from './ui/Button';
 import { useState } from 'react';
 import VideoModal from './VideoModal';
+import imgVitaminCapsules from "figma:asset/1bfbf16fa09073c28d36ae3ffbe6ce0d042bfe08.png";
 
 type Breakpoint = 'S' | 'M' | 'L' | 'XL' | 'HD';
 
@@ -275,8 +276,7 @@ function PlayButton({
         <circle 
           cx="45.5" 
           cy="45.5" 
-          fill="white" 
-          fillOpacity="0.15" 
+          fill="none" 
           r="44" 
           stroke="white" 
           strokeWidth="3" 
@@ -307,7 +307,6 @@ function VideoPlayer({
         relative 
         w-full 
         aspect-[1060/658] 
-        bg-[#c4c4c4] 
         ${spacing.videoBorderRadius} 
         flex 
         items-center 
@@ -317,7 +316,17 @@ function VideoPlayer({
       `}
       onClick={onPlayClick}
     >
-      <PlayButton svgPaths={svgPaths} breakpoint={breakpoint} onClick={onPlayClick} />
+      {/* Background image */}
+      <img 
+        src={imgVitaminCapsules} 
+        alt="Various vitamin supplement capsules" 
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      
+      {/* Play button overlay */}
+      <div className="relative z-10">
+        <PlayButton svgPaths={svgPaths} breakpoint={breakpoint} onClick={onPlayClick} />
+      </div>
     </div>
   );
 }

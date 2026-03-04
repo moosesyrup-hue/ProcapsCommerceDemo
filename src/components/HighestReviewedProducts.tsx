@@ -183,7 +183,7 @@ export default function HighestReviewedProducts({ breakpoint }: { breakpoint: Br
   };
   
   return (
-    <div className={`w-full bg-[#FCFAF8] ${paddingX}`}>
+    <div className={`w-full bg-[#F7F2EC] ${paddingX}`}>
       <div className={`flex flex-col items-center ${sectionGap} ${paddingBottom} pt-0 w-full max-w-[1920px] mx-auto`}>
         {/* Header: Badge + Title */}
         <div className={`flex flex-col items-center ${headerGap} w-full`}>
@@ -241,7 +241,7 @@ export default function HighestReviewedProducts({ breakpoint }: { breakpoint: Br
                         {pageProducts.map((product, idx) => (
                           <div key={startIdx + idx} className="flex flex-col gap-[20px]">
                             {/* Product Card */}
-                            <ProductCard hasImage={true} onQuickView={() => {}} />
+                            <ProductCard hasImage={true} onQuickView={() => {}} showWhiteBorder={true} />
                             
                             {/* Product Info */}
                             <div className="flex flex-col gap-[10px] text-[#003b3c]">

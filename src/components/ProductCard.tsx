@@ -8,9 +8,10 @@ interface ProductCardProps {
   onCardClick?: () => void;
   headline?: React.ReactNode;
   imageSrc?: string;
+  showWhiteBorder?: boolean;
 }
 
-export default function ProductCard({ hasImage = true, onQuickView, onCardClick, headline, imageSrc }: ProductCardProps) {
+export default function ProductCard({ hasImage = true, onQuickView, onCardClick, headline, imageSrc, showWhiteBorder = false }: ProductCardProps) {
   // Default headline
   const defaultHeadline = (
     <>
@@ -21,7 +22,7 @@ export default function ProductCard({ hasImage = true, onQuickView, onCardClick,
   );
 
   return (
-    <div className="basis-0 bg-[#F6F2EC] grow h-full rounded-[10px] flex flex-col group">
+    <div className={`basis-0 bg-[#F6F2EC] grow h-full rounded-[10px] flex flex-col group ${showWhiteBorder ? 'border-[6px] border-white' : ''}`}>
       <div className="box-border flex flex-col items-center justify-between pb-[10px] md:pb-[20px] pt-[30px] md:pt-[40px] px-[10px] md:px-[20px] hd:px-[20px] h-full">
         {/* Stars + Headline */}
         <div className="w-full shrink-0">
